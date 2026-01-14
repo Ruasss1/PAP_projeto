@@ -1,0 +1,10 @@
+{
+    "require-dev": {
+        "phpunit/phpunit": "^10.0"
+    },
+    "scripts": {
+        "test": "phpunit --colors=always",
+        "serve": "php -S 127.0.0.1:8000 -t .",
+        "db:seed": "php modules/populate_fake_data.php"
+    }
+}

@@ -117,6 +117,41 @@ if (isset($_GET['run'])) {
         CONSTRAINT `fk_price_history_product` FOREIGN KEY (`product_id`) REFERENCES `products`(`id`) ON DELETE CASCADE
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci", "Criar tabela price_history");
     
+    // 10.5 Security & Audit - Users, Roles, Permissions
+    $security_sql = file_get_contents(__DIR__ . '/002_add_security_and_audit.sql');
+    if ($security_sql) {
+        // Split by statements and execute each
+        $statements = array_filter(array_map('trim', explode(';', $security_sql)));
+        foreach ($statements as $stmt) {
+            if (!empty($stmt)) {
+                try {
+                    $pdo->exec($stmt);
+                } catch (PDOException $e) {
+                    if (stripos($e->getMessage(), 'Duplicate') === false && 
+                        stripos($e->getMessage(), 'already exists') === false) {
+                        // Continue on duplicate key errors
+                    }
+                }
+            }
+        }
+        $messages[] = ['type' => 'success', 'text' => '✓ Security & Audit tables'];
+    }
+    
+    // Create default admin user if none exists
+    try {
+        $stmt = $pdo->prepare('SELECT id FROM users LIMIT 1');
+        $stmt->execute();
+        if (!$stmt->fetch()) {
+            // Create default admin
+            $admin_password = password_hash('admin123', PASSWORD_BCRYPT, ['cost' => 12]);
+            $pdo->prepare('INSERT INTO users (email, password_hash, name, role_id, active) VALUES (?, ?, ?, (SELECT id FROM roles WHERE name = "admin"), 1)')
+                ->execute(['admin@example.com', $admin_password, 'Administrador']);
+            $messages[] = ['type' => 'success', 'text' => '✓ Default admin user created (admin@example.com / admin123)'];
+        }
+    } catch (PDOException $e) {
+        $messages[] = ['type' => 'info', 'text' => '○ Admin user (já existe)'];
+    }
+    
     // 11. Create alerts table
     run_migration("CREATE TABLE IF NOT EXISTS `alerts` (
         `id` INT(11) NOT NULL AUTO_INCREMENT,
@@ -132,6 +167,25 @@ if (isset($_GET['run'])) {
         KEY `idx_alerts_unread` (`read`),
         KEY `idx_alerts_type` (`alert_type`)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci", "Criar tabela alerts");
+    
+    // 11.5 Pricing Management - Price strategies, promotions, margins
+    $pricing_sql = file_get_contents(__DIR__ . '/003_add_pricing_management.sql');
+    if ($pricing_sql) {
+        $statements = array_filter(array_map('trim', explode(';', $pricing_sql)));
+        foreach ($statements as $stmt) {
+            if (!empty($stmt)) {
+                try {
+                    $pdo->exec($stmt);
+                } catch (PDOException $e) {
+                    if (stripos($e->getMessage(), 'Duplicate') === false && 
+                        stripos($e->getMessage(), 'already exists') === false) {
+                        // Continue
+                    }
+                }
+            }
+        }
+        $messages[] = ['type' => 'success', 'text' => '✓ Pricing Management tables'];
+    }
     
     // 12. Create daily_profit view
     run_migration("DROP TABLE IF EXISTS `daily_profit`", "Remover view daily_profit antiga");

@@ -1,0 +1,8 @@
+# Ficheiros de Backup
+
+Este diretório contém ficheiros antigos ou de teste que foram substituídos.
+
+## login_new.php_backup
+- Versão antiga do login.php com erros de sintaxe
+- Mantido apenas para referência histórica
+- NÃO usar em produção
