@@ -85,6 +85,80 @@ function list_products($active_only = true)
     }
 }
 
+/**
+ * Filter and sort products by category and order criteria
+ */
+function filter_products($category = null, $sort_by = 'name', $active_only = true)
+{
+    $pdo = db_connect();
+    $sql = 'SELECT p.*, s.name as supplier_name FROM products p LEFT JOIN suppliers s ON p.supplier_id = s.id';
+    
+    $conditions = [];
+    $params = [];
+    
+    if ($active_only) {
+        $conditions[] = 'p.active = 1';
+    }
+    
+    if ($category && $category !== 'all') {
+        $conditions[] = 'p.category = ?';
+        $params[] = $category;
+    }
+    
+    if (!empty($conditions)) {
+        $sql .= ' WHERE ' . implode(' AND ', $conditions);
+    }
+    
+    // Apply sorting
+    $order_by = 'p.name ASC';
+    switch ($sort_by) {
+        case 'name_az':
+            $order_by = 'p.name ASC';
+            break;
+        case 'name_za':
+            $order_by = 'p.name DESC';
+            break;
+        case 'price_low':
+            $order_by = 'p.sell_price ASC';
+            break;
+        case 'price_high':
+            $order_by = 'p.sell_price DESC';
+            break;
+        case 'stock_low':
+            $order_by = 'p.stock ASC';
+            break;
+        case 'stock_high':
+            $order_by = 'p.stock DESC';
+            break;
+        default:
+            $order_by = 'p.name ASC';
+    }
+    
+    $sql .= ' ORDER BY ' . $order_by;
+    
+    if ($params) {
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute($params);
+        return $stmt->fetchAll();
+    } else {
+        return $pdo->query($sql)->fetchAll();
+    }
+}
+
+/**
+ * Get all unique categories
+ */
+function get_all_categories()
+{
+    $pdo = db_connect();
+    try {
+        $stmt = $pdo->query('SELECT DISTINCT category FROM products WHERE active = 1 AND category IS NOT NULL AND category != "" ORDER BY category ASC');
+        return $stmt->fetchAll(PDO::FETCH_COLUMN);
+    } catch (PDOException $e) {
+        return [];
+    }
+}
+
 function list_low_stock_products($threshold = null)
 {
     $pdo = db_connect();

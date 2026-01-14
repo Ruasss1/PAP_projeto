@@ -2,8 +2,17 @@
 // Middleware de autenticação primeiro
 require_once __DIR__ . '/../includes/auth_middleware.php';
 require_once __DIR__ . '/../includes/auth.php';
-require_once __DIR__ . '/../includes/header.php';
 require_once __DIR__ . '/../includes/functions.php';
+
+$is_ajax = ($_GET['ajax'] ?? '') === '1';
+
+if ($is_ajax) {
+    ob_start(); // buffer to limpar HTML anterior em resposta AJAX
+}
+
+if (!$is_ajax) {
+    require_once __DIR__ . '/../includes/header.php';
+}
 
 // Validar permissão para este módulo
 $auth->require_auth('produtos', 'view');
@@ -71,6 +80,17 @@ if (isset($_GET['action']) && $_GET['action'] === 'edit' && isset($_GET['id'])) 
     $editing = true;
     $edit_product = get_product(intval($_GET['id']));
 }
+
+// Get filter parameters
+$selected_category = $_GET['category'] ?? 'all';
+$selected_sort = $_GET['sort'] ?? 'name_az';
+
+// Apply filters
+$all_categories = get_all_categories();
+$products = filter_products(
+    $selected_category === 'all' ? null : $selected_category,
+    $selected_sort
+);
 ?>
 <h1>Produtos</h1>
 <?php if (!empty($message)): ?><p class="notice"><?php echo htmlspecialchars($message); ?></p><?php endif; ?>
@@ -134,7 +154,57 @@ if (isset($_GET['action']) && $_GET['action'] === 'edit' && isset($_GET['id'])) 
 </section>
 
 <h2>Lista de Produtos (<?php echo count($products); ?>)</h2>
-<div class="table-container">
+
+<!-- Filtros -->
+<div style="display: flex; gap: 20px; margin: 20px 0; padding: 15px; background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%); border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.2);">
+    <div style="flex: 1;">
+        <label style="display: block; margin-bottom: 8px; font-weight: 600; color: black;">📂 Categoria</label>
+        <select id="category-filter" name="category" onchange="updateFiltersAjax()" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; background: white; cursor: pointer; color: black;">
+            <option value="all" <?php echo $selected_category === 'all' ? 'selected' : ''; ?>>Todas</option>
+            <?php foreach ($all_categories as $cat): ?>
+                <option value="<?php echo htmlspecialchars($cat); ?>" <?php echo $selected_category === $cat ? 'selected' : ''; ?>>
+                    <?php echo htmlspecialchars($cat); ?>
+                </option>
+            <?php endforeach; ?>
+        </select>
+    </div>
+    
+    <div style="flex: 1;">
+        <label style="display: block; margin-bottom: 8px; font-weight: 600; color: black;">🔄 Ordenar por</label>
+        <select id="sort-filter" name="sort" onchange="updateFiltersAjax()" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; background: white; cursor: pointer; color: black;">
+            <option value="name_az" <?php echo $selected_sort === 'name_az' ? 'selected' : ''; ?>>A-Z</option>
+            <option value="name_za" <?php echo $selected_sort === 'name_za' ? 'selected' : ''; ?>>Z-A</option>
+            <option value="price_low" <?php echo $selected_sort === 'price_low' ? 'selected' : ''; ?>>💰 Mais Barato</option>
+            <option value="price_high" <?php echo $selected_sort === 'price_high' ? 'selected' : ''; ?>>💸 Mais Caro</option>
+            <option value="stock_low" <?php echo $selected_sort === 'stock_low' ? 'selected' : ''; ?>>📉 Menos Stock</option>
+            <option value="stock_high" <?php echo $selected_sort === 'stock_high' ? 'selected' : ''; ?>>📈 Mais Stock</option>
+        </select>
+    </div>
+</div>
+
+<script>
+function updateFiltersAjax() {
+    const categoryFilter = document.getElementById('category-filter').value;
+    const sortFilter = document.getElementById('sort-filter').value;
+    const tableContainer = document.getElementById('products-table');
+
+    const params = new URLSearchParams();
+    params.append('ajax', '1');
+    params.append('category', categoryFilter);
+    params.append('sort', sortFilter);
+
+    fetch('/modules/produtos.php?' + params.toString())
+        .then(res => res.text())
+        .then(html => {
+            tableContainer.innerHTML = html;
+        })
+        .catch(() => {
+            window.location.href = '/modules/produtos.php?' + params.toString();
+        });
+}
+</script>
+<?php ob_start(); ?>
+<div id="products-table" class="table-container">
     <table>
         <thead>
             <tr>
@@ -167,23 +237,36 @@ if (isset($_GET['action']) && $_GET['action'] === 'edit' && isset($_GET['id'])) 
                     <td><?php echo number_format($p['cost_price'], 2); ?>€</td>
                     <td><?php echo $p['vat']; ?>%</td>
                     <td><?php echo htmlspecialchars($p['supplier_name'] ?? '-'); ?></td>
-                    <td>
-                        <a href="?action=edit&id=<?php echo $p['id']; ?>">Editar</a>
+                    <td style="text-align: center; display: flex; gap: 8px; justify-content: center;">
+                        <a href="?action=edit&id=<?php echo $p['id']; ?>" style="display: inline-block; padding: 8px 14px; background: #3b82f6; color: white; text-decoration: none; border-radius: 5px; font-size: 12px; cursor: pointer; font-weight: 500; transition: background 0.2s;">✏️ Editar</a>
                         <form method="post" style="display:inline;" onsubmit="return confirm('Eliminar produto?');">
                             <input type="hidden" name="action" value="delete">
                             <input type="hidden" name="id" value="<?php echo $p['id']; ?>">
-                            <button type="submit">Eliminar</button>
+                            <button type="submit" style="padding: 8px 14px; background: #ef4444; color: white; border: none; border-radius: 5px; font-size: 12px; cursor: pointer; font-weight: 500; transition: background 0.2s;">🗑️ Eliminar</button>
                         </form>
                     </td>
                 </tr>
             <?php endforeach; ?>
         </tbody>
     </table>
+        </tbody>
+    </table>
 </div>
+<?php
+$table_html = ob_get_clean();
+
+if ($is_ajax) {
+    ob_clean();
+    echo $table_html;
+    exit;
+}
+
+echo $table_html;
+?>
 
 <style>
 .low-stock { background: rgba(248, 113, 113, 0.1); }
 </style>
 
-<?php require_once __DIR__ . '/../includes/footer.php'; ?>
+<?php if (!$is_ajax) { require_once __DIR__ . '/../includes/footer.php'; } ?>
 

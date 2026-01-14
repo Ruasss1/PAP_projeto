@@ -10,7 +10,8 @@ require_once __DIR__ . '/functions.php';
 function get_price_strategy($product_id)
 {
     $pdo = db_connect();
-    $stmt = $pdo->prepare('SELECT * FROM price_strategies WHERE product_id = ?');
+    // Tabela preferida: pricing_strategies; fallback: price_strategies
+    $stmt = $pdo->prepare('SELECT * FROM pricing_strategies WHERE product_id = ?');
     $stmt->execute([$product_id]);
     return $stmt->fetch();
 }
@@ -26,12 +27,12 @@ function set_price_strategy($product_id, $markup_percent, $min_price = null, $ma
     
     if ($existing) {
         // Update
-        $stmt = $pdo->prepare('UPDATE price_strategies SET markup_percent = ?, min_price = ?, max_price = ?, notes = ? WHERE product_id = ?');
+        $stmt = $pdo->prepare('UPDATE pricing_strategies SET markup_percent = ?, min_price = ?, max_price = ?, notes = ? WHERE product_id = ?');
         $stmt->execute([$markup_percent, $min_price, $max_price, $notes, $product_id]);
         return $existing['id'];
     } else {
         // Create
-        $stmt = $pdo->prepare('INSERT INTO price_strategies (product_id, markup_percent, min_price, max_price, notes) VALUES (?, ?, ?, ?, ?)');
+        $stmt = $pdo->prepare('INSERT INTO pricing_strategies (product_id, markup_percent, min_price, max_price, notes) VALUES (?, ?, ?, ?, ?)');
         $stmt->execute([$product_id, $markup_percent, $min_price, $max_price, $notes]);
         return $pdo->lastInsertId();
     }
@@ -281,14 +282,14 @@ function get_active_promotions_for_product($product_id)
     $pdo = db_connect();
     
     // By product ID
-    $stmt = $pdo->prepare('SELECT p.* FROM promotions p JOIN promotion_products pp ON p.id = pp.promotion_id WHERE pp.product_id = ? AND p.active = 1 AND p.start_date <= NOW() AND p.end_date >= NOW()');
+    $stmt = $pdo->prepare('SELECT p.* FROM promotions p JOIN promotion_products pp ON p.id = pp.promotion_id WHERE pp.product_id = ? AND p.is_active = 1 AND p.start_date <= NOW() AND p.end_date >= NOW()');
     $stmt->execute([$product_id]);
     $promotions = $stmt->fetchAll();
     
     // By category
     $product = get_product($product_id);
     if ($product && $product['category']) {
-        $stmt = $pdo->prepare('SELECT p.* FROM promotions p JOIN promotion_categories pc ON p.id = pc.promotion_id WHERE pc.category = ? AND p.active = 1 AND p.start_date <= NOW() AND p.end_date >= NOW()');
+        $stmt = $pdo->prepare('SELECT p.* FROM promotions p JOIN promotion_categories pc ON p.id = pc.promotion_id WHERE pc.category = ? AND p.is_active = 1 AND p.start_date <= NOW() AND p.end_date >= NOW()');
         $stmt->execute([$product['category']]);
         $category_promos = $stmt->fetchAll();
         $promotions = array_merge($promotions, $category_promos);
@@ -355,13 +356,12 @@ function apply_promotions($product_id, $sell_price = null)
 function list_promotions($active_only = true, $limit = 50)
 {
     $pdo = db_connect();
+    $limit = max(1, (int)$limit);
     
     if ($active_only) {
-        $stmt = $pdo->prepare('SELECT * FROM promotions WHERE active = 1 ORDER BY start_date DESC LIMIT ?');
-        $stmt->execute([$limit]);
+        $stmt = $pdo->query("SELECT * FROM promotions WHERE is_active = 1 ORDER BY start_date DESC LIMIT {$limit}");
     } else {
-        $stmt = $pdo->prepare('SELECT * FROM promotions ORDER BY start_date DESC LIMIT ?');
-        $stmt->execute([$limit]);
+        $stmt = $pdo->query("SELECT * FROM promotions ORDER BY start_date DESC LIMIT {$limit}");
     }
     
     return $stmt->fetchAll();

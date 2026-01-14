@@ -62,6 +62,20 @@ if (isset($_GET['run'])) {
     
     // 4. Add columns to sales
     run_migration("ALTER TABLE `sales` ADD COLUMN `payment_method` VARCHAR(50) DEFAULT 'Dinheiro' AFTER `total`", "Adicionar coluna payment_method");
+
+    // 4.1 Create receipts table (recibos de venda)
+    run_migration("CREATE TABLE IF NOT EXISTS `receipts` (
+        `id` INT(11) NOT NULL AUTO_INCREMENT,
+        `sale_id` INT(11) NOT NULL,
+        `receipt_number` VARCHAR(50) NOT NULL,
+        `total` DECIMAL(10,2) NOT NULL,
+        `payment_method` VARCHAR(50) DEFAULT 'Dinheiro',
+        `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
+        PRIMARY KEY (`id`),
+        UNIQUE KEY `ux_receipt_number` (`receipt_number`),
+        KEY `fk_receipts_sale` (`sale_id`),
+        CONSTRAINT `fk_receipts_sale` FOREIGN KEY (`sale_id`) REFERENCES `sales`(`id`) ON DELETE CASCADE
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci", "Criar tabela receipts");
     
     // 5. Add columns to sale_items
     run_migration("ALTER TABLE `sale_items` ADD COLUMN `cost_price` DECIMAL(10,2) DEFAULT NULL AFTER `price`", "Adicionar coluna cost_price");
