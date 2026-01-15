@@ -6,6 +6,22 @@ $pdo = db_connect();
 $message = null;
 $order_items = []; // Array para armazenar itens adicionados dinamicamente
 
+// Handle AJAX requests for product lookup
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'get_product_by_sku') {
+    header('Content-Type: application/json');
+    $sku = $_POST['sku'] ?? '';
+    $stmt = $pdo->prepare('SELECT id, name, cost_price FROM products WHERE sku = ?');
+    $stmt->execute([$sku]);
+    $product = $stmt->fetch();
+    
+    if ($product) {
+        echo json_encode(['success' => true, 'product' => $product]);
+    } else {
+        echo json_encode(['success' => false, 'error' => 'Produto não encontrado']);
+    }
+    exit;
+}
+
 // Handle form submissions
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $action = $_POST['action'] ?? '';
@@ -44,8 +60,37 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             } elseif (!$message) {
                 $order_id = create_order($supplier_id, $items);
                 if (is_numeric($order_id)) {
-                    $message = "✓ Encomenda #$order_id criada com sucesso!";
-                    $order_items = []; // Limpar itens após sucesso
+                    // Update stock and register transactions
+                    $pdo->beginTransaction();
+                    try {
+                        $total_cost = 0;
+                        foreach ($items as $item) {
+                            $product = get_product($item['product_id']);
+                            $item_cost = $product['cost_price'] * $item['qty'];
+                            $total_cost += $item_cost;
+                            
+                            // Increase stock (received products)
+                            $stmt = $pdo->prepare('UPDATE products SET stock = stock + ? WHERE id = ?');
+                            $stmt->execute([$item['qty'], $item['product_id']]);
+                            
+                            // Register stock movement
+                            $old_stock = $product['stock'];
+                            $new_stock = $old_stock + $item['qty'];
+                            $stmt = $pdo->prepare('INSERT INTO stock_movements (product_id, type, qty, previous_stock, new_stock, reference_type, reference_id, notes, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW())');
+                            $stmt->execute([$item['product_id'], 'purchase', $item['qty'], $old_stock, $new_stock, 'order', $order_id, 'Encomenda #' . $order_id]);
+                        }
+                        
+                        // Register transaction (expense)
+                        $stmt = $pdo->prepare('INSERT INTO transactions (type, amount, reference_type, reference_id, description, created_at) VALUES (?, ?, ?, ?, ?, NOW())');
+                        $stmt->execute(['expense', -$total_cost, 'order', $order_id, 'Encomenda ao fornecedor #' . $order_id]);
+                        
+                        $pdo->commit();
+                        $message = "✓ Encomenda #$order_id criada com sucesso! Stock atualizado e gasto registado.";
+                        $order_items = []; // Limpar itens após sucesso
+                    } catch (Exception $e) {
+                        $pdo->rollBack();
+                        $message = "Encomenda criada mas erro ao atualizar stock: " . $e->getMessage();
+                    }
                 } else {
                     $message = "Erro: $order_id";
                 }
@@ -107,25 +152,42 @@ try {
             </select>
         </label>
         
-        <div style="width: 100%; margin: 16px 0;">
-            <label style="width: 100%; display: block; margin-bottom: 12px;">
-                <span style="font-weight: 600;">📦 Produtos (use Código SKU)</span>
-                <span style="font-size: 12px; color: #666; display: block; margin-top: 4px;">
-                    👉 Encontre o código SKU no documento "SKU_CODIGOS.html"
-                </span>
-            </label>
-            <div id="order-products" style="margin-top: 12px;">
-                <div class="order-product-row" style="display: flex; gap: 8px; margin-bottom: 8px; align-items: center;">
-                    <input type="text" name="product_sku[]" placeholder="SKU (ex: SKU-0001)" maxlength="20" style="flex: 1.5; padding: 10px; border: 1px solid #ccc; border-radius: 4px;">
-                    <input type="number" name="product_qty[]" placeholder="Quantidade" min="1" style="flex: 0.8; padding: 10px; border: 1px solid #ccc; border-radius: 4px;">
-                    <button type="button" onclick="removeProductRow(this)" style="background: #dc3545; padding: 10px 15px; color: white; border: none; border-radius: 4px; cursor: pointer;">✕</button>
+        <div style="display: flex; gap: 20px; width: 100%; margin: 16px 0;">
+            <!-- Esquerda: Produtos -->
+            <div style="flex: 1;">
+                <label style="width: 100%; display: block; margin-bottom: 12px;">
+                    <span style="font-weight: 600;">📦 Produtos (use Código SKU)</span>
+                    <span style="font-size: 12px; color: #666; display: block; margin-top: 4px;">
+                        👉 Encontre o código SKU no documento "SKU_CODIGOS.html"
+                    </span>
+                </label>
+                <div id="order-products" style="margin-top: 12px;">
+                    <div class="order-product-row" style="display: flex; gap: 8px; margin-bottom: 8px; align-items: center;">
+                        <input type="text" name="product_sku[]" placeholder="SKU (ex: SKU-0001)" maxlength="20" style="flex: 1.5; padding: 10px; border: 1px solid #ccc; border-radius: 4px;">
+                        <input type="number" name="product_qty[]" placeholder="Quantidade" min="1" style="flex: 0.8; padding: 10px; border: 1px solid #ccc; border-radius: 4px;">
+                        <button type="button" onclick="removeProductRow(this)" style="background: #dc3545; padding: 10px 15px; color: white; border: none; border-radius: 4px; cursor: pointer;">✕</button>
+                    </div>
+                </div>
+                <button type="button" onclick="addProductRow()" style="margin-top: 8px; background: #28a745; color: white; padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer;">+ Adicionar Produto</button>
+            </div>
+            
+            <!-- Direita: Resumo -->
+            <div style="flex: 0.8; background: #f8f9fa; border: 2px solid #dee2e6; border-radius: 8px; padding: 16px; max-height: 400px; overflow-y: auto;">
+                <strong style="color: #000; display: block; margin-bottom: 12px; font-size: 14px;">📋 Resumo da Encomenda</strong>
+                <div id="order-summary" style="font-size: 13px;">
+                    <p style="color: #999; text-align: center; padding: 20px 0;">Nenhum produto adicionado</p>
+                </div>
+                <div style="border-top: 1px solid #dee2e6; padding-top: 12px; margin-top: 12px; background: #fff; border-radius: 4px; padding: 12px;">
+                    <div style="display: flex; justify-content: space-between; font-weight: 600; color: #000; font-size: 13px; margin-bottom: 8px;">
+                        <span>Total de itens:</span>
+                        <span id="total-items" style="color: #000;">0</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; font-weight: 600; color: #27ae60; font-size: 14px;">
+                        <span>Custo Total:</span>
+                        <span id="total-price" style="color: #27ae60;">€ 0.00</span>
+                    </div>
                 </div>
             </div>
-            <button type="button" onclick="addProductRow()" style="margin-top: 8px; background: #28a745; color: white; padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer;">+ Adicionar Produto</button>
-        </div>
-        
-        <div style="background: #f0f8ff; border-left: 4px solid #2196F3; padding: 12px; margin: 16px 0; border-radius: 4px; font-size: 13px;">
-            <strong>Total de itens:</strong> <span id="total-items">0</span> produtos
         </div>
         
         <button type="submit" style="background: #007bff; color: white; padding: 12px 24px; border: none; border-radius: 4px; cursor: pointer; font-weight: 600; font-size: 14px;">Criar Encomenda</button>
@@ -133,9 +195,13 @@ try {
 </section>
 
 <script>
+// Cache de produtos para não fazer múltiplas requisições
+const productCache = {};
+
 function removeProductRow(button) {
     button.parentElement.remove();
     updateTotalItems();
+    updateOrderSummary();
 }
 
 function addProductRow() {
@@ -155,6 +221,7 @@ function addProductRow() {
     
     container.appendChild(row);
     updateTotalItems();
+    updateOrderSummary();
 }
 
 function updateTotalItems() {
@@ -168,10 +235,138 @@ function updateTotalItems() {
     document.getElementById('total-items').textContent = total;
 }
 
-// Update total items on input change
+function getProductBySkuAjax(sku, callback) {
+    // Check cache first
+    if (productCache[sku]) {
+        callback(productCache[sku]);
+        return;
+    }
+    
+    // Fetch from PHP
+    const formData = new FormData();
+    formData.append('action', 'get_product_by_sku');
+    formData.append('sku', sku.toUpperCase());
+    
+    fetch(window.location.href, {
+        method: 'POST',
+        body: formData
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            productCache[sku.toUpperCase()] = data.product;
+            callback(data.product);
+        } else {
+            callback(null);
+        }
+    })
+    .catch(err => {
+        console.error('Erro ao obter produto:', err);
+        callback(null);
+    });
+}
+
+function updateOrderSummary() {
+    const skuInputs = document.querySelectorAll('input[name="product_sku[]"]');
+    const qtyInputs = document.querySelectorAll('input[name="product_qty[]"]');
+    const summaryDiv = document.getElementById('order-summary');
+    
+    let itemCount = 0;
+    let totalPrice = 0;
+    let pendingUpdates = 0;
+    
+    // Count items with data
+    skuInputs.forEach((skuInput, index) => {
+        const sku = skuInput.value.trim().toUpperCase();
+        const qty = parseInt(qtyInputs[index].value) || 0;
+        if (sku && qty > 0) {
+            itemCount++;
+        }
+    });
+    
+    if (itemCount === 0) {
+        summaryDiv.innerHTML = '<p style="color: #999; text-align: center; padding: 20px 0;">Nenhum produto adicionado</p>';
+        return;
+    }
+    
+    // Build summary with product info
+    let summaryHTML = '';
+    skuInputs.forEach((skuInput, index) => {
+        const sku = skuInput.value.trim().toUpperCase();
+        const qty = parseInt(qtyInputs[index].value) || 0;
+        
+        if (sku && qty > 0) {
+            // Get product info
+            getProductBySkuAjax(sku, (product) => {
+                if (product) {
+                    const itemTotal = (product.cost_price || 0) * qty;
+                    const row = document.querySelector(`[data-sku-row="${index}"]`);
+                    if (!row) {
+                        const newRow = document.createElement('div');
+                        newRow.setAttribute('data-sku-row', index);
+                        newRow.style.background = '#fff';
+                        newRow.style.border = '1px solid #ddd';
+                        newRow.style.borderRadius = '6px';
+                        newRow.style.padding = '10px';
+                        newRow.style.marginBottom = '8px';
+                        newRow.innerHTML = `
+                            <div style="color: #007bff; font-weight: 600; font-size: 12px; margin-bottom: 4px;">${sku}</div>
+                            <div style="color: #333; font-size: 12px; margin-bottom: 4px;">${product.name || 'Produto desconhecido'}</div>
+                            <div style="color: #666; font-size: 11px; margin-bottom: 6px;">Preço unitário: € ${parseFloat(product.cost_price || 0).toFixed(2)}</div>
+                            <div style="color: #333; font-size: 13px; margin-bottom: 6px;">Quantidade: <strong>${qty}</strong> un.</div>
+                            <div style="color: #27ae60; font-weight: 600; font-size: 13px;">Subtotal: € ${itemTotal.toFixed(2)}</div>
+                        `;
+                        summaryDiv.appendChild(newRow);
+                    } else {
+                        row.innerHTML = `
+                            <div style="color: #007bff; font-weight: 600; font-size: 12px; margin-bottom: 4px;">${sku}</div>
+                            <div style="color: #333; font-size: 12px; margin-bottom: 4px;">${product.name || 'Produto desconhecido'}</div>
+                            <div style="color: #666; font-size: 11px; margin-bottom: 6px;">Preço unitário: € ${parseFloat(product.cost_price || 0).toFixed(2)}</div>
+                            <div style="color: #333; font-size: 13px; margin-bottom: 6px;">Quantidade: <strong>${qty}</strong> un.</div>
+                            <div style="color: #27ae60; font-weight: 600; font-size: 13px;">Subtotal: € ${itemTotal.toFixed(2)}</div>
+                        `;
+                    }
+                    updateTotalPrice();
+                }
+            });
+        }
+    });
+}
+
+function updateTotalPrice() {
+    const skuInputs = document.querySelectorAll('input[name="product_sku[]"]');
+    const qtyInputs = document.querySelectorAll('input[name="product_qty[]"]');
+    let totalPrice = 0;
+    
+    skuInputs.forEach((skuInput, index) => {
+        const sku = skuInput.value.trim().toUpperCase();
+        const qty = parseInt(qtyInputs[index].value) || 0;
+        
+        if (sku && qty > 0 && productCache[sku]) {
+            const product = productCache[sku];
+            totalPrice += (product.cost_price || 0) * qty;
+        }
+    });
+    
+    const totalPriceSpan = document.getElementById('total-price');
+    if (totalPriceSpan) {
+        totalPriceSpan.textContent = totalPrice.toFixed(2);
+    }
+}
+
+// Update on input change
 document.addEventListener('change', function(e) {
-    if (e.target.name === 'product_qty[]') {
+    if (e.target.name === 'product_qty[]' || e.target.name === 'product_sku[]') {
         updateTotalItems();
+        updateOrderSummary();
+    }
+});
+
+// Update on input
+document.addEventListener('input', function(e) {
+    if (e.target.name === 'product_sku[]' || e.target.name === 'product_qty[]') {
+        updateTotalItems();
+        updateOrderSummary();
     }
 });
 </script>
