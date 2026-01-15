@@ -164,9 +164,17 @@ try {
             </select>
         </label>
         
-        <!-- Produtos do Fornecedor -->
+        <!-- SKU Quick Select do Fornecedor -->
+        <div id="supplier-sku-panel" style="display: none; margin: 16px 0; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 8px; padding: 16px;">
+            <strong style="color: white; display: block; margin-bottom: 12px; font-size: 14px;">⚡ Adicionar SKU do Fornecedor</strong>
+            <div id="supplier-sku-buttons" style="display: flex; flex-wrap: wrap; gap: 8px;">
+                <!-- Will be populated by AJAX -->
+            </div>
+        </div>
+        
+        <!-- Produtos do Fornecedor (Lista Completa) -->
         <div id="supplier-products-list" style="display: none; margin: 16px 0; background: #f8f9fa; border-radius: 8px; padding: 12px;">
-            <strong style="color: #333; font-size: 13px;">Produtos disponíveis do fornecedor:</strong>
+            <strong style="color: #333; font-size: 13px;">📦 Lista completa de produtos:</strong>
             <div id="supplier-products-container" style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px;">
                 <!-- Will be populated by AJAX -->
             </div>
@@ -249,6 +257,9 @@ function filterSupplierProducts() {
             // Update datalist with supplier products
             updateSkuDatalist(data.products);
             
+            // Populate SKU quick select panel
+            populateSkuPanel(data.products);
+            
             data.products.forEach(product => {
                 const badge = document.createElement('span');
                 badge.style.background = '#007bff';
@@ -280,6 +291,7 @@ function filterSupplierProducts() {
         } else {
             productsList.style.display = 'none';
             updateSkuDatalist([]);
+            document.getElementById('supplier-sku-panel').style.display = 'none';
         }
     })
     .catch(err => {
@@ -287,6 +299,61 @@ function filterSupplierProducts() {
         productsList.style.display = 'none';
         updateSkuDatalist([]);
     });
+}
+
+function populateSkuPanel(products) {
+    const panel = document.getElementById('supplier-sku-panel');
+    const buttonsContainer = document.getElementById('supplier-sku-buttons');
+    
+    if (!products || products.length === 0) {
+        panel.style.display = 'none';
+        return;
+    }
+    
+    buttonsContainer.innerHTML = '';
+    
+    products.forEach(product => {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.style.background = 'white';
+        button.style.color = '#667eea';
+        button.style.border = '2px solid white';
+        button.style.padding = '8px 14px';
+        button.style.borderRadius = '6px';
+        button.style.fontSize = '12px';
+        button.style.fontWeight = '600';
+        button.style.cursor = 'pointer';
+        button.style.whiteSpace = 'nowrap';
+        button.style.transition = 'all 0.3s';
+        button.textContent = product.sku;
+        button.title = product.name;
+        
+        button.addEventListener('click', (e) => {
+            e.preventDefault();
+            addProductRowWithSku(product.sku);
+            // Scroll to the newly added product
+            setTimeout(() => {
+                const lastRow = document.querySelector('.order-product-row:last-child input[name="product_qty[]"]');
+                if (lastRow) lastRow.focus();
+            }, 100);
+        });
+        
+        button.addEventListener('mouseover', () => {
+            button.style.background = '#667eea';
+            button.style.color = 'white';
+            button.style.transform = 'scale(1.05)';
+        });
+        
+        button.addEventListener('mouseout', () => {
+            button.style.background = 'white';
+            button.style.color = '#667eea';
+            button.style.transform = 'scale(1)';
+        });
+        
+        buttonsContainer.appendChild(button);
+    });
+    
+    panel.style.display = 'block';
 }
 
 function updateSkuDatalist(products) {
