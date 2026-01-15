@@ -53,8 +53,13 @@ $pdo = db_connect();
     </div>
     
     <?php if ($view === 'dashboard'): ?>
-        <div class="pricing-dashboard">
-            <h3>📊 Gestão de Preços</h3>
+        <div class="pricing-dashboard" style="background: radial-gradient(circle at 10% 20%, #1b2a4a, #0b1220); padding: 20px; border-radius: 14px; border: 1px solid rgba(255,255,255,0.08);">
+            <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap: wrap; margin-bottom: 16px; color: #e2e8f0;">
+                <div>
+                    <div style="font-size:18px; font-weight:700; color:#f8fafc;">📊 Gestão de Preços</div>
+                    <div style="font-size:13px; color:#cbd5e1;">Análise de preços, margens e custos por produto.</div>
+                </div>
+            </div>
             
             <?php 
             // Get filter parameters
@@ -87,10 +92,10 @@ $pdo = db_connect();
             ?>
             
             <!-- Filtros Pricing -->
-            <div style="display: flex; gap: 20px; margin: 20px 0; padding: 15px; background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%); border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.2);">
-                <div style="flex: 1;">
-                    <label style="display: block; margin-bottom: 8px; font-weight: 600; color: black;">📂 Categoria</label>
-                    <select id="category-price-filter" name="category_price" onchange="updatePricingFiltersAjax()" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; background: white; cursor: pointer; color: black;">
+            <div style="display: flex; gap: 12px; margin-bottom: 14px; flex-wrap: wrap;">
+                <div style="flex: 1; min-width: 200px;">
+                    <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #cbd5e1; font-size: 13px;">📂 Categoria</label>
+                    <select id="category-price-filter" name="category_price" onchange="updatePricingFiltersAjax()" style="width: 100%; padding: 10px; border: 1px solid #1e293b; border-radius: 8px; background: #0f172a; cursor: pointer; color: #e2e8f0; font-size: 13px;">
                         <option value="all" <?php echo $selected_category_price === 'all' ? 'selected' : ''; ?>>Todas</option>
                         <?php foreach ($all_categories_pricing as $cat): ?>
                             <option value="<?php echo htmlspecialchars($cat); ?>" <?php echo $selected_category_price === $cat ? 'selected' : ''; ?>>
@@ -100,9 +105,9 @@ $pdo = db_connect();
                     </select>
                 </div>
                 
-                <div style="flex: 1;">
-                    <label style="display: block; margin-bottom: 8px; font-weight: 600; color: black;">🔄 Ordenar por</label>
-                    <select id="sort-price-filter" name="sort_price" onchange="updatePricingFiltersAjax()" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; background: white; cursor: pointer; color: black;">
+                <div style="flex: 1; min-width: 200px;">
+                    <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #cbd5e1; font-size: 13px;">🔄 Ordenar por</label>
+                    <select id="sort-price-filter" name="sort_price" onchange="updatePricingFiltersAjax()" style="width: 100%; padding: 10px; border: 1px solid #1e293b; border-radius: 8px; background: #0f172a; cursor: pointer; color: #e2e8f0; font-size: 13px;">
                         <option value="name_az" <?php echo $selected_sort_price === 'name_az' ? 'selected' : ''; ?>>A-Z</option>
                         <option value="name_za" <?php echo $selected_sort_price === 'name_za' ? 'selected' : ''; ?>>Z-A</option>
                         <option value="price_low" <?php echo $selected_sort_price === 'price_low' ? 'selected' : ''; ?>>💰 Mais Barato</option>
@@ -136,18 +141,18 @@ $pdo = db_connect();
             </script>
             
             <?php ob_start(); ?>
-            <div id="pricing-table" style="overflow-x: auto; margin-bottom: 20px;">
-                <table style="width: 100%; border-collapse: collapse; background: #1f2937; color: #e5e7eb; border: 1px solid #374151; border-radius: 8px; overflow: hidden;">
-                    <thead>
-                        <tr style="background: #111827; border-bottom: 2px solid #667eea;">
-                            <th style="color: #93c5fd; padding: 12px 16px; text-align: left; font-weight: 600;">Produto</th>
-                            <th style="color: #93c5fd; padding: 12px 16px; text-align: center; font-weight: 600;">Categoria</th>
-                            <th style="color: #93c5fd; padding: 12px 16px; text-align: right; font-weight: 600;">Preço de Compra</th>
-                            <th style="color: #93c5fd; padding: 12px 16px; text-align: right; font-weight: 600;">Preço de Venda</th>
-                            <th style="color: #93c5fd; padding: 12px 16px; text-align: center; font-weight: 600;">IVA</th>
-                            <th style="color: #93c5fd; padding: 12px 16px; text-align: right; font-weight: 600;">Preço c/ IVA</th>
-                            <th style="color: #93c5fd; padding: 12px 16px; text-align: right; font-weight: 600;">Margem (€)</th>
-                            <th style="color: #93c5fd; padding: 12px 16px; text-align: right; font-weight: 600;">Margem (%)</th>
+            <div id="pricing-table">
+                <table style="width: 100%; border-collapse: collapse; background:#0f172a; color:#e2e8f0; border:1px solid #1e293b;">
+                    <thead style="background:#111827; color:#cbd5e1;">
+                        <tr>
+                            <th style="color: #93c5fd; padding: 12px 16px; text-align: left; font-weight: 600; border-bottom: 1px solid #1e293b;">Produto</th>
+                            <th style="color: #93c5fd; padding: 12px 16px; text-align: center; font-weight: 600; border-bottom: 1px solid #1e293b;">Categoria</th>
+                            <th style="color: #93c5fd; padding: 12px 16px; text-align: right; font-weight: 600; border-bottom: 1px solid #1e293b;">Preço Compra</th>
+                            <th style="color: #93c5fd; padding: 12px 16px; text-align: right; font-weight: 600; border-bottom: 1px solid #1e293b;">Preço Venda</th>
+                            <th style="color: #93c5fd; padding: 12px 16px; text-align: center; font-weight: 600; border-bottom: 1px solid #1e293b;">IVA</th>
+                            <th style="color: #93c5fd; padding: 12px 16px; text-align: right; font-weight: 600; border-bottom: 1px solid #1e293b;">Preço c/ IVA</th>
+                            <th style="color: #93c5fd; padding: 12px 16px; text-align: right; font-weight: 600; border-bottom: 1px solid #1e293b;">Margem (€)</th>
+                            <th style="color: #93c5fd; padding: 12px 16px; text-align: right; font-weight: 600; border-bottom: 1px solid #1e293b;">Margem (%)</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -156,7 +161,7 @@ $pdo = db_connect();
                             $margin_percent = $prod['cost_price'] > 0 ? round(($margin_value / $prod['sell_price']) * 100, 2) : 0;
                             $price_with_iva = round($prod['sell_price'] * 1.23, 2);
                         ?>
-                        <tr style="border-bottom: 1px solid #374151; transition: background 0.2s;">
+                        <tr style="background:rgba(255,255,255,0.02); border-bottom: 1px solid #1e293b;">
                             <td style="color: #60a5fa; padding: 12px 16px; text-align: left; font-weight: 600;"><strong><?php echo htmlspecialchars($prod['name']); ?></strong></td>
                             <td style="color: #a78bfa; padding: 12px 16px; text-align: center; font-size: 13px;"><?php echo htmlspecialchars($prod['category'] ?? 'S/ Cat'); ?></td>
                             <td style="color: #38bdf8; font-weight: 600; padding: 12px 16px; text-align: right;">€ <?php echo number_format($prod['cost_price'], 2); ?></td>
@@ -185,71 +190,6 @@ $pdo = db_connect();
 
             echo $pricing_table_html;
             ?>
-
-            <h4 style="margin-top: 30px;">📈 Resumo de Margens</h4>
-            <div class="stats-grid">
-                <?php 
-                $total_cost = 0;
-                $total_selling = 0;
-                $total_margin_value = 0;
-                $total_margin_percent = 0;
-                
-                foreach ($all_products as $prod) {
-                    $total_cost += $prod['cost_price'];
-                    $total_selling += $prod['selling_price'];
-                    $total_margin_value += $prod['margin_value'];
-                    $total_margin_percent += $prod['margin_percent'];
-                }
-                $avg_margin_percent = count($all_products) > 0 ? $total_margin_percent / count($all_products) : 0;
-                ?>
-                <div class="stat-card">
-                    <h4>Total Custo de Compra</h4>
-                    <p class="stat-value">€ <?php echo number_format($total_cost, 2); ?></p>
-                </div>
-                
-                <div class="stat-card">
-                    <h4>Total Preço de Venda</h4>
-                    <p class="stat-value">€ <?php echo number_format($total_selling, 2); ?></p>
-                </div>
-                
-                <div class="stat-card">
-                    <h4>Margem Total (€)</h4>
-                    <p class="stat-value" style="color: #28a745;">€ <?php echo number_format($total_margin_value, 2); ?></p>
-                </div>
-                
-                <div class="stat-card">
-                    <h4>Margem Média (%)</h4>
-                    <p class="stat-value" style="color: #0066ff;"><?php echo number_format($avg_margin_percent, 2); ?>%</p>
-                </div>
-            </div>
-            
-            <?php if (count($underpriced) > 0): ?>
-            <h4 style="color: #e74c3c; margin-top: 30px;">⚠️ Produtos Subpreçados</h4>
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>Produto</th>
-                        <th>Categoria</th>
-                        <th>Custo</th>
-                        <th>Preço</th>
-                        <th>Margem</th>
-                        <th>Mínimo</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php foreach (array_slice($underpriced, 0, 10) as $product): ?>
-                    <tr style="background: #fef5e7;">
-                        <td><?php echo htmlspecialchars($product['name']); ?></td>
-                        <td><?php echo htmlspecialchars($product['category']); ?></td>
-                        <td><?php echo number_format($product['cost_price'], 2); ?>€</td>
-                        <td><?php echo number_format($product['sell_price'], 2); ?>€</td>
-                        <td><?php echo round($product['margin_percent'], 2); ?>%</td>
-                        <td><?php echo $product['min_margin_percent'] ? round($product['min_margin_percent'], 2) . '%' : 'N/A'; ?></td>
-                    </tr>
-                    <?php endforeach; ?>
-                </tbody>
-            </table>
-            <?php endif; ?>
         </div>
     
     <?php elseif ($view === 'strategies'): ?>
@@ -330,15 +270,35 @@ $pdo = db_connect();
         </div>
     
     <?php elseif ($view === 'promotions'): ?>
-        <div class="pricing-promotions">
-            <h3>Promoções</h3>
+        <div class="pricing-promotions" style="background: radial-gradient(circle at 10% 20%, #1b2a4a, #0b1220); padding: 20px; border-radius: 14px; border: 1px solid rgba(255,255,255,0.08);">
+            <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap: wrap; margin-bottom: 16px; color: #e2e8f0;">
+                <div>
+                    <div style="font-size:18px; font-weight:700; color:#f8fafc;">🎯 Promoções</div>
+                    <div style="font-size:13px; color:#cbd5e1;">Gestão de promoções e descontos especiais.</div>
+                </div>
+                <div>
+                    <a href="#" class="btn btn-primary" onclick="showPromotionForm()" style="background: #2563eb; color: white; padding: 10px 16px; border-radius: 8px; text-decoration: none; font-weight: 600;">+ Nova Promoção</a>
+                </div>
+            </div>
             
             <?php 
             $promotions = list_promotions(false, 100);
             ?>
             
-            <div style="margin-bottom: 20px;">
-                <a href="#" class="btn btn-primary" onclick="showPromotionForm()">+ Nova Promoção</a>
+            <table class="table" style="width: 100%; border-collapse: collapse; background: #0f172a; color: #e2e8f0; border: 1px solid #1e293b;">
+                <thead style="background: #111827; color: #cbd5e1;">
+                    <tr>
+                        <th style="padding: 12px 16px; text-align: left; font-weight: 600; border-bottom: 1px solid #1e293b;">Nome</th>
+                        <th style="padding: 12px 16px; text-align: center; font-weight: 600; border-bottom: 1px solid #1e293b;">Tipo</th>
+                        <th style="padding: 12px 16px; text-align: right; font-weight: 600; border-bottom: 1px solid #1e293b;">Desconto</th>
+                        <th style="padding: 12px 16px; text-align: center; font-weight: 600; border-bottom: 1px solid #1e293b;">Período</th>
+                        <th style="padding: 12px 16px; text-align: center; font-weight: 600; border-bottom: 1px solid #1e293b;">Status</th>
+                        <th style="padding: 12px 16px; text-align: center; font-weight: 600; border-bottom: 1px solid #1e293b;">Produtos</th>
+                        <th style="padding: 12px 16px; text-align: center; font-weight: 600; border-bottom: 1px solid #1e293b;">Ação</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </div>
             </div>
             
             <table class="table" style="width: 100%; border-collapse: collapse; background: #0f172a; color: #e2e8f0; border: 1px solid #1e293b;">
@@ -389,14 +349,17 @@ $pdo = db_connect();
         </div>
     
     <?php elseif ($view === 'margins'): ?>
-        <div class="pricing-margins">
-            <h3>Análise de Margem</h3>
+        <div class="pricing-margins" style="background: radial-gradient(circle at 10% 20%, #1b2a4a, #0b1220); padding: 20px; border-radius: 14px; border: 1px solid rgba(255,255,255,0.08);">
+            <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap: wrap; margin-bottom: 16px; color: #e2e8f0;">
+                <div>
+                    <div style="font-size:18px; font-weight:700; color:#f8fafc;">💹 Análise de Margem</div>
+                    <div style="font-size:13px; color:#cbd5e1;">Evolução de margens por categoria (últimos 90 dias).</div>
+                </div>
+            </div>
             
             <?php 
             $margin_data = get_category_margin_analysis(null, 90);
             ?>
-            
-            <h4>Evolução de Margem por Categoria (Últimos 90 dias)</h4>
             
             <table class="table" style="width: 100%; border-collapse: collapse; background: #0f172a; color: #e2e8f0; border: 1px solid #1e293b;">
                 <thead style="background: #111827; color: #cbd5e1;">
@@ -442,8 +405,13 @@ $pdo = db_connect();
         </div>
     
     <?php elseif ($view === 'categories'): ?>
-        <div class="pricing-categories">
-            <h3>Regras de Preço por Categoria</h3>
+        <div class="pricing-categories" style="background: radial-gradient(circle at 10% 20%, #1b2a4a, #0b1220); padding: 20px; border-radius: 14px; border: 1px solid rgba(255,255,255,0.08);">
+            <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap: wrap; margin-bottom: 16px; color: #e2e8f0;">
+                <div>
+                    <div style="font-size:18px; font-weight:700; color:#f8fafc;">📂 Regras de Preço por Categoria</div>
+                    <div style="font-size:13px; color:#cbd5e1;">Configure markup padrão e margens mínimas por categoria.</div>
+                </div>
+            </div>
             
             <?php 
             $category_rules = get_category_pricing_rules();
