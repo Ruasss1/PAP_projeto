@@ -181,9 +181,10 @@ try {
                         👉 Encontre o código SKU no documento "SKU_CODIGOS.html"
                     </span>
                 </label>
+                <datalist id="skus-list"></datalist>
                 <div id="order-products" style="margin-top: 12px;">
                     <div class="order-product-row" style="display: flex; gap: 8px; margin-bottom: 8px; align-items: center;">
-                        <input type="text" name="product_sku[]" placeholder="SKU (ex: SKU-0001)" maxlength="20" style="flex: 1.5; padding: 10px; border: 1px solid #ccc; border-radius: 4px;">
+                        <input type="text" name="product_sku[]" placeholder="SKU (ex: SKU-0001)" maxlength="20" list="skus-list" style="flex: 1.5; padding: 10px; border: 1px solid #ccc; border-radius: 4px;">
                         <input type="number" name="product_qty[]" placeholder="Quantidade" min="1" style="flex: 0.8; padding: 10px; border: 1px solid #ccc; border-radius: 4px;">
                         <button type="button" onclick="removeProductRow(this)" style="background: #dc3545; padding: 10px 15px; color: white; border: none; border-radius: 4px; cursor: pointer;">✕</button>
                     </div>
@@ -226,6 +227,7 @@ function filterSupplierProducts() {
     
     if (!supplierId) {
         productsList.style.display = 'none';
+        updateSkuDatalist([]);
         return;
     }
     
@@ -244,6 +246,9 @@ function filterSupplierProducts() {
             supplierProducts = data.products;
             container.innerHTML = '';
             
+            // Update datalist with supplier products
+            updateSkuDatalist(data.products);
+            
             data.products.forEach(product => {
                 const badge = document.createElement('span');
                 badge.style.background = '#007bff';
@@ -254,7 +259,7 @@ function filterSupplierProducts() {
                 badge.style.cursor = 'pointer';
                 badge.style.whiteSpace = 'nowrap';
                 badge.style.transition = 'background 0.3s';
-                badge.textContent = product.sku + ' - ' + product.name;
+                badge.textContent = product.name + ' - ' + product.sku;
                 
                 badge.addEventListener('click', () => {
                     addProductRowWithSku(product.sku);
@@ -274,11 +279,25 @@ function filterSupplierProducts() {
             productsList.style.display = 'block';
         } else {
             productsList.style.display = 'none';
+            updateSkuDatalist([]);
         }
     })
     .catch(err => {
         console.error('Erro ao obter produtos:', err);
         productsList.style.display = 'none';
+        updateSkuDatalist([]);
+    });
+}
+
+function updateSkuDatalist(products) {
+    const datalist = document.getElementById('skus-list');
+    datalist.innerHTML = '';
+    
+    products.forEach(product => {
+        const option = document.createElement('option');
+        option.value = product.sku;
+        option.textContent = product.name + ' - ' + product.sku;
+        datalist.appendChild(option);
     });
 }
 
@@ -344,7 +363,29 @@ function addProductRowWithSku(sku) {
         calculateAndUpdateTotalPrice();
     });
     
-    // Setup listeners
+    // Validate SKU on blur
+    skuInput.addEventListener('blur', function() {
+        const sku = this.value.trim().toUpperCase();
+        if (sku) {
+            getProductBySkuAjax(sku, (product) => {
+                if (!product) {
+                    this.style.borderColor = '#dc3545';
+                    this.style.backgroundColor = '#ffe6e6';
+                    alert('SKU não encontrado: ' + sku);
+                    this.value = '';
+                    this.style.borderColor = '#ccc';
+                    this.style.backgroundColor = '#fff';
+                } else {
+                    this.style.borderColor = '#28a745';
+                    setTimeout(() => {
+                        this.style.borderColor = '#ccc';
+                    }, 1500);
+                }
+            });
+        }
+    });
+    
+    // Setup quantity listener
     qtyInput.addEventListener('input', function() {
         updateTotalItems();
         rebuildSummary();
@@ -372,6 +413,7 @@ function addProductRow() {
     skuInput.name = 'product_sku[]';
     skuInput.placeholder = 'SKU (ex: SKU-0001)';
     skuInput.maxLength = '20';
+    skuInput.list = 'skus-list';
     skuInput.style.flex = '1.5';
     skuInput.style.padding = '10px';
     skuInput.style.border = '1px solid #ccc';
@@ -401,11 +443,24 @@ function addProductRow() {
     // Fetch SKU when leaving the input
     skuInput.addEventListener('blur', function() {
         const sku = this.value.trim().toUpperCase();
-        if (sku && sku.length > 3) {
-            getProductBySkuAjax(sku, () => {
-                updateTotalItems();
-                rebuildSummary();
-                calculateAndUpdateTotalPrice();
+        if (sku && sku.length > 2) {
+            getProductBySkuAjax(sku, (product) => {
+                if (!product) {
+                    this.style.borderColor = '#dc3545';
+                    this.style.backgroundColor = '#ffe6e6';
+                    alert('SKU não encontrado: ' + sku);
+                    this.value = '';
+                    this.style.borderColor = '#ccc';
+                    this.style.backgroundColor = '#fff';
+                } else {
+                    this.style.borderColor = '#28a745';
+                    updateTotalItems();
+                    rebuildSummary();
+                    calculateAndUpdateTotalPrice();
+                    setTimeout(() => {
+                        this.style.borderColor = '#ccc';
+                    }, 1500);
+                }
             });
         }
     });
