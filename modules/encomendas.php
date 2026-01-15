@@ -213,11 +213,59 @@ function addProductRow() {
     row.style.marginBottom = '8px';
     row.style.alignItems = 'center';
     
-    row.innerHTML = `
-        <input type="text" name="product_sku[]" placeholder="SKU (ex: SKU-0001)" maxlength="20" style="flex: 1.5; padding: 10px; border: 1px solid #ccc; border-radius: 4px;">
-        <input type="number" name="product_qty[]" placeholder="Quantidade" min="1" style="flex: 0.8; padding: 10px; border: 1px solid #ccc; border-radius: 4px;">
-        <button type="button" onclick="removeProductRow(this)" style="background: #dc3545; padding: 10px 15px; color: white; border: none; border-radius: 4px; cursor: pointer;">✕</button>
-    `;
+    const skuInput = document.createElement('input');
+    skuInput.type = 'text';
+    skuInput.name = 'product_sku[]';
+    skuInput.placeholder = 'SKU (ex: SKU-0001)';
+    skuInput.maxLength = '20';
+    skuInput.style.flex = '1.5';
+    skuInput.style.padding = '10px';
+    skuInput.style.border = '1px solid #ccc';
+    skuInput.style.borderRadius = '4px';
+    
+    const qtyInput = document.createElement('input');
+    qtyInput.type = 'number';
+    qtyInput.name = 'product_qty[]';
+    qtyInput.placeholder = 'Quantidade';
+    qtyInput.min = '1';
+    qtyInput.style.flex = '0.8';
+    qtyInput.style.padding = '10px';
+    qtyInput.style.border = '1px solid #ccc';
+    qtyInput.style.borderRadius = '4px';
+    
+    const removeBtn = document.createElement('button');
+    removeBtn.type = 'button';
+    removeBtn.textContent = '✕';
+    removeBtn.style.background = '#dc3545';
+    removeBtn.style.padding = '10px 15px';
+    removeBtn.style.color = 'white';
+    removeBtn.style.border = 'none';
+    removeBtn.style.borderRadius = '4px';
+    removeBtn.style.cursor = 'pointer';
+    removeBtn.onclick = function() { removeProductRow(this); };
+    
+    // Fetch SKU when leaving the input
+    skuInput.addEventListener('blur', function() {
+        const sku = this.value.trim().toUpperCase();
+        if (sku && sku.length > 3) {
+            getProductBySkuAjax(sku, () => {
+                updateTotalItems();
+                rebuildSummary();
+                calculateAndUpdateTotalPrice();
+            });
+        }
+    });
+    
+    // Update price when quantity changes
+    qtyInput.addEventListener('input', function() {
+        updateTotalItems();
+        rebuildSummary();
+        calculateAndUpdateTotalPrice();
+    });
+    
+    row.appendChild(skuInput);
+    row.appendChild(qtyInput);
+    row.appendChild(removeBtn);
     
     container.appendChild(row);
     updateTotalItems();
@@ -266,95 +314,136 @@ function getProductBySkuAjax(sku, callback) {
     });
 }
 
+function calculateAndUpdateTotalPrice() {
+    const skuInputs = document.querySelectorAll('input[name="product_sku[]"]');
+    const qtyInputs = document.querySelectorAll('input[name="product_qty[]"]');
+    let totalPrice = 0;
+    let allLoaded = true;
+    
+    skuInputs.forEach((skuInput, index) => {
+        const sku = skuInput.value.trim().toUpperCase();
+        const qty = parseInt(qtyInputs[index].value) || 0;
+        
+        if (sku && qty > 0) {
+            if (productCache[sku]) {
+                const product = productCache[sku];
+                totalPrice += (product.cost_price || 0) * qty;
+            } else {
+                allLoaded = false;
+            }
+        }
+    });
+    
+    const totalPriceSpan = document.getElementById('total-price');
+    if (totalPriceSpan) {
+        totalPriceSpan.textContent = '€ ' + totalPrice.toFixed(2);
+    }
+}
+
 function updateOrderSummary() {
     const skuInputs = document.querySelectorAll('input[name="product_sku[]"]');
     const qtyInputs = document.querySelectorAll('input[name="product_qty[]"]');
     const summaryDiv = document.getElementById('order-summary');
     
     let itemCount = 0;
-    let totalPrice = 0;
-    let pendingUpdates = 0;
+    let skuToFetch = [];
     
-    // Count items with data
+    // Count items with data and identify SKUs to fetch
     skuInputs.forEach((skuInput, index) => {
         const sku = skuInput.value.trim().toUpperCase();
         const qty = parseInt(qtyInputs[index].value) || 0;
         if (sku && qty > 0) {
             itemCount++;
+            if (!productCache[sku]) {
+                skuToFetch.push({sku, index});
+            }
         }
+    });
+    
+    // Fetch missing products
+    skuToFetch.forEach(({sku, index}) => {
+        getProductBySkuAjax(sku, (product) => {
+            if (product) {
+                rebuildSummary();
+                calculateAndUpdateTotalPrice();
+            }
+        });
     });
     
     if (itemCount === 0) {
         summaryDiv.innerHTML = '<p style="color: #999; text-align: center; padding: 20px 0;">Nenhum produto adicionado</p>';
+        document.getElementById('total-price').textContent = '€ 0.00';
         return;
     }
     
-    // Build summary with product info
+    rebuildSummary();
+    calculateAndUpdateTotalPrice();
+}
+
+function rebuildSummary() {
+    const skuInputs = document.querySelectorAll('input[name="product_sku[]"]');
+    const qtyInputs = document.querySelectorAll('input[name="product_qty[]"]');
+    const summaryDiv = document.getElementById('order-summary');
+    
     let summaryHTML = '';
+    
     skuInputs.forEach((skuInput, index) => {
         const sku = skuInput.value.trim().toUpperCase();
         const qty = parseInt(qtyInputs[index].value) || 0;
         
         if (sku && qty > 0) {
-            // Get product info
-            getProductBySkuAjax(sku, (product) => {
-                if (product) {
-                    const itemTotal = (product.cost_price || 0) * qty;
-                    const row = document.querySelector(`[data-sku-row="${index}"]`);
-                    if (!row) {
-                        const newRow = document.createElement('div');
-                        newRow.setAttribute('data-sku-row', index);
-                        newRow.style.background = '#fff';
-                        newRow.style.border = '1px solid #ddd';
-                        newRow.style.borderRadius = '6px';
-                        newRow.style.padding = '10px';
-                        newRow.style.marginBottom = '8px';
-                        newRow.innerHTML = `
-                            <div style="color: #007bff; font-weight: 600; font-size: 12px; margin-bottom: 4px;">${sku}</div>
-                            <div style="color: #333; font-size: 12px; margin-bottom: 4px;">${product.name || 'Produto desconhecido'}</div>
-                            <div style="color: #666; font-size: 11px; margin-bottom: 6px;">Preço unitário: € ${parseFloat(product.cost_price || 0).toFixed(2)}</div>
-                            <div style="color: #333; font-size: 13px; margin-bottom: 6px;">Quantidade: <strong>${qty}</strong> un.</div>
-                            <div style="color: #27ae60; font-weight: 600; font-size: 13px;">Subtotal: € ${itemTotal.toFixed(2)}</div>
-                        `;
-                        summaryDiv.appendChild(newRow);
-                    } else {
-                        row.innerHTML = `
-                            <div style="color: #007bff; font-weight: 600; font-size: 12px; margin-bottom: 4px;">${sku}</div>
-                            <div style="color: #333; font-size: 12px; margin-bottom: 4px;">${product.name || 'Produto desconhecido'}</div>
-                            <div style="color: #666; font-size: 11px; margin-bottom: 6px;">Preço unitário: € ${parseFloat(product.cost_price || 0).toFixed(2)}</div>
-                            <div style="color: #333; font-size: 13px; margin-bottom: 6px;">Quantidade: <strong>${qty}</strong> un.</div>
-                            <div style="color: #27ae60; font-weight: 600; font-size: 13px;">Subtotal: € ${itemTotal.toFixed(2)}</div>
-                        `;
-                    }
-                    updateTotalPrice();
-                }
-            });
-        }
-    });
-}
-
-function updateTotalPrice() {
-    const skuInputs = document.querySelectorAll('input[name="product_sku[]"]');
-    const qtyInputs = document.querySelectorAll('input[name="product_qty[]"]');
-    let totalPrice = 0;
-    
-    skuInputs.forEach((skuInput, index) => {
-        const sku = skuInput.value.trim().toUpperCase();
-        const qty = parseInt(qtyInputs[index].value) || 0;
-        
-        if (sku && qty > 0 && productCache[sku]) {
-            const product = productCache[sku];
-            totalPrice += (product.cost_price || 0) * qty;
+            if (productCache[sku]) {
+                const product = productCache[sku];
+                const itemTotal = (product.cost_price || 0) * qty;
+                summaryHTML += `
+                    <div style="background: #fff; border: 1px solid #ddd; border-radius: 6px; padding: 10px; margin-bottom: 8px;">
+                        <div style="color: #007bff; font-weight: 600; font-size: 12px; margin-bottom: 4px;">${sku}</div>
+                        <div style="color: #333; font-size: 12px; margin-bottom: 4px;">${product.name || 'Produto desconhecido'}</div>
+                        <div style="color: #666; font-size: 11px; margin-bottom: 6px;">Preço unitário: € ${parseFloat(product.cost_price || 0).toFixed(2)}</div>
+                        <div style="color: #333; font-size: 13px; margin-bottom: 6px;">Quantidade: <strong>${qty}</strong> un.</div>
+                        <div style="color: #27ae60; font-weight: 600; font-size: 13px;">Subtotal: € ${itemTotal.toFixed(2)}</div>
+                    </div>
+                `;
+            } else {
+                summaryHTML += `
+                    <div style="background: #fff; border: 1px solid #ddd; border-radius: 6px; padding: 10px; margin-bottom: 8px;">
+                        <div style="color: #007bff; font-weight: 600; font-size: 12px; margin-bottom: 4px;">${sku}</div>
+                        <div style="color: #999; font-size: 12px;">Carregando...</div>
+                    </div>
+                `;
+            }
         }
     });
     
-    const totalPriceSpan = document.getElementById('total-price');
-    if (totalPriceSpan) {
-        totalPriceSpan.textContent = totalPrice.toFixed(2);
+    if (summaryHTML) {
+        summaryDiv.innerHTML = summaryHTML;
+    } else {
+        summaryDiv.innerHTML = '<p style="color: #999; text-align: center; padding: 20px 0;">Nenhum produto adicionado</p>';
     }
 }
 
-// Update on input change
+// Update on input change and input event
+document.addEventListener('input', function(e) {
+    if (e.target.name === 'product_sku[]') {
+        // When SKU is entered, fetch the product
+        const sku = e.target.value.trim().toUpperCase();
+        if (sku && sku.length > 3) {
+            getProductBySkuAjax(sku, () => {
+                updateTotalItems();
+                updateOrderSummary();
+            });
+        } else {
+            updateTotalItems();
+            updateOrderSummary();
+        }
+    } else if (e.target.name === 'product_qty[]') {
+        // When quantity changes, immediately update totals
+        updateTotalItems();
+        rebuildSummary();
+        calculateAndUpdateTotalPrice();
+    }
+});
+
 document.addEventListener('change', function(e) {
     if (e.target.name === 'product_qty[]' || e.target.name === 'product_sku[]') {
         updateTotalItems();
@@ -362,11 +451,32 @@ document.addEventListener('change', function(e) {
     }
 });
 
-// Update on input
-document.addEventListener('input', function(e) {
-    if (e.target.name === 'product_sku[]' || e.target.name === 'product_qty[]') {
-        updateTotalItems();
-        updateOrderSummary();
+// Initialize first row with listeners
+document.addEventListener('DOMContentLoaded', function() {
+    const firstSkuInput = document.querySelector('input[name="product_sku[]"]');
+    const firstQtyInput = document.querySelector('input[name="product_qty[]"]');
+    
+    if (firstSkuInput) {
+        // Fetch SKU when leaving the input
+        firstSkuInput.addEventListener('blur', function() {
+            const sku = this.value.trim().toUpperCase();
+            if (sku && sku.length > 3) {
+                getProductBySkuAjax(sku, () => {
+                    updateTotalItems();
+                    rebuildSummary();
+                    calculateAndUpdateTotalPrice();
+                });
+            }
+        });
+    }
+    
+    if (firstQtyInput) {
+        // Update price when quantity changes
+        firstQtyInput.addEventListener('input', function() {
+            updateTotalItems();
+            rebuildSummary();
+            calculateAndUpdateTotalPrice();
+        });
     }
 });
 </script>
