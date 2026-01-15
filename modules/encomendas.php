@@ -22,6 +22,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     exit;
 }
 
+// Handle AJAX requests for filtering products by supplier
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'get_supplier_products') {
+    header('Content-Type: application/json');
+    $supplier_id = intval($_POST['supplier_id'] ?? 0);
+    $stmt = $pdo->prepare('SELECT id, sku, name FROM products WHERE supplier_id = ? ORDER BY name');
+    $stmt->execute([$supplier_id]);
+    $products = $stmt->fetchAll();
+    
+    echo json_encode(['success' => true, 'products' => $products]);
+    exit;
+}
+
 // Handle form submissions
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $action = $_POST['action'] ?? '';
@@ -144,13 +156,21 @@ try {
     <form method="post">
         <input type="hidden" name="action" value="create_order">
         <label>Fornecedor
-            <select name="supplier_id" id="supplier-select" required>
+            <select name="supplier_id" id="supplier-select" required onchange="filterSupplierProducts()">
                 <option value="">Selecionar fornecedor...</option>
                 <?php foreach ($suppliers as $s): ?>
                     <option value="<?php echo $s['id']; ?>"><?php echo htmlspecialchars($s['name']); ?></option>
                 <?php endforeach; ?>
             </select>
         </label>
+        
+        <!-- Produtos do Fornecedor -->
+        <div id="supplier-products-list" style="display: none; margin: 16px 0; background: #f8f9fa; border-radius: 8px; padding: 12px;">
+            <strong style="color: #333; font-size: 13px;">Produtos disponíveis do fornecedor:</strong>
+            <div id="supplier-products-container" style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px;">
+                <!-- Will be populated by AJAX -->
+            </div>
+        </div>
         
         <div style="display: flex; gap: 20px; width: 100%; margin: 16px 0;">
             <!-- Esquerda: Produtos -->
@@ -197,6 +217,140 @@ try {
 <script>
 // Cache de produtos para não fazer múltiplas requisições
 const productCache = {};
+let supplierProducts = [];
+
+function filterSupplierProducts() {
+    const supplierId = document.getElementById('supplier-select').value;
+    const productsList = document.getElementById('supplier-products-list');
+    const container = document.getElementById('supplier-products-container');
+    
+    if (!supplierId) {
+        productsList.style.display = 'none';
+        return;
+    }
+    
+    // Fetch products by supplier
+    const formData = new FormData();
+    formData.append('action', 'get_supplier_products');
+    formData.append('supplier_id', supplierId);
+    
+    fetch(window.location.href, {
+        method: 'POST',
+        body: formData
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success && data.products.length > 0) {
+            supplierProducts = data.products;
+            container.innerHTML = '';
+            
+            data.products.forEach(product => {
+                const badge = document.createElement('span');
+                badge.style.background = '#007bff';
+                badge.style.color = 'white';
+                badge.style.padding = '6px 12px';
+                badge.style.borderRadius = '4px';
+                badge.style.fontSize = '12px';
+                badge.style.cursor = 'pointer';
+                badge.style.whiteSpace = 'nowrap';
+                badge.style.transition = 'background 0.3s';
+                badge.textContent = product.sku + ' - ' + product.name;
+                
+                badge.addEventListener('click', () => {
+                    addProductRowWithSku(product.sku);
+                });
+                
+                badge.addEventListener('mouseover', () => {
+                    badge.style.background = '#0056b3';
+                });
+                
+                badge.addEventListener('mouseout', () => {
+                    badge.style.background = '#007bff';
+                });
+                
+                container.appendChild(badge);
+            });
+            
+            productsList.style.display = 'block';
+        } else {
+            productsList.style.display = 'none';
+        }
+    })
+    .catch(err => {
+        console.error('Erro ao obter produtos:', err);
+        productsList.style.display = 'none';
+    });
+}
+
+function addProductRowWithSku(sku) {
+    const container = document.getElementById('order-products');
+    const rows = container.querySelectorAll('.order-product-row');
+    
+    // Check if already exists
+    for (let row of rows) {
+        const input = row.querySelector('input[name="product_sku[]"]');
+        if (input && input.value.toUpperCase() === sku.toUpperCase()) {
+            return; // Already added
+        }
+    }
+    
+    const row = document.createElement('div');
+    row.className = 'order-product-row';
+    row.style.display = 'flex';
+    row.style.gap = '8px';
+    row.style.marginBottom = '8px';
+    row.style.alignItems = 'center';
+    
+    const skuInput = document.createElement('input');
+    skuInput.type = 'text';
+    skuInput.name = 'product_sku[]';
+    skuInput.value = sku;
+    skuInput.maxLength = '20';
+    skuInput.style.flex = '1.5';
+    skuInput.style.padding = '10px';
+    skuInput.style.border = '1px solid #ccc';
+    skuInput.style.borderRadius = '4px';
+    
+    const qtyInput = document.createElement('input');
+    qtyInput.type = 'number';
+    qtyInput.name = 'product_qty[]';
+    qtyInput.placeholder = 'Quantidade';
+    qtyInput.min = '1';
+    qtyInput.style.flex = '0.8';
+    qtyInput.style.padding = '10px';
+    qtyInput.style.border = '1px solid #ccc';
+    qtyInput.style.borderRadius = '4px';
+    
+    const removeBtn = document.createElement('button');
+    removeBtn.type = 'button';
+    removeBtn.textContent = '✕';
+    removeBtn.style.background = '#dc3545';
+    removeBtn.style.padding = '10px 15px';
+    removeBtn.style.color = 'white';
+    removeBtn.style.border = 'none';
+    removeBtn.style.borderRadius = '4px';
+    removeBtn.style.cursor = 'pointer';
+    removeBtn.onclick = function() { removeProductRow(this); };
+    
+    row.appendChild(skuInput);
+    row.appendChild(qtyInput);
+    row.appendChild(removeBtn);
+    container.appendChild(row);
+    
+    // Fetch product info immediately
+    getProductBySkuAjax(sku, () => {
+        updateTotalItems();
+        rebuildSummary();
+        calculateAndUpdateTotalPrice();
+    });
+    
+    // Setup listeners
+    qtyInput.addEventListener('input', function() {
+        updateTotalItems();
+        rebuildSummary();
+        calculateAndUpdateTotalPrice();
+    });
+}
 
 function removeProductRow(button) {
     button.parentElement.remove();
@@ -284,16 +438,18 @@ function updateTotalItems() {
 }
 
 function getProductBySkuAjax(sku, callback) {
+    const skuUpper = sku.toUpperCase();
+    
     // Check cache first
-    if (productCache[sku]) {
-        callback(productCache[sku]);
+    if (productCache[skuUpper]) {
+        if (callback) callback(productCache[skuUpper]);
         return;
     }
     
     // Fetch from PHP
     const formData = new FormData();
     formData.append('action', 'get_product_by_sku');
-    formData.append('sku', sku.toUpperCase());
+    formData.append('sku', skuUpper);
     
     fetch(window.location.href, {
         method: 'POST',
@@ -302,15 +458,15 @@ function getProductBySkuAjax(sku, callback) {
     .then(res => res.json())
     .then(data => {
         if (data.success) {
-            productCache[sku.toUpperCase()] = data.product;
-            callback(data.product);
+            productCache[skuUpper] = data.product;
+            if (callback) callback(data.product);
         } else {
-            callback(null);
+            if (callback) callback(null);
         }
     })
     .catch(err => {
         console.error('Erro ao obter produto:', err);
-        callback(null);
+        if (callback) callback(null);
     });
 }
 
