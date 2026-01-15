@@ -245,7 +245,204 @@ Branch: fix/migration-add-created_at
 Todos os commits foram pushed com sucesso para GitHub
 
 ===========================================
-11. PRÓXIMOS PASSOS SUGERIDOS
+11. GUIA COMPLETO DE USO - SISTEMA SKU
+===========================================
+
+O que é SKU?
+-----------
+SKU (Stock Keeping Unit) é um código único que identifica cada produto no sistema.
+Formato: SKU-XXXX (ex: SKU-0001)
+
+Como Usar o Sistema de SKU:
+---------------------------
+
+1. ENCONTRAR O CÓDIGO SKU:
+   • Abra o ficheiro SKU_CODIGOS.html no navegador
+   • Procure o produto desejado (organizado por categorias)
+   • Copie o código SKU (ex: SKU-0042)
+
+2. FAZER UMA ENCOMENDA:
+   • Aceda ao módulo Encomendas no sistema
+   • Selecione o Fornecedor
+   • Na secção "Produtos (use Código SKU)":
+     - Cole/digite o código SKU (ex: SKU-0001)
+     - Digite a Quantidade desejada (ex: 5)
+     - Clique em "+ Adicionar Produto" para mais itens
+   • O total de itens é mostrado automaticamente em baixo
+   • Clique em "Criar Encomenda"
+
+Categorias de Produtos:
+-----------------------
+Total: 103 produtos em 10 categorias
+
+| Categoria | SKUs | Exemplos |
+|-----------|------|----------|
+| 🥤 Bebidas | SKU-0001 a SKU-0022 | Água, Café, Cerveja, Vinho |
+| 🧀 Laticinios | SKU-0023 a SKU-0034 | Queijo, Manteiga, Iogurte |
+| 🛒 Mercearia | SKU-0035 a SKU-0049 | Arroz, Azeite, Café, Esparguete |
+| 🍎 Frutas | SKU-0047 a SKU-0056 | Maçã, Bananas, Uvas, Laranjas |
+| 🥕 Legumes | SKU-0057 a SKU-0066 | Alface, Tomate, Cenoura, Brócolis |
+| 🍞 Padaria | SKU-0067 a SKU-0071 | Pão, Croissants, Bolos |
+| 🥩 Carnes | SKU-0072 a SKU-0077 | Frango, Vaca, Presunto |
+| 🐟 Peixe | SKU-0078 a SKU-0083 | Bacalhau, Sardinha, Atum |
+| 📦 Enlatados | SKU-0084 a SKU-0091 | Feijão, Atum em lata, Milho |
+| 🧴 Higiene | SKU-0092 a SKU-0099 | Sabonete, Champô, Pasta dentes |
+| 🧹 Limpeza | SKU-0100 a SKU-0107 | Detergente, Amaciante, Pó |
+
+EXEMPLO PRÁTICO:
+Quero encomendar:
+- 10 unidades de Água Mineral (SKU-0001)
+- 5 unidades de Arroz Carolino (SKU-0002)
+- 3 unidades de Azeite (SKU-0003)
+
+Passos:
+1. Selecciono fornecedor "Luso"
+2. Primeiro produto: SKU-0001 → Quantidade: 10
+3. Clico "+ Adicionar Produto"
+4. Segundo produto: SKU-0002 → Quantidade: 5
+5. Clico "+ Adicionar Produto"
+6. Terceiro produto: SKU-0003 → Quantidade: 3
+7. Total será: 10+5+3 = 18 itens
+8. Clico "Criar Encomenda"
+
+IMPRIMIR DOCUMENTO SKU:
+O ficheiro SKU_CODIGOS.html é imprimível:
+1. Abra o ficheiro no navegador
+2. Pressione Ctrl+P (ou Cmd+P no Mac)
+3. Clique em "Imprimir"
+4. Guarde como referência rápida junto ao balcão
+
+Localização dos Ficheiros:
+--------------------------
+• Encomendas: Menu → Encomendas
+• Documento SKU: /SKU_CODIGOS.html (na raiz do projeto)
+• Bases de Dados: Produtos com SKU armazenados em products.sku
+
+Dicas Úteis:
+------------
+✅ SKU ajuda a:
+  - Aumentar velocidade de encomendas
+  - Reduzir erros de digitação
+  - Facilitar procura de produtos
+  - Permitir encomendas rápidas e precisas
+
+✅ O sistema valida:
+  - Se o SKU existe na base de dados
+  - Se a quantidade é válida (≥ 1)
+  - Se o fornecedor foi selecionado
+
+Resolução de Problemas:
+-----------------------
+❌ Erro: "SKU 'XXX' não encontrado!"
+   ✓ Verifique se o código está correto (espaços extras?)
+   ✓ Consulte o documento SKU_CODIGOS.html
+   ✓ A busca é sensível a maiúsculas/minúsculas
+
+❌ Faltam quantidades?
+   ✓ Certifique-se de preencher a quantidade em TODOS os produtos
+   ✓ A quantidade deve ser ≥ 1
+
+❌ Fornecedor não selecionado?
+   ✓ Selecione um fornecedor antes de enviar
+   ✓ Nem todos os fornecedores têm todos os produtos
+
+===========================================
+12. TESTE PRÁTICO DO SISTEMA
+===========================================
+
+TUDO CONCLUÍDO E PRONTO PARA TESTAR:
+
+1️⃣  SKU CODES:
+   • 103 produtos com código SKU (SKU-0001 até SKU-0103)
+   • Cada produto tem um código único na base de dados
+   • Formato: SKU-XXXX (ex: SKU-0042)
+
+2️⃣  DOCUMENTO DE REFERÊNCIA:
+   • Ficheiro: SKU_CODIGOS.html (abrir no navegador)
+   • Lista completa de 103 produtos
+   • Organizado em 10 categorias (Bebidas, Laticinios, Mercearia, etc)
+   • Cada produto mostra: SKU | Nome | Preço
+   • Imprimível (Ctrl+P ou Cmd+P)
+
+3️⃣  MÓDULO ENCOMENDAS ATUALIZADO:
+   Menu → Encomendas
+   
+   Interface nova:
+   ┌─────────────────────────────────┐
+   │ Fornecedor: [dropdown]          │
+   ├─────────────────────────────────┤
+   │ Produtos (use Código SKU)       │
+   │ SKU: [SKU-0001]  Qty: [5]  [X]  │
+   │ SKU: [SKU-0042]  Qty: [3]  [X]  │
+   │ [+ Adicionar Produto]           │
+   │                                 │
+   │ Total de itens: 8 produtos      │
+   │ [Criar Encomenda]               │
+   └─────────────────────────────────┘
+
+4️⃣  COMO USAR:
+   Passo 1: Encontrar o SKU
+   • Abra SKU_CODIGOS.html
+   • Procure o produto desejado
+   • Copie o código SKU (ex: SKU-0042)
+
+   Passo 2: Fazer a Encomenda
+   • Vá para Encomendas
+   • Seleccione Fornecedor
+   • Digite o SKU (ex: SKU-0042)
+   • Digite a Quantidade (ex: 5)
+   • Clique "Adicionar Produto" para mais itens
+   • Veja o total atualizar automaticamente
+   • Clique "Criar Encomenda"
+
+5️⃣  EXEMPLOS DE SKUS:
+   Bebidas:
+   • SKU-0001 → Água Mineral 1.5L
+   • SKU-0004 → Café Instantâneo 200g
+   • SKU-0005 → Cerveja Super Bock 330ml
+
+   Laticinios:
+   • SKU-0023 → Queijo Flamengo 500g
+   • SKU-0026 → Iogurte Grego 400g
+
+   Mercearia:
+   • SKU-0002 → Arroz Carolino 1kg
+   • SKU-0003 → Azeite Português 1L
+
+   Frutas:
+   • SKU-0047 → Maçã Vermelha 1kg
+   • SKU-0048 → Bananas 1kg
+
+   Ver mais em SKU_CODIGOS.html!
+
+6️⃣  VALIDAÇÃO:
+   O sistema valida:
+   ✓ Se o SKU existe
+   ✓ Se a quantidade é válida (≥ 1)
+   ✓ Se o fornecedor foi selecionado
+   ✓ Mostra mensagem de erro se SKU inválido
+   ✓ Confirma sucesso após criar encomenda
+
+7️⃣  FICHEIROS:
+   Criados:
+   • SKU_CODIGOS.html (documento com todos os SKUs)
+   • relatorio_pap.txt (este documento)
+
+   Modificados:
+   • modules/encomendas.php (nova interface com SKU)
+   • products table (coluna sku adicionada)
+
+PRÓXIMOS PASSOS PARA TESTAR:
+----------------------------
+1. Abra: SKU_CODIGOS.html no navegador
+2. Anote alguns SKUs (ex: SKU-0001, SKU-0042)
+3. Vá para: Menu → Encomendas
+4. Experimente fazer uma encomenda com SKU
+5. Veja o total atualizar em tempo real
+6. Crie a encomenda e verifique se funcionou
+
+===========================================
+PRÓXIMOS PASSOS SUGERIDOS
 ===========================================
 
 • Adicionar busca avançada no documento SKU_CODIGOS.html
@@ -255,6 +452,7 @@ Todos os commits foram pushed com sucesso para GitHub
 • Notificações de stock baixo ao criar encomenda
 • Export de encomendas em PDF
 • Integração com dashboard para visualização de gastos
+
 
 ===========================================
 NOTAS IMPORTANTES
@@ -284,6 +482,15 @@ NOTAS IMPORTANTES
    - Transações para operações críticas
    - Content-Type JSON para respostas AJAX
 
+5. DOCUMENTAÇÃO:
+   Todos os anotamentos foram consolidados neste ficheiro relatorio_pap.txt
+   Ficheiros antigos de anotação foram removidos para simplicidade
+
 ===========================================
 FIM DO RELATÓRIO
 ===========================================
+
+Última atualização: 15 de janeiro de 2026
+Versão do Sistema: 2.0 (com SKU)
+Total de implementações: 6 commits Git
+
