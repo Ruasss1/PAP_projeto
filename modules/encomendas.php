@@ -85,7 +85,7 @@ try {
     <form method="post">
         <input type="hidden" name="action" value="create_order">
         <label>Fornecedor
-            <select name="supplier_id" required>
+            <select name="supplier_id" id="supplier-select" required onchange="updateProductsBySupplier()">
                 <option value="">Selecionar...</option>
                 <?php foreach ($suppliers as $s): ?>
                     <option value="<?php echo $s['id']; ?>"><?php echo htmlspecialchars($s['name']); ?></option>
@@ -97,10 +97,10 @@ try {
             <label style="width: 100%;">Produtos</label>
             <div id="order-products" style="margin-top: 8px;">
                 <div class="order-product-row" style="display: flex; gap: 8px; margin-bottom: 8px;">
-                    <select name="product_id[]" style="flex: 2;">
+                    <select name="product_id[]" class="product-select" style="flex: 2;">
                         <option value="">Selecionar produto...</option>
                         <?php foreach ($products as $p): ?>
-                            <option value="<?php echo $p['id']; ?>"><?php echo htmlspecialchars($p['name']); ?> (Stock: <?php echo $p['stock']; ?>)</option>
+                            <option value="<?php echo $p['id']; ?>" data-supplier="<?php echo htmlspecialchars($p['supplier_id'] ?? ''); ?>"><?php echo htmlspecialchars($p['name']); ?> (Stock: <?php echo $p['stock']; ?>)</option>
                         <?php endforeach; ?>
                     </select>
                     <input type="number" name="qty[]" placeholder="Qty" min="1" style="flex: 1;">
@@ -115,6 +115,29 @@ try {
 </section>
 
 <script>
+function updateProductsBySupplier() {
+    const supplierId = document.getElementById('supplier-select').value;
+    const productSelects = document.querySelectorAll('.product-select');
+    
+    productSelects.forEach(select => {
+        const options = select.querySelectorAll('option');
+        options.forEach(option => {
+            if (!option.value) {
+                option.style.display = 'block'; // Sempre mostrar opção vazia
+            } else {
+                const optionSupplier = option.getAttribute('data-supplier');
+                if (supplierId && optionSupplier && optionSupplier !== supplierId) {
+                    option.style.display = 'none';
+                } else if (!supplierId) {
+                    option.style.display = 'block'; // Mostrar todos se nenhum fornecedor selecionado
+                } else {
+                    option.style.display = 'block';
+                }
+            }
+        });
+    });
+}
+
 function addProductRow() {
     const container = document.getElementById('order-products');
     const row = document.createElement('div');
@@ -122,18 +145,28 @@ function addProductRow() {
     row.style.display = 'flex';
     row.style.gap = '8px';
     row.style.marginBottom = '8px';
+    const supplierId = document.getElementById('supplier-select').value;
+    
+    let optionsHTML = '<option value="">Selecionar produto...</option>';
+    <?php foreach ($products as $p): ?>
+        const supplier<?php echo $p['id']; ?> = '<?php echo htmlspecialchars($p['supplier_id'] ?? ''); ?>';
+        if (!supplierId || supplier<?php echo $p['id']; ?> === supplierId) {
+            optionsHTML += '<option value="<?php echo $p['id']; ?>" data-supplier="<?php echo htmlspecialchars($p['supplier_id'] ?? ''); ?>"><?php echo htmlspecialchars($p['name']); ?> (Stock: <?php echo $p['stock']; ?>)</option>';
+        }
+    <?php endforeach; ?>
+    
     row.innerHTML = `
-        <select name="product_id[]" style="flex: 2;">
-            <option value="">Selecionar produto...</option>
-            <?php foreach ($products as $p): ?>
-                <option value="<?php echo $p['id']; ?>"><?php echo htmlspecialchars($p['name']); ?> (Stock: <?php echo $p['stock']; ?>)</option>
-            <?php endforeach; ?>
+        <select name="product_id[]" class="product-select" style="flex: 2;">
+            ${optionsHTML}
         </select>
         <input type="number" name="qty[]" placeholder="Qty" min="1" style="flex: 1;">
         <button type="button" onclick="this.parentElement.remove()" style="background: #dc3545;">✕</button>
     `;
     container.appendChild(row);
 }
+
+// Ao carregar a página, filtrar produtos baseado no fornecedor selecionado
+document.addEventListener('DOMContentLoaded', updateProductsBySupplier);
 </script>
 
 <!-- Resumo por Status -->

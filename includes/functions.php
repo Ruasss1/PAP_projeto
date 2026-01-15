@@ -638,17 +638,17 @@ function receive_order_items($order_id, $items_received)
             $stmt->execute([$new_qty, $item['product_id']]);
             
             // Log stock movement
-            $stmt = $pdo->prepare('INSERT INTO stock_movements (product_id, type, qty, previous_stock, new_stock, reference_type, reference_id, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, NOW())');
+            $stmt = $pdo->prepare('INSERT INTO stock_movements (product_id, type, qty, previous_stock, new_stock, reference_type, reference_id, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)');
             $stmt->execute([
                 $item['product_id'], 'order', $new_qty,
                 $old_stock, $old_stock + $new_qty,
-                'order', $order_id
+                'order', $order_id, date('Y-m-d H:i:s')
             ]);
             
             // Register transaction
             $cost = $product['cost_price'] * $new_qty;
-            $stmt = $pdo->prepare('INSERT INTO transactions (type, amount, reference_type, reference_id, description, created_at) VALUES (?, ?, ?, ?, ?, NOW())');
-            $stmt->execute(['order', -$cost, 'order', $order_id, "Recebimento encomenda #$order_id - {$product['name']} x $new_qty"]);
+            $stmt = $pdo->prepare('INSERT INTO transactions (type, amount, reference_type, reference_id, description, created_at) VALUES (?, ?, ?, ?, ?, ?)');
+            $stmt->execute(['order', -$cost, 'order', $order_id, "Recebimento encomenda #$order_id - {$product['name']} x $new_qty", date('Y-m-d H:i:s')]);
             
             // Mark as received in orders table (if there's a received column)
             $stmt = $pdo->prepare('UPDATE orders SET received = 1 WHERE id = ?');
@@ -672,8 +672,8 @@ function receive_order_items($order_id, $items_received)
 function add_order_message($order_id, $type, $message)
 {
     $pdo = db_connect();
-    $stmt = $pdo->prepare('INSERT INTO order_messages (order_id, type, message, created_at) VALUES (?, ?, ?, NOW())');
-    return $stmt->execute([$order_id, $type, $message]);
+    $stmt = $pdo->prepare('INSERT INTO order_messages (order_id, type, message, created_at) VALUES (?, ?, ?, ?)');
+    return $stmt->execute([$order_id, $type, $message, date('Y-m-d H:i:s')]);
 }
 
 function get_order_messages($order_id)
