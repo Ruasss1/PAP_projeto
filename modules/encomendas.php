@@ -4,6 +4,7 @@ require_once __DIR__ . '/../includes/functions.php';
 
 $pdo = db_connect();
 $message = null;
+$order_items = []; // Array para armazenar itens adicionados dinamicamente
 
 // Handle form submissions
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -14,24 +15,37 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (!$supplier_id) {
             $message = 'Selecione um fornecedor';
         } else {
-            // Collect products
-            $product_ids = $_POST['product_id'] ?? [];
-            $qtys = $_POST['qty'] ?? [];
+            // Collect products by SKU
+            $sku_inputs = $_POST['product_sku'] ?? [];
+            $qty_inputs = $_POST['product_qty'] ?? [];
             $items = [];
-            foreach ($product_ids as $i => $product_id) {
-                if (!empty($product_id) && !empty($qtys[$i])) {
-                    $items[] = [
-                        'product_id' => intval($product_id),
-                        'qty' => intval($qtys[$i])
-                    ];
+            
+            foreach ($sku_inputs as $i => $sku) {
+                if (!empty($sku) && !empty($qty_inputs[$i])) {
+                    // Find product by SKU
+                    $stmt = $pdo->prepare('SELECT id FROM products WHERE sku = ?');
+                    $stmt->execute([$sku]);
+                    $product = $stmt->fetch();
+                    
+                    if ($product) {
+                        $items[] = [
+                            'product_id' => $product['id'],
+                            'qty' => intval($qty_inputs[$i])
+                        ];
+                    } else {
+                        $message = "SKU '$sku' não encontrado!";
+                        break;
+                    }
                 }
             }
-            if (empty($items)) {
-                $message = 'Adicione pelo menos um produto';
-            } else {
+            
+            if (!$message && empty($items)) {
+                $message = 'Adicione pelo menos um produto com SKU válido';
+            } elseif (!$message) {
                 $order_id = create_order($supplier_id, $items);
                 if (is_numeric($order_id)) {
-                    $message = "Encomenda #$order_id criada com sucesso!";
+                    $message = "✓ Encomenda #$order_id criada com sucesso!";
+                    $order_items = []; // Limpar itens após sucesso
                 } else {
                     $message = "Erro: $order_id";
                 }
@@ -85,8 +99,8 @@ try {
     <form method="post">
         <input type="hidden" name="action" value="create_order">
         <label>Fornecedor
-            <select name="supplier_id" id="supplier-select" required onchange="updateProductsBySupplier()">
-                <option value="">Selecionar...</option>
+            <select name="supplier_id" id="supplier-select" required>
+                <option value="">Selecionar fornecedor...</option>
                 <?php foreach ($suppliers as $s): ?>
                     <option value="<?php echo $s['id']; ?>"><?php echo htmlspecialchars($s['name']); ?></option>
                 <?php endforeach; ?>
@@ -94,48 +108,34 @@ try {
         </label>
         
         <div style="width: 100%; margin: 16px 0;">
-            <label style="width: 100%;">Produtos</label>
-            <div id="order-products" style="margin-top: 8px;">
-                <div class="order-product-row" style="display: flex; gap: 8px; margin-bottom: 8px;">
-                    <select name="product_id[]" class="product-select" style="flex: 2;">
-                        <option value="">Selecionar produto...</option>
-                        <?php foreach ($products as $p): ?>
-                            <option value="<?php echo $p['id']; ?>" data-supplier="<?php echo htmlspecialchars($p['supplier_id'] ?? ''); ?>"><?php echo htmlspecialchars($p['name']); ?> (Stock: <?php echo $p['stock']; ?>)</option>
-                        <?php endforeach; ?>
-                    </select>
-                    <input type="number" name="qty[]" placeholder="Qty" min="1" style="flex: 1;">
-                    <button type="button" onclick="this.parentElement.remove()" style="background: #dc3545;">✕</button>
+            <label style="width: 100%; display: block; margin-bottom: 12px;">
+                <span style="font-weight: 600;">📦 Produtos (use Código SKU)</span>
+                <span style="font-size: 12px; color: #666; display: block; margin-top: 4px;">
+                    👉 Encontre o código SKU no documento "SKU_CODIGOS.html"
+                </span>
+            </label>
+            <div id="order-products" style="margin-top: 12px;">
+                <div class="order-product-row" style="display: flex; gap: 8px; margin-bottom: 8px; align-items: center;">
+                    <input type="text" name="product_sku[]" placeholder="SKU (ex: SKU-0001)" maxlength="20" style="flex: 1.5; padding: 10px; border: 1px solid #ccc; border-radius: 4px;">
+                    <input type="number" name="product_qty[]" placeholder="Quantidade" min="1" style="flex: 0.8; padding: 10px; border: 1px solid #ccc; border-radius: 4px;">
+                    <button type="button" onclick="removeProductRow(this)" style="background: #dc3545; padding: 10px 15px; color: white; border: none; border-radius: 4px; cursor: pointer;">✕</button>
                 </div>
             </div>
-            <button type="button" onclick="addProductRow()" style="margin-top: 8px;">+ Adicionar Produto</button>
+            <button type="button" onclick="addProductRow()" style="margin-top: 8px; background: #28a745; color: white; padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer;">+ Adicionar Produto</button>
         </div>
         
-        <button type="submit">Criar Encomenda</button>
+        <div style="background: #f0f8ff; border-left: 4px solid #2196F3; padding: 12px; margin: 16px 0; border-radius: 4px; font-size: 13px;">
+            <strong>Total de itens:</strong> <span id="total-items">0</span> produtos
+        </div>
+        
+        <button type="submit" style="background: #007bff; color: white; padding: 12px 24px; border: none; border-radius: 4px; cursor: pointer; font-weight: 600; font-size: 14px;">Criar Encomenda</button>
     </form>
 </section>
 
 <script>
-function updateProductsBySupplier() {
-    const supplierId = document.getElementById('supplier-select').value;
-    const productSelects = document.querySelectorAll('.product-select');
-    
-    productSelects.forEach(select => {
-        const options = select.querySelectorAll('option');
-        options.forEach(option => {
-            if (!option.value) {
-                option.style.display = 'block'; // Sempre mostrar opção vazia
-            } else {
-                const optionSupplier = option.getAttribute('data-supplier');
-                if (supplierId && optionSupplier && optionSupplier !== supplierId) {
-                    option.style.display = 'none';
-                } else if (!supplierId) {
-                    option.style.display = 'block'; // Mostrar todos se nenhum fornecedor selecionado
-                } else {
-                    option.style.display = 'block';
-                }
-            }
-        });
-    });
+function removeProductRow(button) {
+    button.parentElement.remove();
+    updateTotalItems();
 }
 
 function addProductRow() {
@@ -145,28 +145,35 @@ function addProductRow() {
     row.style.display = 'flex';
     row.style.gap = '8px';
     row.style.marginBottom = '8px';
-    const supplierId = document.getElementById('supplier-select').value;
-    
-    let optionsHTML = '<option value="">Selecionar produto...</option>';
-    <?php foreach ($products as $p): ?>
-        const supplier<?php echo $p['id']; ?> = '<?php echo htmlspecialchars($p['supplier_id'] ?? ''); ?>';
-        if (!supplierId || supplier<?php echo $p['id']; ?> === supplierId) {
-            optionsHTML += '<option value="<?php echo $p['id']; ?>" data-supplier="<?php echo htmlspecialchars($p['supplier_id'] ?? ''); ?>"><?php echo htmlspecialchars($p['name']); ?> (Stock: <?php echo $p['stock']; ?>)</option>';
-        }
-    <?php endforeach; ?>
+    row.style.alignItems = 'center';
     
     row.innerHTML = `
-        <select name="product_id[]" class="product-select" style="flex: 2;">
-            ${optionsHTML}
-        </select>
-        <input type="number" name="qty[]" placeholder="Qty" min="1" style="flex: 1;">
-        <button type="button" onclick="this.parentElement.remove()" style="background: #dc3545;">✕</button>
+        <input type="text" name="product_sku[]" placeholder="SKU (ex: SKU-0001)" maxlength="20" style="flex: 1.5; padding: 10px; border: 1px solid #ccc; border-radius: 4px;">
+        <input type="number" name="product_qty[]" placeholder="Quantidade" min="1" style="flex: 0.8; padding: 10px; border: 1px solid #ccc; border-radius: 4px;">
+        <button type="button" onclick="removeProductRow(this)" style="background: #dc3545; padding: 10px 15px; color: white; border: none; border-radius: 4px; cursor: pointer;">✕</button>
     `;
+    
     container.appendChild(row);
+    updateTotalItems();
 }
 
-// Ao carregar a página, filtrar produtos baseado no fornecedor selecionado
-document.addEventListener('DOMContentLoaded', updateProductsBySupplier);
+function updateTotalItems() {
+    const inputs = document.querySelectorAll('input[name="product_qty[]"]');
+    let total = 0;
+    inputs.forEach(input => {
+        if (input.value) {
+            total += parseInt(input.value) || 0;
+        }
+    });
+    document.getElementById('total-items').textContent = total;
+}
+
+// Update total items on input change
+document.addEventListener('change', function(e) {
+    if (e.target.name === 'product_qty[]') {
+        updateTotalItems();
+    }
+});
 </script>
 
 <!-- Resumo por Status -->

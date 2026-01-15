@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Código de Produtos - SKU</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; background: #f5f5f5; padding: 20px; }
+        .container { max-width: 1200px; margin: 0 auto; background: white; padding: 40px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        h1 { color: #1a1a1a; margin-bottom: 10px; text-align: center; font-size: 32px; }
+        .subtitle { color: #666; text-align: center; margin-bottom: 30px; font-size: 14px; }
+        .date-time { text-align: center; color: #999; font-size: 12px; margin-bottom: 30px; }
+        .category-section { margin-bottom: 40px; page-break-inside: avoid; }
+        .category-title { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 15px 20px; border-radius: 8px; margin-bottom: 15px; font-size: 18px; font-weight: 600; }
+        .products-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+        .products-table th { background: #f8f9fa; border-bottom: 2px solid #667eea; padding: 12px; text-align: left; font-weight: 600; color: #333; }
+        .products-table td { padding: 12px; border-bottom: 1px solid #e0e0e0; }
+        .products-table tbody tr:hover { background: #f5f7ff; }
+        .sku { font-family: "Courier New", monospace; background: #f0f0f0; padding: 6px 10px; border-radius: 4px; font-weight: 600; color: #667eea; display: inline-block; }
+        .price { text-align: right; color: #27ae60; font-weight: 600; }
+        .count { background: #e8f5e9; color: #2e7d32; padding: 12px 20px; border-radius: 6px; display: inline-block; margin-top: 20px; font-weight: 600; }
+        .footer { text-align: center; margin-top: 40px; padding-top: 20px; border-top: 1px solid #ddd; color: #999; font-size: 12px; }
+        @media print { body { padding: 0; } .container { box-shadow: none; padding: 20px; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📦 Catálogo de Códigos SKU</h1>
+        <p class="subtitle">Sistemas de Gestão de Supermercado - PAP Projeto</p>
+        <p class="date-time">Documento de Referência | Atualizado em 15 de janeiro de 2026</p>
+
+        <!-- Bebidas -->
+        <div class="category-section">
+            <div class="category-title">🥤 Bebidas (15 produtos)</div>
+            <table class="products-table">
+                <thead>
+                    <tr>
+                        <th style="width: 20%;">SKU</th>
+                        <th style="width: 55%;">Produto</th>
+                        <th style="width: 25%;">Preço</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="sku">SKU-0001</span></td>
+                        <td>Água Mineral 1.5L</td>
+                        <td class="price">€ 0.95</td>
+                    </tr>
+                    <tr>
+                        <td><span class="sku">SKU-0005</span></td>
+                        <td>Cerveja Super Bock 330ml</td>
+                        <td class="price">€ 1.50</td>
+                    </tr>
+                    <tr>
+                        <td><span class="sku">SKU-0010</span></td>
+                        <td>Sumo Natural Laranja 1L</td>
+                        <td class="price">€ 2.20</td>
+                    </tr>
+                    <tr>
+                        <td><span class="sku">SKU-0011</span></td>
+                        <td>Refrigerante Cola 2L</td>
+                        <td class="price">€ 1.80</td>
+                    </tr>
+                    <tr>
+                        <td><span class="sku">SKU-0012</span></td>
+                        <td>Vinho Tinto Reserva 750ml</td>
+                        <td class="price">€ 8.50</td>
+                    </tr>
+                    <tr>
+                        <td><span class="sku">SKU-0013</span></td>
+                        <td>Whisky Escocês 1L</td>
+                        <td class="price">€ 35.00</td>
+                    </tr>
+                    <tr>
+                        <td><span class="sku">SKU-0014</span></td>
+                        <td>Cerveja Artesanal IPA 500ml</td>
+                        <td class="price">€ 2.90</td>
+                    </tr>
+                    <tr>
+                        <td><span class="sku">SKU-0015</span></td>
+                        <td>Chá Verde Premium 20 saquetas</td>
+                        <td class="price">€ 3.50</td>
+                    </tr>
+                    <tr>
+                        <td><span class="sku">SKU-0016</span></td>
+                        <td>Café Moído 500g</td>
+                        <td class="price">€ 4.20</td>
+                    </tr>
+                    <tr>
+                        <td><span class="sku">SKU-0017</span></td>
+                        <td>Leite Integral 1L</td>
+                        <td class="price">€ 1.10</td>
+                    </tr>
+                    <tr>
+                        <td><span class="sku">SKU-0018</span></td>
+                        <td>Leite Magro 1L</td>
+                        <td class="price">€ 0.95</td>
+                    </tr>
+                    <tr>
+                        <td><span class="sku">SKU-0019</span></td>
+                        <td>Iogurte Natural 400g</td>
+                        <td class="price">€ 1.50</td>
+                    </tr>
+                    <tr>
+                        <td><span class="sku">SKU-0020</span></td>
+                        <td>Bebida de Amêndoa 1L</td>
+                        <td class="price">€ 2.80</td>
+                    </tr>
+                    <tr>
+                        <td><span class="sku">SKU-0021</span></td>
+                        <td>Água com Gás 1.5L</td>
+                        <td class="price">€ 1.20</td>
+                    </tr>
+                    <tr>
+                        <td><span class="sku">SKU-0022</span></td>
+                        <td>Kombucha Biológica 500ml</td>
+                        <td class="price">€ 3.80</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Laticinios -->
+        <div class="category-section">
+            <div class="category-title">🧀 Laticinios (12 produtos)</div>
+            <table class="products-table">
+                <thead>
+                    <tr>
+                        <th style="width: 20%;">SKU</th>
+                        <th style="width: 55%;">Produto</th>
+                        <th style="width: 25%;">Preço</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="sku">SKU-0023</span></td>
+                        <td>Queijo Flamengo 500g</td>
+                        <td class="price">€ 5.50</td>
+                    </tr>
+                    <tr>
+                        <td><span class="sku">SKU-0024</span></td>
+                        <td>Manteiga Irlandesa 250g</td>
+                        <td class="price">€ 3.20</td>
+                    </tr>
+                    <tr>
+                        <td><span class="sku">SKU-0025</span></td>
+                        <td>Cream Cheese 200g</td>
+                        <td class="price">€ 2.80</td>
+                    </tr>
+                    <tr>
+                        <td><span class="sku">SKU-0026</span></td>
+                        <td>Iogurte Grego 400g</td>
+                        <td class="price">€ 1.90</td>
+                    </tr>
+                    <tr>
+                        <td><span class="sku">SKU-0027</span></td>
+                        <td>Queijo Mozzarella 250g</td>
+                        <td class="price">€ 3.80</td>
+                    </tr>
+                    <tr>
+                        <td><span class="sku">SKU-0028</span></td>
+                        <td>Leite em Pó 400g</td>
+                        <td class="price">€ 4.50</td>
+                    </tr>
+                    <tr>
+                        <td><span class="sku">SKU-0029</span></td>
+                        <td>Requeijão 250g</td>
+                        <td class="price">€ 2.20</td>
+                    </tr>
+                    <tr>
+                        <td><span class="sku">SKU-0030</span></td>
+                        <td>Creme de Leite 200ml</td>
+                        <td class="price">€ 1.50</td>
+                    </tr>
+                    <tr>
+                        <td><span class="sku">SKU-0031</span></td>
+                        <td>Queijo Serra da Estrela 500g</td>
+                        <td class="price">€ 12.00</td>
+                    </tr>
+                    <tr>
+                        <td><span class="sku">SKU-0032</span></td>
+                        <td>Iogurte com Mel 150g</td>
+                        <td class="price">€ 0.95</td>
+                    </tr>
+                    <tr>
+                        <td><span class="sku">SKU-0033</span></td>
+                        <td>Leite Condensado 395g</td>
+                        <td class="price">€ 1.80</td>
+                    </tr>
+                    <tr>
+                        <td><span class="sku">SKU-0034</span></td>
+                        <td>Mascarpone 250g</td>
+                        <td class="price">€ 4.20</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Mercearia -->
+        <div class="category-section">
+            <div class="category-title">🛒 Mercearia (15 produtos)</div>
+            <table class="products-table">
+                <thead>
+                    <tr>
+                        <th style="width: 20%;">SKU</th>
+                        <th style="width: 55%;">Produto</th>
+                        <th style="width: 25%;">Preço</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="sku">SKU-0002</span></td>
+                        <td>Arroz Carolino 1kg</td>
+                        <td class="price">€ 1.80</td>
+                    </tr>
+                    <tr>
+                        <td><span class="sku">SKU-0003</span></td>
+                        <td>Azeite Português 1L</td>
+                        <td class="price">€ 7.50</td>
+                    </tr>
+                    <tr>
+                        <td><span class="sku">SKU-0004</span></td>
+                        <td>Café Instantâneo 200g</td>
+                        <td class="price">€ 6.50</td>
+                    </tr>
+                    <tr>
+                        <td><span class="sku">SKU-0035</span></td>
+                        <td>Esparguete 500g</td>
+                        <td class="price">€ 1.20</td>
+                    </tr>
+                    <tr>
+                        <td><span class="sku">SKU-0036</span></td>
+                        <td>Açúcar Branco 1kg</td>
+                        <td class="price">€ 0.85</td>
+                    </tr>
+                    <tr>
+                        <td><span class="sku">SKU-0037</span></td>
+                        <td>Sal Fino 1kg</td>
+                        <td class="price">€ 0.50</td>
+                    </tr>
+                    <tr>
+                        <td><span class="sku">SKU-0038</span></td>
+                        <td>Farinha de Trigo 1kg</td>
+                        <td class="price">€ 1.10</td>
+                    </tr>
+                    <tr>
+                        <td><span class="sku">SKU-0039</span></td>
+                        <td>Óleo de Girassol 1L</td>
+                        <td class="price">€ 2.20</td>
+                    </tr>
+                    <tr>
+                        <td><span class="sku">SKU-0040</span></td>
+                        <td>Vinagre Branco 500ml</td>
+                        <td class="price">€ 1.30</td>
+                    </tr>
+                    <tr>
+                        <td><span class="sku">SKU-0041</span></td>
+                        <td>Mel Natural 500g</td>
+                        <td class="price">€ 5.80</td>
+                    </tr>
+                    <tr>
+                        <td><span class="sku">SKU-0042</span></td>
+                        <td>Chocolate Escuro 200g</td>
+                        <td class="price">€ 3.50</td>
+                    </tr>
+                    <tr>
+                        <td><span class="sku">SKU-0043</span></td>
+                        <td>Bolachas Tipo Água 250g</td>
+                        <td class="price">€ 1.80</td>
+                    </tr>
+                    <tr>
+                        <td><span class="sku">SKU-0044</span></td>
+                        <td>Cereais Matinais 500g</td>
+                        <td class="price">€ 3.20</td>
+                    </tr>
+                    <tr>
+                        <td><span class="sku">SKU-0045</span></td>
+                        <td>Pão Integral 500g</td>
+                        <td class="price">€ 1.95</td>
+                    </tr>
+                    <tr>
+                        <td><span class="sku">SKU-0046</span></td>
+                        <td>Biscoitos Integrais 400g</td>
+                        <td class="price">€ 2.30</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Frutas -->
+        <div class="category-section">
+            <div class="category-title">🍎 Frutas (10 produtos)</div>
+            <table class="products-table">
+                <thead>
+                    <tr>
+                        <th style="width: 20%;">SKU</th>
+                        <th style="width: 55%;">Produto</th>
+                        <th style="width: 25%;">Preço</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="sku">SKU-0047</span></td>
+                        <td>Maçã Vermelha 1kg</td>
+                        <td class="price">€ 2.50</td>
+                    </tr>
+                    <tr>
+                        <td><span class="sku">SKU-0048</span></td>
+                        <td>Bananas 1kg</td>
+                        <td class="price">€ 1.80</td>
+                    </tr>
+                    <tr>
+                        <td><span class="sku">SKU-0049</span></td>
+                        <td>Uvas Brancas 500g</td>
+                        <td class="price">€ 3.20</td>
+                    </tr>
+                    <tr>
+                        <td><span class="sku">SKU-0050</span></td>
+                        <td>Laranjas 1kg</td>
+                        <td class="price">€ 2.10</td>
+                    </tr>
+                    <tr>
+                        <td><span class="sku">SKU-0051</span></td>
+                        <td>Morangos 500g</td>
+                        <td class="price">€ 4.50</td>
+                    </tr>
+                    <tr>
+                        <td><span class="sku">SKU-0052</span></td>
+                        <td>Pêssegos 1kg</td>
+                        <td class="price">€ 3.80</td>
+                    </tr>
+                    <tr>
+                        <td><span class="sku">SKU-0053</span></td>
+                        <td>Abacaxi 1 unidade</td>
+                        <td class="price">€ 2.90</td>
+                    </tr>
+                    <tr>
+                        <td><span class="sku">SKU-0054</span></td>
+                        <td>Melancia 1 unidade</td>
+                        <td class="price">€ 4.20</td>
+                    </tr>
+                    <tr>
+                        <td><span class="sku">SKU-0055</span></td>
+                        <td>Kiwis 500g</td>
+                        <td class="price">€ 3.50</td>
+                    </tr>
+                    <tr>
+                        <td><span class="sku">SKU-0056</span></td>
+                        <td>Limões 1kg</td>
+                        <td class="price">€ 2.30</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Legumes -->
+        <div class="category-section">
+            <div class="category-title">🥕 Legumes (10 produtos)</div>
+            <table class="products-table">
+                <thead>
+                    <tr>
+                        <th style="width: 20%;">SKU</th>
+                        <th style="width: 55%;">Produto</th>
+                        <th style="width: 25%;">Preço</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="sku">SKU-0057</span></td>
+                        <td>Alface Fresca 1 unidade</td>
+                        <td class="price">€ 1.20</td>
+                    </tr>
+                    <tr>
+                        <td><span class="sku">SKU-0058</span></td>
+                        <td>Tomate Salada 1kg</td>
+                        <td class="price">€ 2.80</td>
+                    </tr>
+                    <tr>
+                        <td><span class="sku">SKU-0059</span></td>
+                        <td>Cenoura 1kg</td>
+                        <td class="price">€ 1.50</td>
+                    </tr>
+                    <tr>
+                        <td><span class="sku">SKU-0060</span></td>
+                        <td>Brócolis 500g</td>
+                        <td class="price">€ 2.20</td>
+                    </tr>
+                    <tr>
+                        <td><span class="sku">SKU-0061</span></td>
+                        <td>Couve-Flor 1 unidade</td>
+                        <td class="price">€ 2.90</td>
+                    </tr>
+                    <tr>
+                        <td><span class="sku">SKU-0062</span></td>
+                        <td>Batata Branca 2kg</td>
+                        <td class="price">€ 2.10</td>
+                    </tr>
+                    <tr>
+                        <td><span class="sku">SKU-0063</span></td>
+                        <td>Cebola Branca 1kg</td>
+                        <td class="price">€ 1.80</td>
+                    </tr>
+                    <tr>
+                        <td><span class="sku">SKU-0064</span></td>
+                        <td>Alho Fresco 100g</td>
+                        <td class="price">€ 2.50</td>
+                    </tr>
+                    <tr>
+                        <td><span class="sku">SKU-0065</span></td>
+                        <td>Pimento Vermelho 500g</td>
+                        <td class="price">€ 3.20</td>
+                    </tr>
+                    <tr>
+                        <td><span class="sku">SKU-0066</span></td>
+                        <td>Espinafres 250g</td>
+                        <td class="price">€ 2.40</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Padaria -->
+        <div class="category-section">
+            <div class="category-title">🍞 Padaria (5 produtos)</div>
+            <table class="products-table">
+                <thead>
+                    <tr>
+                        <th style="width: 20%;">SKU</th>
+                        <th style="width: 55%;">Produto</th>
+                        <th style="width: 25%;">Preço</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="sku">SKU-0067</span></td>
+                        <td>Pão Branco 500g</td>
+                        <td class="price">€ 1.50</td>
+                    </tr>
+                    <tr>
+                        <td><span class="sku">SKU-0068</span></td>
+                        <td>Croissants 4 unidades</td>
+                        <td class="price">€ 3.50</td>
+                    </tr>
+                    <tr>
+                        <td><span class="sku">SKU-0069</span></td>
+                        <td>Bolo de Chocolate</td>
+                        <td class="price">€ 8.50</td>
+                    </tr>
+                    <tr>
+                        <td><span class="sku">SKU-0070</span></td>
+                        <td>Bagels Integrais 5 unidades</td>
+                        <td class="price">€ 4.20</td>
+                    </tr>
+                    <tr>
+                        <td><span class="sku">SKU-0071</span></td>
+                        <td>Donuts Variados 6 unidades</td>
+                        <td class="price">€ 5.50</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Carnes -->
+        <div class="category-section">
+            <div class="category-title">🥩 Carnes (6 produtos)</div>
+            <table class="products-table">
+                <thead>
+                    <tr>
+                        <th style="width: 20%;">SKU</th>
+                        <th style="width: 55%;">Produto</th>
+                        <th style="width: 25%;">Preço</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="sku">SKU-0072</span></td>
+                        <td>Peito Frango 500g</td>
+                        <td class="price">€ 4.50</td>
+                    </tr>
+                    <tr>
+                        <td><span class="sku">SKU-0073</span></td>
+                        <td>Carne Moída 500g</td>
+                        <td class="price">€ 5.80</td>
+                    </tr>
+                    <tr>
+                        <td><span class="sku">SKU-0074</span></td>
+                        <td>Bifes de Vaca 500g</td>
+                        <td class="price">€ 7.20</td>
+                    </tr>
+                    <tr>
+                        <td><span class="sku">SKU-0075</span></td>
+                        <td>Coxa de Frango 1kg</td>
+                        <td class="price">€ 3.80</td>
+                    </tr>
+                    <tr>
+                        <td><span class="sku">SKU-0076</span></td>
+                        <td>Presunto Serrano 200g</td>
+                        <td class="price">€ 6.50</td>
+                    </tr>
+                    <tr>
+                        <td><span class="sku">SKU-0077</span></td>
+                        <td>Bacon Fumado 150g</td>
+                        <td class="price">€ 3.20</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Peixe -->
+        <div class="category-section">
+            <div class="category-title">🐟 Peixe (6 produtos)</div>
+            <table class="products-table">
+                <thead>
+                    <tr>
+                        <th style="width: 20%;">SKU</th>
+                        <th style="width: 55%;">Produto</th>
+                        <th style="width: 25%;">Preço</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="sku">SKU-0078</span></td>
+                        <td>Bacalhau Fresco 1kg</td>
+                        <td class="price">€ 9.50</td>
+                    </tr>
+                    <tr>
+                        <td><span class="sku">SKU-0079</span></td>
+                        <td>Sardinha Fresca 500g</td>
+                        <td class="price">€ 6.80</td>
+                    </tr>
+                    <tr>
+                        <td><span class="sku">SKU-0080</span></td>
+                        <td>Peixe-Espada 500g</td>
+                        <td class="price">€ 7.50</td>
+                    </tr>
+                    <tr>
+                        <td><span class="sku">SKU-0081</span></td>
+                        <td>Atum Fresco 500g</td>
+                        <td class="price">€ 8.20</td>
+                    </tr>
+                    <tr>
+                        <td><span class="sku">SKU-0082</span></td>
+                        <td>Salmão Norueguês 500g</td>
+                        <td class="price">€ 10.50</td>
+                    </tr>
+                    <tr>
+                        <td><span class="sku">SKU-0083</span></td>
+                        <td>Camarão Fresco 300g</td>
+                        <td class="price">€ 12.80</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Enlatados -->
+        <div class="category-section">
+            <div class="category-title">📦 Enlatados (8 produtos)</div>
+            <table class="products-table">
+                <thead>
+                    <tr>
+                        <th style="width: 20%;">SKU</th>
+                        <th style="width: 55%;">Produto</th>
+                        <th style="width: 25%;">Preço</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="sku">SKU-0084</span></td>
+                        <td>Feijão Vermelho 400g</td>
+                        <td class="price">€ 1.20</td>
+                    </tr>
+                    <tr>
+                        <td><span class="sku">SKU-0085</span></td>
+                        <td>Atum em Azeite 160g</td>
+                        <td class="price">€ 2.80</td>
+                    </tr>
+                    <tr>
+                        <td><span class="sku">SKU-0086</span></td>
+                        <td>Sardinha em Azeite 120g</td>
+                        <td class="price">€ 2.50</td>
+                    </tr>
+                    <tr>
+                        <td><span class="sku">SKU-0087</span></td>
+                        <td>Milho Doce 300g</td>
+                        <td class="price">€ 1.50</td>
+                    </tr>
+                    <tr>
+                        <td><span class="sku">SKU-0088</span></td>
+                        <td>Ervilhas 300g</td>
+                        <td class="price">€ 1.40</td>
+                    </tr>
+                    <tr>
+                        <td><span class="sku">SKU-0089</span></td>
+                        <td>Tomate Pelado 400g</td>
+                        <td class="price">€ 1.80</td>
+                    </tr>
+                    <tr>
+                        <td><span class="sku">SKU-0090</span></td>
+                        <td>Molho de Tomate 500g</td>
+                        <td class="price">€ 2.10</td>
+                    </tr>
+                    <tr>
+                        <td><span class="sku">SKU-0091</span></td>
+                        <td>Sopa de Legumes 400g</td>
+                        <td class="price">€ 1.95</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Higiene -->
+        <div class="category-section">
+            <div class="category-title">🧴 Higiene (8 produtos)</div>
+            <table class="products-table">
+                <thead>
+                    <tr>
+                        <th style="width: 20%;">SKU</th>
+                        <th style="width: 55%;">Produto</th>
+                        <th style="width: 25%;">Preço</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="sku">SKU-0092</span></td>
+                        <td>Sabonete Líquido 500ml</td>
+                        <td class="price">€ 2.50</td>
+                    </tr>
+                    <tr>
+                        <td><span class="sku">SKU-0093</span></td>
+                        <td>Champô 400ml</td>
+                        <td class="price">€ 3.80</td>
+                    </tr>
+                    <tr>
+                        <td><span class="sku">SKU-0094</span></td>
+                        <td>Condicionador 400ml</td>
+                        <td class="price">€ 3.80</td>
+                    </tr>
+                    <tr>
+                        <td><span class="sku">SKU-0095</span></td>
+                        <td>Pasta de Dentes 100ml</td>
+                        <td class="price">€ 2.20</td>
+                    </tr>
+                    <tr>
+                        <td><span class="sku">SKU-0096</span></td>
+                        <td>Enxaguante Bucal 500ml</td>
+                        <td class="price">€ 3.50</td>
+                    </tr>
+                    <tr>
+                        <td><span class="sku">SKU-0097</span></td>
+                        <td>Papel Higiénico 12 rolos</td>
+                        <td class="price">€ 4.20</td>
+                    </tr>
+                    <tr>
+                        <td><span class="sku">SKU-0098</span></td>
+                        <td>Guardanapos 100 unidades</td>
+                        <td class="price">€ 1.80</td>
+                    </tr>
+                    <tr>
+                        <td><span class="sku">SKU-0099</span></td>
+                        <td>Lenços de Papel 10 unidades</td>
+                        <td class="price">€ 2.50</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Limpeza -->
+        <div class="category-section">
+            <div class="category-title">🧹 Limpeza (8 produtos)</div>
+            <table class="products-table">
+                <thead>
+                    <tr>
+                        <th style="width: 20%;">SKU</th>
+                        <th style="width: 55%;">Produto</th>
+                        <th style="width: 25%;">Preço</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="sku">SKU-0100</span></td>
+                        <td>Detergente Loiça 500ml</td>
+                        <td class="price">€ 1.50</td>
+                    </tr>
+                    <tr>
+                        <td><span class="sku">SKU-0101</span></td>
+                        <td>Amaciante Roupa 500ml</td>
+                        <td class="price">€ 2.80</td>
+                    </tr>
+                    <tr>
+                        <td><span class="sku">SKU-0102</span></td>
+                        <td>Pó Desinfetante 1kg</td>
+                        <td class="price">€ 3.20</td>
+                    </tr>
+                    <tr>
+                        <td><span class="sku">SKU-0103</span></td>
+                        <td>Spray Limpador Vidros 500ml</td>
+                        <td class="price">€ 2.50</td>
+                    </tr>
+                    <tr>
+                        <td><span class="sku">SKU-0104</span></td>
+                        <td>Sabão em Pó 1kg</td>
+                        <td class="price">€ 4.50</td>
+                    </tr>
+                    <tr>
+                        <td><span class="sku">SKU-0105</span></td>
+                        <td>Escovas de Limpeza 3 unidades</td>
+                        <td class="price">€ 3.80</td>
+                    </tr>
+                    <tr>
+                        <td><span class="sku">SKU-0106</span></td>
+                        <td>Panos Microfibra 5 unidades</td>
+                        <td class="price">€ 2.90</td>
+                    </tr>
+                    <tr>
+                        <td><span class="sku">SKU-0107</span></td>
+                        <td>Desinfetante Mãos 250ml</td>
+                        <td class="price">€ 3.50</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="count">✓ Total de 103 produtos com código SKU</div>
+        
+        <div class="footer">
+            <p style="font-weight: 600; color: #333; margin-bottom: 8px;">💡 Como usar este documento:</p>
+            <p>1. Procure o produto desejado nesta lista</p>
+            <p>2. Copie o código SKU (ex: SKU-0001)</p>
+            <p>3. Na secção de encomendas, cole o código SKU</p>
+            <p>4. Introduza a quantidade que pretende</p>
+            <p>5. O sistema adicionará automaticamente à encomenda</p>
+            <p style="margin-top: 15px; color: #666;">Este documento é imprimível. Use Ctrl+P para imprimir.</p>
+            <p style="margin-top: 10px; font-size: 11px;">Catálogo SKU | PAP Projeto 2026</p>
+        </div>
+    </div>
+</body>
+</html>
