@@ -136,18 +136,18 @@ $pdo = db_connect();
             </script>
             
             <?php ob_start(); ?>
-            <div id="pricing-table" class="table-container">
-                <table class="table" style="background: #1f2937; color: #e5e7eb;">
+            <div id="pricing-table" style="overflow-x: auto; margin-bottom: 20px;">
+                <table style="width: 100%; border-collapse: collapse; background: #1f2937; color: #e5e7eb; border: 1px solid #374151; border-radius: 8px; overflow: hidden;">
                     <thead>
                         <tr style="background: #111827; border-bottom: 2px solid #667eea;">
-                            <th style="color: #93c5fd;">Produto</th>
-                            <th style="color: #93c5fd;">Categoria</th>
-                            <th style="color: #93c5fd;">Preço de Compra</th>
-                            <th style="color: #93c5fd;">Preço de Venda</th>
-                            <th style="color: #93c5fd;">IVA (%)</th>
-                            <th style="color: #93c5fd;">Preço com IVA</th>
-                            <th style="color: #93c5fd;">Margem (€)</th>
-                            <th style="color: #93c5fd;">Margem (%)</th>
+                            <th style="color: #93c5fd; padding: 12px 16px; text-align: left; font-weight: 600;">Produto</th>
+                            <th style="color: #93c5fd; padding: 12px 16px; text-align: center; font-weight: 600;">Categoria</th>
+                            <th style="color: #93c5fd; padding: 12px 16px; text-align: right; font-weight: 600;">Preço de Compra</th>
+                            <th style="color: #93c5fd; padding: 12px 16px; text-align: right; font-weight: 600;">Preço de Venda</th>
+                            <th style="color: #93c5fd; padding: 12px 16px; text-align: center; font-weight: 600;">IVA</th>
+                            <th style="color: #93c5fd; padding: 12px 16px; text-align: right; font-weight: 600;">Preço c/ IVA</th>
+                            <th style="color: #93c5fd; padding: 12px 16px; text-align: right; font-weight: 600;">Margem (€)</th>
+                            <th style="color: #93c5fd; padding: 12px 16px; text-align: right; font-weight: 600;">Margem (%)</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -156,17 +156,17 @@ $pdo = db_connect();
                             $margin_percent = $prod['cost_price'] > 0 ? round(($margin_value / $prod['sell_price']) * 100, 2) : 0;
                             $price_with_iva = round($prod['sell_price'] * 1.23, 2);
                         ?>
-                        <tr style="border-bottom: 1px solid #374151;">
-                            <td><strong style="color: #60a5fa;"><?php echo htmlspecialchars($prod['name']); ?></strong></td>
-                            <td style="color: #a78bfa;"><?php echo htmlspecialchars($prod['category'] ?? 'S/ Categoria'); ?></td>
-                            <td style="color: #38bdf8; font-weight: 600;">€ <?php echo number_format($prod['cost_price'], 2); ?></td>
-                            <td style="color: #34d399; font-weight: 600;">€ <?php echo number_format($prod['sell_price'], 2); ?></td>
-                            <td style="text-align: center; color: #fbbf24;">23%</td>
-                            <td style="color: #f97316; font-weight: 600;">€ <?php echo number_format($price_with_iva, 2); ?></td>
-                            <td style="color: <?php echo $margin_value >= 0 ? '#10b981' : '#ef4444'; ?>; font-weight: 600;">
+                        <tr style="border-bottom: 1px solid #374151; transition: background 0.2s;">
+                            <td style="color: #60a5fa; padding: 12px 16px; text-align: left; font-weight: 600;"><strong><?php echo htmlspecialchars($prod['name']); ?></strong></td>
+                            <td style="color: #a78bfa; padding: 12px 16px; text-align: center; font-size: 13px;"><?php echo htmlspecialchars($prod['category'] ?? 'S/ Cat'); ?></td>
+                            <td style="color: #38bdf8; font-weight: 600; padding: 12px 16px; text-align: right;">€ <?php echo number_format($prod['cost_price'], 2); ?></td>
+                            <td style="color: #34d399; font-weight: 600; padding: 12px 16px; text-align: right;">€ <?php echo number_format($prod['sell_price'], 2); ?></td>
+                            <td style="color: #fbbf24; padding: 12px 16px; text-align: center; font-weight: 600;">23%</td>
+                            <td style="color: #f97316; font-weight: 600; padding: 12px 16px; text-align: right;">€ <?php echo number_format($price_with_iva, 2); ?></td>
+                            <td style="color: <?php echo $margin_value >= 0 ? '#10b981' : '#ef4444'; ?>; font-weight: 600; padding: 12px 16px; text-align: right;">
                                 € <?php echo number_format($margin_value, 2); ?>
                             </td>
-                            <td style="color: <?php echo $margin_percent >= 0 ? '#10b981' : '#ef4444'; ?>; font-weight: 600;">
+                            <td style="color: <?php echo $margin_percent >= 0 ? '#10b981' : '#ef4444'; ?>; font-weight: 600; padding: 12px 16px; text-align: right;">
                                 <?php echo number_format($margin_percent, 2); ?>%
                             </td>
                         </tr>
@@ -290,37 +290,37 @@ $pdo = db_connect();
                 </div>
             </div>
             
-            <table class="table" style="background:#0f172a; color:#e2e8f0; border:1px solid #1e293b;">
+            <table class="table" style="background:#0f172a; color:#e2e8f0; border:1px solid #1e293b; width: 100%; border-collapse: collapse;">
                 <thead style="background:#111827; color:#cbd5e1;">
                     <tr>
-                        <th>Produto</th>
-                        <th>Custo</th>
-                        <th>Preço Atual</th>
-                        <th>Markup</th>
-                        <th>Margem</th>
-                        <th>Estratégia</th>
-                        <th>Ação</th>
+                        <th style="padding: 12px 16px; text-align: left; font-weight: 600;">Produto</th>
+                        <th style="padding: 12px 16px; text-align: right; font-weight: 600;">Custo</th>
+                        <th style="padding: 12px 16px; text-align: right; font-weight: 600;">Preço Atual</th>
+                        <th style="padding: 12px 16px; text-align: right; font-weight: 600;">Markup</th>
+                        <th style="padding: 12px 16px; text-align: right; font-weight: 600;">Margem</th>
+                        <th style="padding: 12px 16px; text-align: center; font-weight: 600;">Estratégia</th>
+                        <th style="padding: 12px 16px; text-align: center; font-weight: 600;">Ação</th>
                     </tr>
                 </thead>
                 <tbody>
                     <?php foreach (array_slice($products, 0, 50) as $product): ?>
                     <?php $margin = calculate_margin($product['id']); $strategy = get_price_strategy($product['id']); ?>
-                    <tr style="background:rgba(255,255,255,0.02);">
-                        <td style="font-weight:600; color:#f8fafc;"><?php echo htmlspecialchars($product['name']); ?></td>
-                        <td>€ <?php echo number_format($product['cost_price'], 2); ?></td>
-                        <td style="color:#34d399;">€ <?php echo number_format($product['sell_price'], 2); ?></td>
-                        <td><?php echo round($margin['markup_percent'], 2); ?>%</td>
-                        <td style="color:<?php echo $margin['margin_percent'] >= 0 ? '#22c55e' : '#f87171'; ?>;">
+                    <tr style="background:rgba(255,255,255,0.02); border-bottom: 1px solid #1e293b;">
+                        <td style="font-weight:600; color:#f8fafc; padding: 12px 16px; text-align: left;"><?php echo htmlspecialchars($product['name']); ?></td>
+                        <td style="color: #38bdf8; padding: 12px 16px; text-align: right;">€ <?php echo number_format($product['cost_price'], 2); ?></td>
+                        <td style="color:#34d399; padding: 12px 16px; text-align: right;">€ <?php echo number_format($product['sell_price'], 2); ?></td>
+                        <td style="padding: 12px 16px; text-align: right;"><?php echo round($margin['markup_percent'], 2); ?>%</td>
+                        <td style="color:<?php echo $margin['margin_percent'] >= 0 ? '#22c55e' : '#f87171'; ?>; padding: 12px 16px; text-align: right; font-weight: 600;">
                             <?php echo round($margin['margin_percent'], 2); ?>%
                         </td>
-                        <td>
+                        <td style="padding: 12px 16px; text-align: center;">
                             <?php if ($strategy): ?>
                             <span class="badge badge-success" style="background:#16a34a; color:#0b1220;">Markup <?php echo $strategy['markup_percent']; ?>%</span>
                             <?php else: ?>
                             <span class="badge badge-info" style="background:#334155; color:#e2e8f0;">Padrão</span>
                             <?php endif; ?>
                         </td>
-                        <td>
+                        <td style="padding: 12px 16px; text-align: center;">
                             <a href="#" class="btn-small" style="background:#1d4ed8; color:#fff;" onclick="editStrategy(<?php echo $product['id']; ?>)">Editar</a>
                         </td>
                     </tr>
@@ -341,16 +341,16 @@ $pdo = db_connect();
                 <a href="#" class="btn btn-primary" onclick="showPromotionForm()">+ Nova Promoção</a>
             </div>
             
-            <table class="table">
-                <thead>
+            <table class="table" style="width: 100%; border-collapse: collapse; background: #0f172a; color: #e2e8f0; border: 1px solid #1e293b;">
+                <thead style="background: #111827; color: #cbd5e1;">
                     <tr>
-                        <th>Nome</th>
-                        <th>Tipo</th>
-                        <th>Desconto</th>
-                        <th>Período</th>
-                        <th>Status</th>
-                        <th>Produtos</th>
-                        <th>Ação</th>
+                        <th style="padding: 12px 16px; text-align: left; font-weight: 600;">Nome</th>
+                        <th style="padding: 12px 16px; text-align: center; font-weight: 600;">Tipo</th>
+                        <th style="padding: 12px 16px; text-align: right; font-weight: 600;">Desconto</th>
+                        <th style="padding: 12px 16px; text-align: center; font-weight: 600;">Período</th>
+                        <th style="padding: 12px 16px; text-align: center; font-weight: 600;">Status</th>
+                        <th style="padding: 12px 16px; text-align: center; font-weight: 600;">Produtos</th>
+                        <th style="padding: 12px 16px; text-align: center; font-weight: 600;">Ação</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -361,26 +361,26 @@ $pdo = db_connect();
                     $is_active = $promo['is_active'] ?? ($promo['active'] ?? 0);
                     $status = ($is_active && strtotime($promo['start_date']) <= time() && strtotime($promo['end_date']) >= time()) ? 'Ativa' : 'Inativa';
                     ?>
-                    <tr>
-                        <td><strong><?php echo htmlspecialchars($promo['name']); ?></strong></td>
-                        <td><?php echo ucfirst($promo['discount_type']); ?></td>
-                        <td>
+                    <tr style="border-bottom: 1px solid #1e293b;">
+                        <td style="padding: 12px 16px; text-align: left;"><strong style="color: #60a5fa;"><?php echo htmlspecialchars($promo['name']); ?></strong></td>
+                        <td style="padding: 12px 16px; text-align: center; color: #a78bfa;"><?php echo ucfirst($promo['discount_type']); ?></td>
+                        <td style="padding: 12px 16px; text-align: right; color: #34d399; font-weight: 600;">
                             <?php 
-                            echo $promo['discount_type'] === 'percentage' ? $promo['discount_value'] . '%' : $promo['discount_value'] . '€';
+                            echo $promo['discount_type'] === 'percentage' ? $promo['discount_value'] . '%' : '€' . $promo['discount_value'];
                             ?>
                         </td>
-                        <td>
-                            <?php echo date('d/m/Y', strtotime($promo['start_date'])); ?> a 
+                        <td style="padding: 12px 16px; text-align: center; color: #cbd5e1; font-size: 12px;">
+                            <?php echo date('d/m', strtotime($promo['start_date'])); ?> - 
                             <?php echo date('d/m/Y', strtotime($promo['end_date'])); ?>
                         </td>
-                        <td>
-                            <span class="badge badge-<?php echo $status === 'Ativa' ? 'success' : 'warning'; ?>">
+                        <td style="padding: 12px 16px; text-align: center;">
+                            <span class="badge badge-<?php echo $status === 'Ativa' ? 'success' : 'warning'; ?>" style="background: <?php echo $status === 'Ativa' ? '#16a34a' : '#f59e0b'; ?>; color: #0b1220; padding: 4px 8px; border-radius: 4px;">
                                 <?php echo $status; ?>
                             </span>
                         </td>
-                        <td><?php echo count($promo_details['products']) + count($promo_details['categories']); ?></td>
-                        <td>
-                            <a href="#" class="btn-small">Editar</a>
+                        <td style="padding: 12px 16px; text-align: center; color: #38bdf8; font-weight: 600;"><?php echo count($promo_details['products']) + count($promo_details['categories']); ?></td>
+                        <td style="padding: 12px 16px; text-align: center;">
+                            <a href="#" class="btn-small" style="background: #2563eb; color: white; padding: 6px 12px; border-radius: 4px; text-decoration: none; font-size: 12px;">Editar</a>
                         </td>
                     </tr>
                     <?php endforeach; ?>
@@ -398,32 +398,32 @@ $pdo = db_connect();
             
             <h4>Evolução de Margem por Categoria (Últimos 90 dias)</h4>
             
-            <table class="table">
-                <thead>
+            <table class="table" style="width: 100%; border-collapse: collapse; background: #0f172a; color: #e2e8f0; border: 1px solid #1e293b;">
+                <thead style="background: #111827; color: #cbd5e1;">
                     <tr>
-                        <th>Categoria</th>
-                        <th>Margem Média</th>
-                        <th>Mínima</th>
-                        <th>Máxima</th>
-                        <th>Markup Médio</th>
-                        <th>Tendência</th>
+                        <th style="padding: 12px 16px; text-align: left; font-weight: 600;">Categoria</th>
+                        <th style="padding: 12px 16px; text-align: right; font-weight: 600;">Margem Média</th>
+                        <th style="padding: 12px 16px; text-align: right; font-weight: 600;">Mínima</th>
+                        <th style="padding: 12px 16px; text-align: right; font-weight: 600;">Máxima</th>
+                        <th style="padding: 12px 16px; text-align: right; font-weight: 600;">Markup Médio</th>
+                        <th style="padding: 12px 16px; text-align: center; font-weight: 600;">Tendência</th>
                     </tr>
                 </thead>
                 <tbody>
                     <?php foreach ($margin_data as $data): ?>
-                    <tr>
-                        <td><?php echo htmlspecialchars($data['category']); ?></td>
-                        <td>
-                            <strong><?php echo round($data['avg_margin'], 2); ?>%</strong>
-                            <div class="progress-bar">
-                                <div style="width: <?php echo min($data['avg_margin'], 100); ?>%; background: #27ae60;"></div>
+                    <tr style="border-bottom: 1px solid #1e293b;">
+                        <td style="padding: 12px 16px; text-align: left; color: #60a5fa; font-weight: 600;"><?php echo htmlspecialchars($data['category']); ?></td>
+                        <td style="padding: 12px 16px; text-align: right;">
+                            <strong style="color: #34d399;"><?php echo round($data['avg_margin'], 2); ?>%</strong>
+                            <div style="width: 100px; height: 6px; background: #1e293b; border-radius: 3px; overflow: hidden; margin-top: 5px;">
+                                <div style="width: <?php echo min($data['avg_margin'], 100); ?>%; height: 100%; background: #22c55e;"></div>
                             </div>
                         </td>
-                        <td><?php echo round($data['min_margin'], 2); ?>%</td>
-                        <td><?php echo round($data['max_margin'], 2); ?>%</td>
-                        <td><?php echo round($data['avg_markup'], 2); ?>%</td>
-                        <td>
-                            <span class="trend">
+                        <td style="padding: 12px 16px; text-align: right; color: #38bdf8;"><?php echo round($data['min_margin'], 2); ?>%</td>
+                        <td style="padding: 12px 16px; text-align: right; color: #f97316;"><?php echo round($data['max_margin'], 2); ?>%</td>
+                        <td style="padding: 12px 16px; text-align: right; color: #fbbf24;"><?php echo round($data['avg_markup'], 2); ?>%</td>
+                        <td style="padding: 12px 16px; text-align: center; color: #cbd5e1; font-weight: 600;">
+                            <span>
                                 <?php 
                                 if ($data['avg_margin'] > 20) {
                                     echo '📈 Boa';
@@ -449,31 +449,31 @@ $pdo = db_connect();
             $category_rules = get_category_pricing_rules();
             ?>
             
-            <table class="table">
-                <thead>
+            <table class="table" style="width: 100%; border-collapse: collapse; background: #0f172a; color: #e2e8f0; border: 1px solid #1e293b;">
+                <thead style="background: #111827; color: #cbd5e1;">
                     <tr>
-                        <th>Categoria</th>
-                        <th>Markup Padrão</th>
-                        <th>Margem Mínima</th>
-                        <th>Desconto Máximo</th>
-                        <th>Status</th>
-                        <th>Ação</th>
+                        <th style="padding: 12px 16px; text-align: left; font-weight: 600;">Categoria</th>
+                        <th style="padding: 12px 16px; text-align: right; font-weight: 600;">Markup Padrão</th>
+                        <th style="padding: 12px 16px; text-align: right; font-weight: 600;">Margem Mínima</th>
+                        <th style="padding: 12px 16px; text-align: right; font-weight: 600;">Desconto Máximo</th>
+                        <th style="padding: 12px 16px; text-align: center; font-weight: 600;">Status</th>
+                        <th style="padding: 12px 16px; text-align: center; font-weight: 600;">Ação</th>
                     </tr>
                 </thead>
                 <tbody>
                     <?php foreach ($category_rules as $rule): ?>
-                    <tr>
-                        <td><strong><?php echo htmlspecialchars($rule['category']); ?></strong></td>
-                        <td><?php echo $rule['default_markup_percent']; ?>%</td>
-                        <td><?php echo $rule['min_margin_percent']; ?>%</td>
-                        <td><?php echo $rule['max_discount_percent']; ?>%</td>
-                        <td>
-                            <span class="badge badge-<?php echo $rule['active'] ? 'success' : 'warning'; ?>">
+                    <tr style="border-bottom: 1px solid #1e293b;">
+                        <td style="padding: 12px 16px; text-align: left;"><strong style="color: #60a5fa;"><?php echo htmlspecialchars($rule['category']); ?></strong></td>
+                        <td style="padding: 12px 16px; text-align: right; color: #34d399;"><?php echo $rule['default_markup_percent']; ?>%</td>
+                        <td style="padding: 12px 16px; text-align: right; color: #38bdf8;"><?php echo $rule['min_margin_percent']; ?>%</td>
+                        <td style="padding: 12px 16px; text-align: right; color: #fbbf24;"><?php echo $rule['max_discount_percent']; ?>%</td>
+                        <td style="padding: 12px 16px; text-align: center;">
+                            <span class="badge" style="background: <?php echo $rule['active'] ? '#16a34a' : '#f59e0b'; ?>; color: #0b1220; padding: 4px 8px; border-radius: 4px;">
                                 <?php echo $rule['active'] ? 'Ativa' : 'Inativa'; ?>
                             </span>
                         </td>
-                        <td>
-                            <a href="#" class="btn-small" onclick="editCategoryRule('<?php echo $rule['category']; ?>')">Editar</a>
+                        <td style="padding: 12px 16px; text-align: center;">
+                            <a href="#" class="btn-small" style="background: #2563eb; color: white; padding: 6px 12px; border-radius: 4px; text-decoration: none; font-size: 12px;" onclick="editCategoryRule('<?php echo $rule['category']; ?>')">Editar</a>
                         </td>
                     </tr>
                     <?php endforeach; ?>
