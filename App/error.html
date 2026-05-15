@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Erro de Conexão - PAP Supermercado</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0a0a0a;
+            color: #ffffff;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 40px;
+        }
+        .container {
+            max-width: 500px;
+        }
+        .icon {
+            font-size: 80px;
+            margin-bottom: 30px;
+        }
+        h1 {
+            font-size: 28px;
+            margin-bottom: 16px;
+            color: #ef4444;
+        }
+        p {
+            color: #a0a0a0;
+            margin-bottom: 12px;
+            line-height: 1.6;
+        }
+        .steps {
+            background: #141414;
+            border-radius: 12px;
+            padding: 24px;
+            margin: 30px 0;
+            text-align: left;
+            border: 1px solid #222222;
+        }
+        .steps h3 {
+            color: #ffffff;
+            margin-bottom: 16px;
+            font-size: 16px;
+        }
+        .steps ol {
+            color: #a0a0a0;
+            padding-left: 20px;
+        }
+        .steps li {
+            margin-bottom: 10px;
+        }
+        .steps code {
+            background: #0a0a0a;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-family: monospace;
+            color: #a1a1aa;
+        }
+        .btn {
+            display: inline-block;
+            background: #a1a1aa;
+            color: white;
+            padding: 14px 28px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            font-size: 16px;
+            margin-top: 20px;
+        }
+        .btn:hover {
+            background: #1d4ed8;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="icon">🔌</div>
+        <h1>Servidor Não Encontrado</h1>
+        <p>Não foi possível conectar ao servidor PHP.</p>
+        <p>O servidor precisa estar a correr em <strong>localhost:8000</strong></p>
+        
+        <div class="steps">
+            <h3>📋 Como resolver:</h3>
+            <ol>
+                <li>Abra o Terminal</li>
+                <li>Navegue até à pasta do projeto:<br>
+                    <code>cd /Users/vascoruas/Documents/PAP_projeto</code>
+                </li>
+                <li>Inicie o servidor:<br>
+                    <code>php -S localhost:8000</code>
+                </li>
+                <li>Clique em "Tentar Novamente" abaixo</li>
+            </ol>
+        </div>
+        
+        <button class="btn" onclick="location.reload()">🔄 Tentar Novamente</button>
+    </div>
+</body>
+</html>

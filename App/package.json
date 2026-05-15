@@ -1,0 +1,39 @@
+{
+  "name": "pap-supermercado",
+  "version": "1.0.0",
+  "description": "PAP Supermercado - Sistema de Gestão",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder",
+    "build:mac": "electron-builder --mac",
+    "build:win": "electron-builder --win",
+    "build:linux": "electron-builder --linux"
+  },
+  "author": "Vasco Ruas",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^28.0.0",
+    "electron-builder": "^24.9.1"
+  },
+  "build": {
+    "appId": "com.pap.supermercado",
+    "productName": "PAP Supermercado",
+    "directories": {
+      "output": "dist"
+    },
+    "mac": {
+      "category": "public.app-category.business",
+      "icon": "icons/icon.png",
+      "target": ["dir"]
+    },
+    "win": {
+      "icon": "icons/icon.png",
+      "target": ["portable"]
+    },
+    "linux": {
+      "icon": "icons/icon.png",
+      "target": ["AppImage"]
+    }
+  }
+}
