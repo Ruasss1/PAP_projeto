@@ -16,8 +16,8 @@ if (session_status() === PHP_SESSION_NONE) {
 define('DB_HOST', getenv('MYSQLHOST')      ?: getenv('DB_HOST') ?: '127.0.0.1');
 define('DB_PORT', getenv('MYSQLPORT')      ?: getenv('DB_PORT') ?: '3306');
 define('DB_NAME', getenv('MYSQLDATABASE')  ?: getenv('DB_NAME') ?: 'supermercado');
-define('DB_USER', getenv('MYSQLUSER')      ?: getenv('DB_USER') ?: 'pap_user');
-define('DB_PASS', getenv('MYSQLPASSWORD')  ?: getenv('DB_PASS') ?: 'pap_pass');
+define('DB_USER', getenv('MYSQLUSER')      ?: getenv('DB_USER') ?: 'root');
+define('DB_PASS', getenv('MYSQLPASSWORD')  ?: getenv('DB_PASS') ?: '');
 
 // Variável global de conexão
 $pdo = null;
