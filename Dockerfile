@@ -23,6 +23,6 @@ RUN composer install --no-dev --optimize-autoloader --no-interaction 2>/dev/null
 # Copy the rest of the application
 COPY . .
 
-EXPOSE $PORT
+EXPOSE 8080
 
-CMD php -S 0.0.0.0:$PORT -t .
+CMD ["sh", "-c", "php -S 0.0.0.0:${PORT:-8080} -t ."]
