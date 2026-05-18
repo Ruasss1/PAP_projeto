@@ -266,11 +266,11 @@ function isActive($pages) {
             </nav>
 
             <div class="sidebar-footer">
-                <a href="/export.php" class="sidebar-download-btn" title="Exportar e instalar a aplicação">
+                <a href="/export.php" class="sidebar-download-btn" title="Link online e download do projeto">
                     <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                        <circle cx="12" cy="12" r="10" stroke-width="2"/><line x1="2" y1="12" x2="22" y2="12" stroke-width="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" stroke-width="2"/>
                     </svg>
-                    Download App
+                    Acesso Online
                 </a>
                 <div class="user-menu-box">
                     <div class="user-avatar">
