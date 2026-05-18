@@ -60,6 +60,10 @@ function isActive($pages) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= $page_title ?? 'PAP Market' ?></title>
     
+    <!-- Favicon -->
+    <link rel="icon" href="/assets/icons/favicon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="/assets/icons/favicon.svg">
+
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -90,7 +94,16 @@ function isActive($pages) {
         <aside class="app-sidebar">
             <div class="sidebar-header">
                 <a href="/" class="sidebar-logo">
-                    <div class="sidebar-logo-icon">🛒</div>
+                    <div class="sidebar-logo-icon">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M3 11L12 4L21 11" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+                            <rect x="4" y="11" width="16" height="9" rx="1" fill="currentColor" opacity="0.15"/>
+                            <rect x="4" y="11" width="16" height="9" rx="1" stroke="currentColor" stroke-width="1.5"/>
+                            <rect x="9.5" y="15" width="5" height="5" rx="0.5" fill="currentColor"/>
+                            <rect x="6" y="13" width="3" height="2.5" rx="0.5" fill="currentColor" opacity="0.5"/>
+                            <rect x="15" y="13" width="3" height="2.5" rx="0.5" fill="currentColor" opacity="0.5"/>
+                        </svg>
+                    </div>
                     <span class="sidebar-logo-text">PAP Market</span>
                 </a>
             </div>
