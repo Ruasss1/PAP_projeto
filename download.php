@@ -1,8 +1,9 @@
 <?php
 session_start();
 require_once __DIR__ . '/includes/auth_middleware.php';
-require_once __DIR__ . '/includes/header.php';
-?>
+// Redirect to export.php which has the full download page
+header('Location: /export.php');
+exit;
 
 <style>
     .download-page {

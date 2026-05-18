@@ -49,6 +49,77 @@ if (isset($_GET['action']) && $_GET['action'] === 'download') {
         }
     }
 
+    // Script de arranque automático para macOS/Linux
+    $start_mac = <<<'BASH'
+#!/bin/bash
+cd "$(dirname "$0")"
+echo "🛒 PAP Supermercado — A iniciar..."
+
+# Verificar PHP
+if ! command -v php &> /dev/null; then
+    echo "❌ PHP não encontrado. Instala com: brew install php"
+    read -p "Pressiona Enter para sair..."
+    exit 1
+fi
+
+# Verificar se MySQL está activo
+if ! mysqladmin ping -u pap_user -ppap_pass --silent 2>/dev/null; then
+    echo "⚠️  MySQL não detectado. Certifica-te que o MySQL está a correr."
+fi
+
+# Iniciar servidor PHP em background
+PHP_PID_FILE="/tmp/pap_php_server.pid"
+if [ -f "$PHP_PID_FILE" ]; then
+    kill $(cat "$PHP_PID_FILE") 2>/dev/null
+fi
+php -S localhost:8000 &> /tmp/pap_php.log &
+echo $! > "$PHP_PID_FILE"
+
+echo "✅ Servidor iniciado em http://localhost:8000"
+sleep 1
+
+# Abrir browser automaticamente
+if command -v open &> /dev/null; then
+    open http://localhost:8000
+elif command -v xdg-open &> /dev/null; then
+    xdg-open http://localhost:8000
+fi
+
+echo ""
+echo "🟢 A aplicação está a correr em http://localhost:8000"
+echo "   Para parar: pressiona Ctrl+C ou fecha esta janela"
+echo ""
+wait
+BASH;
+
+    // Script de arranque automático para Windows
+    $start_win = <<<'BAT'
+@echo off
+cd /d "%~dp0"
+echo =================================
+echo  PAP Supermercado - A iniciar...
+echo =================================
+
+where php >nul 2>&1
+if %ERRORLEVEL% NEQ 0 (
+    echo ERRO: PHP nao encontrado.
+    echo Instala o PHP em https://windows.php.net/download/
+    pause
+    exit /b 1
+)
+
+echo Servidor PHP a iniciar...
+start /b php -S localhost:8000
+timeout /t 2 /nobreak >nul
+
+echo Servidor iniciado em http://localhost:8000
+start http://localhost:8000
+
+echo.
+echo A aplicacao esta a correr. Fecha esta janela para parar.
+pause
+BAT;
+
     // Adicionar ficheiro README de setup
     $readme = <<<'TXT'
 # PAP Supermercado — Guia de Instalação
@@ -100,6 +171,8 @@ Vai a: http://localhost:8000
 Utilizador padrão: admin / admin123
 TXT;
     $zip->addFromString('SETUP.md', $readme);
+    $zip->addFromString('INICIAR_MAC.command', $start_mac);
+    $zip->addFromString('INICIAR_WINDOWS.bat', $start_win);
     $zip->close();
 
     $size = filesize($tmp);
