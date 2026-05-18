@@ -27,6 +27,10 @@ class AuthManager
     public function __construct()
     {
         $this->pdo = db_connect();
+        if ($this->pdo === null) {
+            $err = defined('DB_ERROR') ? DB_ERROR : 'Sem ligação à base de dados.';
+            throw new RuntimeException('Base de dados indisponível: ' . $err);
+        }
     }
     
     /**

@@ -35,4 +35,6 @@ try {
 } catch (PDOException $e) {
     // Regista erro no log do servidor
     error_log('Erro de conexão à base de dados: ' . $e->getMessage());
+    // Guarda mensagem para mostrar na UI se necessário
+    define('DB_ERROR', $e->getMessage());
 }

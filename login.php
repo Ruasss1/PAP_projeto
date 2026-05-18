@@ -7,16 +7,26 @@ require_once __DIR__ . '/includes/auth.php';
 if ($auth->is_authenticated()) { header('Location: /index.php'); exit; }
 $error = '';
 $success = '';
+$db_error = false;
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = $_POST['email'] ?? '';
     $password = $_POST['password'] ?? '';
     if (empty($email) || empty($password)) {
         $error = 'Preencha todos os campos';
     } else {
-        $result = $auth->login($email, $password);
-        if ($result['success']) { header('Location: /index.php'); exit; }
-        else { $error = $result['message'] ?? 'Credenciais invalidas'; }
+        try {
+            $result = $auth->login($email, $password);
+            if ($result['success']) { header('Location: /index.php'); exit; }
+            else { $error = $result['message'] ?? 'Credenciais invalidas'; }
+        } catch (RuntimeException $e) {
+            $db_error = true;
+            $error = $e->getMessage();
+        }
     }
+}
+if (!$db_error && defined('DB_ERROR')) {
+    $db_error = true;
+    $error = 'Base de dados indisponível: ' . DB_ERROR;
 }
 ?>
 <!DOCTYPE html>
