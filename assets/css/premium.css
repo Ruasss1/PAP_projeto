@@ -380,6 +380,32 @@ body {
 .sidebar-footer {
     padding: 14px;
     border-top: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.sidebar-download-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 12px;
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark, #1d4ed8));
+    color: #fff;
+    border-radius: var(--radius-lg);
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all var(--transition);
+    justify-content: center;
+    opacity: 0.92;
+}
+
+.sidebar-download-btn:hover {
+    opacity: 1;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(99,102,241,0.35);
+    color: #fff;
 }
 
 .user-menu-box {

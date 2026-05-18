@@ -253,6 +253,12 @@ function isActive($pages) {
             </nav>
 
             <div class="sidebar-footer">
+                <a href="/download.php" class="sidebar-download-btn" title="Download da aplicação">
+                    <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                    </svg>
+                    Download App
+                </a>
                 <div class="user-menu-box">
                     <div class="user-avatar">
                         <?= $current_user ? strtoupper(substr($current_user['name'], 0, 1)) : 'U' ?>
