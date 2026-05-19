@@ -49,7 +49,7 @@ try {
     // Fix rápido do admin
     if (isset($_GET['fix_admin'])) {
         // Garantir que existe role admin
-        $pdo->exec("INSERT IGNORE INTO roles (id, name, display_name) VALUES (1,'admin','Administrador')");
+        $pdo->exec("INSERT IGNORE INTO roles (id, name, description) VALUES (1,'admin','Administrador com acesso total')");
         $role = $pdo->query("SELECT id FROM roles WHERE name='admin' LIMIT 1")->fetch();
         $role_id = $role ? $role['id'] : null;
         $hash = password_hash('admin123', PASSWORD_BCRYPT, ['cost' => 12]);
