@@ -50,8 +50,13 @@ code{background:#1a1a1a;padding:2px 8px;border-radius:4px;font-size:12px}
 <p>A correr migrações da base de dados...</p>
 
 <?php
+// Ficheiros de migração por ordem
 $migrations_dir = __DIR__ . '/migrations';
 $migration_files = [
+    // Schema base (deve ser o primeiro!)
+    '../scripts/sql/schema.sql',
+    '../scripts/sql/auth_tables.sql',
+    // Migrações incrementais
     '001_supermercado_migration.sql',
     '002_add_security_and_audit.sql',
     '002_pdv_tables.sql',
