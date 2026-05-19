@@ -133,6 +133,7 @@ foreach ($migration_files as $file) {
                 str_contains($msg, 'Duplicate entry') ||
                 str_contains($msg, 'Duplicate index') ||
                 str_contains($msg, "Can't DROP") ||
+                str_contains($msg, "Key column") || // índice em coluna que não existe nesta versão
                 $code === 1060 || // Duplicate column
                 $code === 1061 || // Duplicate key name
                 $code === 1050    // Table already exists
