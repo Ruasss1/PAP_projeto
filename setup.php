@@ -71,6 +71,10 @@ $migration_files = [
 
 $success = 0; $errors = 0;
 
+// Desativar FK checks para permitir criação de tabelas em qualquer ordem
+$pdo->exec('SET FOREIGN_KEY_CHECKS=0');
+$pdo->exec('SET sql_mode=""');
+
 foreach ($migration_files as $file) {
     $path = $migrations_dir . '/' . $file;
     if (!file_exists($path)) {
@@ -78,6 +82,10 @@ foreach ($migration_files as $file) {
         continue;
     }
     $sql = file_get_contents($path);
+    // Converter "ADD COLUMN IF NOT EXISTS" para "ADD COLUMN" (compatibilidade MySQL <8.0.3)
+    $sql = preg_replace('/\bADD COLUMN IF NOT EXISTS\b/i', 'ADD COLUMN', $sql);
+    $sql = preg_replace('/\bADD INDEX IF NOT EXISTS\b/i', 'ADD INDEX', $sql);
+    $sql = preg_replace('/\bCREATE INDEX IF NOT EXISTS\b/i', 'CREATE INDEX', $sql);
     // Processar DELIMITER $$ (triggers/procedures) — PDO não suporta DELIMITER nativo
     $statements = [];
     $delimiter = ';';
@@ -117,7 +125,18 @@ foreach ($migration_files as $file) {
             $pdo->exec($stmt);
         } catch (PDOException $e) {
             $msg = $e->getMessage();
-            if (str_contains($msg, 'already exists') || str_contains($msg, 'Duplicate column') || str_contains($msg, 'Duplicate key') || str_contains($msg, 'Duplicate entry')) {
+            $code = (int)$e->getCode();
+            // Ignorar erros de "já existe" ou "não existe para alterar"
+            if (str_contains($msg, 'already exists') || 
+                str_contains($msg, 'Duplicate column') || 
+                str_contains($msg, 'Duplicate key') || 
+                str_contains($msg, 'Duplicate entry') ||
+                str_contains($msg, 'Duplicate index') ||
+                str_contains($msg, "Can't DROP") ||
+                $code === 1060 || // Duplicate column
+                $code === 1061 || // Duplicate key name
+                $code === 1050    // Table already exists
+            ) {
                 // OK — já estava criado
             } else {
                 $file_errors++;
@@ -133,15 +152,18 @@ foreach ($migration_files as $file) {
     }
 }
 
+// Reativar FK checks
+$pdo->exec('SET FOREIGN_KEY_CHECKS=1');
+
 // Criar utilizador admin se não existir
 try {
-    $exists = $pdo->query("SELECT COUNT(*) FROM users WHERE username='admin'")->fetchColumn();
+    $exists = $pdo->query("SELECT COUNT(*) FROM users WHERE email='admin@pap.local'")->fetchColumn();
     if (!$exists) {
         $hash = password_hash('admin123', PASSWORD_DEFAULT);
-        $pdo->prepare("INSERT INTO users (name, username, email, password, role, active) VALUES ('Administrador','admin','admin@pap.local',?,'admin',1)")->execute([$hash]);
-        echo '<div class="step ok">✓ <span>Utilizador <code>admin</code> criado (senha: <code>admin123</code>)</span></div>';
+        $pdo->prepare("INSERT INTO users (name, email, password_hash, role, active) VALUES ('Administrador','admin@pap.local',?,'admin',1)")->execute([$hash]);
+        echo '<div class="step ok">✓ <span>Utilizador <code>admin@pap.local</code> criado (senha: <code>admin123</code>)</span></div>';
     } else {
-        echo '<div class="step skip">ℹ <span>Utilizador <code>admin</code> já existe</span></div>';
+        echo '<div class="step skip">ℹ <span>Utilizador <code>admin@pap.local</code> já existe</span></div>';
     }
 } catch (Exception $e) {
     echo '<div class="step warn">⚠ <span>Não foi possível verificar utilizador admin: ' . htmlspecialchars($e->getMessage()) . '</span></div>';
