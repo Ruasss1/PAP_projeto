@@ -158,14 +158,19 @@ $pdo->exec('SET FOREIGN_KEY_CHECKS=1');
 
 // Criar utilizador admin se não existir
 try {
-    $exists = $pdo->query("SELECT COUNT(*) FROM users WHERE email='admin@pap.local'")->fetchColumn();
+    $exists = $pdo->query("SELECT COUNT(*) FROM users WHERE email='admin@example.com'")->fetchColumn();
     if (!$exists) {
         $hash = password_hash('admin123', PASSWORD_DEFAULT);
-        $pdo->prepare("INSERT INTO users (name, email, password_hash, role, active) VALUES ('Administrador','admin@pap.local',?,'admin',1)")->execute([$hash]);
-        echo '<div class="step ok">✓ <span>Utilizador <code>admin@pap.local</code> criado (senha: <code>admin123</code>)</span></div>';
+        $pdo->prepare("INSERT INTO users (name, email, password_hash, role, active) VALUES ('Administrador','admin@example.com',?,'admin',1)")->execute([$hash]);
+        echo '<div class="step ok">✓ <span>Utilizador <code>admin@example.com</code> criado (senha: <code>admin123</code>)</span></div>';
     } else {
-        echo '<div class="step skip">ℹ <span>Utilizador <code>admin@pap.local</code> já existe</span></div>';
+        // Garantir que a password está correta
+        $hash = password_hash('admin123', PASSWORD_DEFAULT);
+        $pdo->prepare("UPDATE users SET password_hash=?, active=1, role='admin' WHERE email='admin@example.com'")->execute([$hash]);
+        echo '<div class="step skip">ℹ <span>Utilizador <code>admin@example.com</code> já existe — password atualizada</span></div>';
     }
+    // Também atualizar admin@pap.local se existir
+    $pdo->exec("UPDATE users SET email='admin@example.com' WHERE email='admin@pap.local'");
 } catch (Exception $e) {
     echo '<div class="step warn">⚠ <span>Não foi possível verificar utilizador admin: ' . htmlspecialchars($e->getMessage()) . '</span></div>';
 }
