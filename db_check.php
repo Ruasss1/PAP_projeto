@@ -48,10 +48,18 @@ try {
 
     // Fix rápido do admin
     if (isset($_GET['fix_admin'])) {
-        $hash = password_hash('admin123', PASSWORD_BCRYPT, ['cost' => 12]);
+        // Garantir que existe role admin
+        $pdo->exec("INSERT IGNORE INTO roles (id, name, display_name) VALUES (1,'admin','Administrador')");
         $role = $pdo->query("SELECT id FROM roles WHERE name='admin' LIMIT 1")->fetch();
-        $role_id = $role ? $role['id'] : 1;
-        $pdo->prepare("UPDATE users SET email='admin@example.com', password_hash=?, role_id=?, active=1 WHERE id=(SELECT id FROM (SELECT id FROM users ORDER BY id LIMIT 1) t)")->execute([$hash, $role_id]);
+        $role_id = $role ? $role['id'] : null;
+        $hash = password_hash('admin123', PASSWORD_BCRYPT, ['cost' => 12]);
+        // Atualizar ou inserir
+        $existing = $pdo->query("SELECT id FROM users LIMIT 1")->fetch();
+        if ($existing) {
+            $pdo->prepare("UPDATE users SET email='admin@example.com', password_hash=?, role_id=?, active=1 WHERE id=?")->execute([$hash, $role_id, $existing['id']]);
+        } else {
+            $pdo->prepare("INSERT INTO users (name, email, password_hash, role_id, active) VALUES ('Admin','admin@example.com',?,?,1)")->execute([$hash, $role_id]);
+        }
         echo "✅ ADMIN CORRIGIDO!\n";
     }
 
