@@ -159,17 +159,19 @@ $pdo->exec('SET FOREIGN_KEY_CHECKS=1');
 // Criar utilizador admin se não existir
 try {
     $exists = $pdo->query("SELECT COUNT(*) FROM users WHERE email='admin@example.com'")->fetchColumn();
+    // Usar bcrypt cost 12 igual ao auth.php
+    $hash = password_hash('admin123', PASSWORD_BCRYPT, ['cost' => 12]);
+    // Obter role_id do admin
+    $role = $pdo->query("SELECT id FROM roles WHERE name='admin' LIMIT 1")->fetch();
+    $role_id = $role ? $role['id'] : 1;
     if (!$exists) {
-        $hash = password_hash('admin123', PASSWORD_DEFAULT);
-        $pdo->prepare("INSERT INTO users (name, email, password_hash, role, active) VALUES ('Administrador','admin@example.com',?,'admin',1)")->execute([$hash]);
+        $pdo->prepare("INSERT INTO users (name, email, password_hash, role_id, role, active) VALUES ('Administrador','admin@example.com',?,?,'admin',1)")->execute([$hash, $role_id]);
         echo '<div class="step ok">✓ <span>Utilizador <code>admin@example.com</code> criado (senha: <code>admin123</code>)</span></div>';
     } else {
-        // Garantir que a password está correta
-        $hash = password_hash('admin123', PASSWORD_DEFAULT);
-        $pdo->prepare("UPDATE users SET password_hash=?, active=1, role='admin' WHERE email='admin@example.com'")->execute([$hash]);
-        echo '<div class="step skip">ℹ <span>Utilizador <code>admin@example.com</code> já existe — password atualizada</span></div>';
+        $pdo->prepare("UPDATE users SET password_hash=?, role_id=?, active=1 WHERE email='admin@example.com'")->execute([$hash, $role_id]);
+        echo '<div class="step skip">ℹ <span>Utilizador <code>admin@example.com</code> atualizado (senha: <code>admin123</code>)</span></div>';
     }
-    // Também atualizar admin@pap.local se existir
+    // Migrar admin@pap.local se existir
     $pdo->exec("UPDATE users SET email='admin@example.com' WHERE email='admin@pap.local'");
 } catch (Exception $e) {
     echo '<div class="step warn">⚠ <span>Não foi possível verificar utilizador admin: ' . htmlspecialchars($e->getMessage()) . '</span></div>';
