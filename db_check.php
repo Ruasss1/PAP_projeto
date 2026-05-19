@@ -46,6 +46,15 @@ try {
     echo "Tabelas encontradas (" . count($tables) . "):\n";
     foreach ($tables as $t) echo "  - $t\n";
 
+    // Fix rápido do admin
+    if (isset($_GET['fix_admin'])) {
+        $hash = password_hash('admin123', PASSWORD_BCRYPT, ['cost' => 12]);
+        $role = $pdo->query("SELECT id FROM roles WHERE name='admin' LIMIT 1")->fetch();
+        $role_id = $role ? $role['id'] : 1;
+        $pdo->prepare("UPDATE users SET email='admin@example.com', password_hash=?, role_id=?, active=1 WHERE id=(SELECT id FROM (SELECT id FROM users ORDER BY id LIMIT 1) t)")->execute([$hash, $role_id]);
+        echo "✅ ADMIN CORRIGIDO!\n";
+    }
+
     // Verificar user admin
     try {
         $u = $pdo->query("SELECT id, email, role_id, active, LEFT(password_hash,10) as ph_preview, LENGTH(password_hash) as ph_len FROM users LIMIT 5")->fetchAll(PDO::FETCH_ASSOC);
