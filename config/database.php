@@ -15,7 +15,7 @@ if (session_status() === PHP_SESSION_NONE) {
 // Credenciais da base de dados (env vars para hosting; fallback para local)
 define('DB_HOST', getenv('MYSQLHOST')      ?: getenv('DB_HOST') ?: '127.0.0.1');
 define('DB_PORT', getenv('MYSQLPORT')      ?: getenv('DB_PORT') ?: '3306');
-define('DB_NAME', getenv('MYSQLDATABASE')  ?: getenv('DB_NAME') ?: 'supermercado');
+define('DB_NAME', getenv('MYSQLDATABASE')  ?: getenv('MYSQL_DATABASE') ?: getenv('DB_NAME') ?: 'supermercado');
 define('DB_USER', getenv('MYSQLUSER')      ?: getenv('DB_USER') ?: 'root');
 define('DB_PASS', getenv('MYSQLPASSWORD')  ?: getenv('DB_PASS') ?: '');
 
