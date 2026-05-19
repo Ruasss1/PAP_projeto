@@ -67,6 +67,8 @@ $migration_files = [
     '006_customers_loyalty.sql',
     '007_notifications_alerts.sql',
     '008_new_features.sql',
+    // Dados iniciais (produtos, fornecedores, lojas, etc.)
+    'seed_data.sql',
 ];
 
 $success = 0; $errors = 0;
