@@ -12,7 +12,20 @@ if (($_GET['token'] ?? '') !== $setup_token) {
     die('<h2>Acesso negado.</h2><p>Usa: /setup.php?token=' . htmlspecialchars($setup_token) . '</p>');
 }
 
-require_once __DIR__ . '/config/database.php';
+// Conexão direta para Railway (suporta MYSQL_DATABASE com underscore)
+if (!defined('DB_NAME')) {
+    define('DB_HOST', getenv('MYSQLHOST') ?: getenv('DB_HOST') ?: '127.0.0.1');
+    define('DB_PORT', getenv('MYSQLPORT') ?: getenv('DB_PORT') ?: '3306');
+    define('DB_NAME', getenv('MYSQLDATABASE') ?: getenv('MYSQL_DATABASE') ?: getenv('DB_NAME') ?: 'supermercado');
+    define('DB_USER', getenv('MYSQLUSER') ?: getenv('DB_USER') ?: 'root');
+    define('DB_PASS', getenv('MYSQLPASSWORD') ?: getenv('DB_PASS') ?: '');
+}
+if (session_status() === PHP_SESSION_NONE) session_start();
+try {
+    $pdo = new PDO('mysql:host='.DB_HOST.';port='.DB_PORT.';dbname='.DB_NAME.';charset=utf8mb4', DB_USER, DB_PASS, [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
+} catch (PDOException $e) {
+    die('<h2>Erro de conexão à BD</h2><pre>' . htmlspecialchars($e->getMessage()) . '</pre>');
+}
 
 header('Content-Type: text/html; charset=utf-8');
 ?><!DOCTYPE html>
