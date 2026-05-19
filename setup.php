@@ -74,21 +74,50 @@ foreach ($migration_files as $file) {
         continue;
     }
     $sql = file_get_contents($path);
-    // Divide em statements individuais
-    $statements = array_filter(array_map('trim', explode(';', $sql)));
+    // Processar DELIMITER $$ (triggers/procedures) — PDO não suporta DELIMITER nativo
+    $statements = [];
+    $delimiter = ';';
+    $current = '';
+    foreach (explode("\n", $sql) as $line) {
+        $trimmed = trim($line);
+        // Detectar mudança de DELIMITER
+        if (preg_match('/^DELIMITER\s+(\S+)/i', $trimmed, $m)) {
+            $delimiter = $m[1];
+            continue;
+        }
+        $current .= $line . "\n";
+        // Verificar se a linha termina com o delimiter atual
+        if ($delimiter === ';') {
+            if (str_ends_with(rtrim($trimmed), ';')) {
+                $stmt = trim(substr(rtrim($current), 0, -1));
+                if (!empty($stmt)) $statements[] = $stmt;
+                $current = '';
+            }
+        } else {
+            // Delimiter alternativo (ex: $$)
+            if (str_ends_with(rtrim($trimmed), $delimiter)) {
+                $stmt = trim(preg_replace('/' . preg_quote($delimiter, '/') . '$/', '', rtrim($current)));
+                if (!empty($stmt)) $statements[] = $stmt;
+                $current = '';
+            }
+        }
+    }
+    // Qualquer resto
+    if (trim($current) !== '') $statements[] = trim($current);
+
     $file_errors = 0;
     foreach ($statements as $stmt) {
-        if (empty($stmt) || str_starts_with(ltrim($stmt), '--')) continue;
+        $stmt = trim($stmt);
+        if (empty($stmt) || str_starts_with($stmt, '--') || str_starts_with($stmt, '/*')) continue;
         try {
             $pdo->exec($stmt);
         } catch (PDOException $e) {
-            // Ignorar erros de "já existe" (tabela, coluna, índice)
             $msg = $e->getMessage();
-            if (str_contains($msg, 'already exists') || str_contains($msg, 'Duplicate column') || str_contains($msg, 'Duplicate key')) {
+            if (str_contains($msg, 'already exists') || str_contains($msg, 'Duplicate column') || str_contains($msg, 'Duplicate key') || str_contains($msg, 'Duplicate entry')) {
                 // OK — já estava criado
             } else {
                 $file_errors++;
-                echo '<div class="step warn">⚠ <span><code>' . $file . '</code>: ' . htmlspecialchars(substr($msg, 0, 120)) . '</span></div>';
+                echo '<div class="step warn">⚠ <span><code>' . $file . '</code>: ' . htmlspecialchars(substr($msg, 0, 150)) . '</span></div>';
             }
         }
     }
