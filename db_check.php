@@ -48,10 +48,20 @@ try {
 
     // Verificar user admin
     try {
-        $u = $pdo->query("SELECT id, email, active FROM users WHERE email='admin@example.com' OR email='admin' LIMIT 1")->fetch();
-        echo "\nUtilizador admin: " . ($u ? json_encode($u) : 'NÃO ENCONTRADO — precisa de correr setup.php') . "\n";
+        $u = $pdo->query("SELECT id, email, role_id, active, LEFT(password_hash,10) as ph_preview, LENGTH(password_hash) as ph_len FROM users LIMIT 5")->fetchAll(PDO::FETCH_ASSOC);
+        echo "\nUtilizadores (" . count($u) . "):\n";
+        foreach ($u as $row) echo "  " . json_encode($row) . "\n";
+        
+        // Testar password_verify
+        $admin = $pdo->query("SELECT password_hash FROM users WHERE email='admin@example.com' LIMIT 1")->fetch();
+        if ($admin) {
+            $ok = password_verify('admin123', $admin['password_hash']);
+            echo "\npassword_verify('admin123'): " . ($ok ? '✅ CORRETO' : '❌ ERRADO') . "\n";
+        } else {
+            echo "\nadmin@example.com: NÃO EXISTE\n";
+        }
     } catch (Exception $e) {
-        echo "\nTabela users: NÃO EXISTE — precisa de correr as migrações\n";
+        echo "\nErro ao verificar users: " . $e->getMessage() . "\n";
     }
 
 } catch (PDOException $e) {
