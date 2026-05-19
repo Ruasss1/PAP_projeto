@@ -13,7 +13,7 @@ echo "PHP: " . PHP_VERSION . "\n";
 echo "Data/Hora: " . date('Y-m-d H:i:s') . "\n\n";
 
 echo "--- Variáveis de Ambiente ---\n";
-$vars = ['MYSQLHOST','MYSQLPORT','MYSQLDATABASE','MYSQLUSER','MYSQLPASSWORD','DB_HOST','DB_PORT','DB_NAME','DB_USER'];
+$vars = ['MYSQLHOST','MYSQLPORT','MYSQLDATABASE','MYSQL_DATABASE','MYSQLUSER','MYSQLPASSWORD','DB_HOST','DB_PORT','DB_NAME','DB_USER'];
 foreach ($vars as $v) {
     $val = getenv($v);
     if ($v === 'MYSQLPASSWORD' || $v === 'DB_PASS') {
@@ -26,7 +26,7 @@ foreach ($vars as $v) {
 echo "\n--- Tentativa de Conexão ---\n";
 $host = getenv('MYSQLHOST') ?: getenv('DB_HOST') ?: '127.0.0.1';
 $port = getenv('MYSQLPORT') ?: getenv('DB_PORT') ?: '3306';
-$name = getenv('MYSQLDATABASE') ?: getenv('DB_NAME') ?: 'supermercado';
+$name = getenv('MYSQLDATABASE') ?: getenv('MYSQL_DATABASE') ?: getenv('DB_NAME') ?: 'supermercado';
 $user = getenv('MYSQLUSER') ?: getenv('DB_USER') ?: 'root';
 $pass = getenv('MYSQLPASSWORD') ?: getenv('DB_PASS') ?: '';
 
