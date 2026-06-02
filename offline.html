@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Offline - PAP Supermercado</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: linear-gradient(135deg, #0a0a0a, #1a1a2e);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+        
+        .container {
+            text-align: center;
+            padding: 40px;
+            max-width: 500px;
+        }
+        
+        .icon {
+            font-size: 80px;
+            margin-bottom: 30px;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+        }
+        
+        h1 {
+            font-size: 28px;
+            margin-bottom: 15px;
+            color: #00d4ff;
+        }
+        
+        p {
+            color: #888;
+            font-size: 16px;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+        
+        .status {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .status-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .status-item:last-child {
+            border-bottom: none;
+        }
+        
+        .status-label {
+            color: #888;
+        }
+        
+        .status-value {
+            color: #f59e0b;
+            font-weight: 600;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 15px 30px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary {
+            background: #a1a1aa;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #1d4ed8;
+            transform: translateY(-2px);
+        }
+        
+        .tips {
+            margin-top: 40px;
+            text-align: left;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 20px;
+        }
+        
+        .tips h3 {
+            color: #00d4ff;
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+        
+        .tips ul {
+            list-style: none;
+        }
+        
+        .tips li {
+            color: #888;
+            padding: 8px 0;
+            padding-left: 25px;
+            position: relative;
+        }
+        
+        .tips li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: #22c55e;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="icon">📡</div>
+        <h1>Sem Conexão</h1>
+        <p>
+            Parece que está offline. Algumas funcionalidades podem não estar disponíveis.
+        </p>
+        
+        <div class="status">
+            <div class="status-item">
+                <span class="status-label">Estado</span>
+                <span class="status-value" id="status">Offline</span>
+            </div>
+            <div class="status-item">
+                <span class="status-label">Última sincronização</span>
+                <span class="status-value" id="lastSync">-</span>
+            </div>
+            <div class="status-item">
+                <span class="status-label">Vendas pendentes</span>
+                <span class="status-value" id="pendingSales">0</span>
+            </div>
+        </div>
+        
+        <button class="btn btn-primary" onclick="tryReconnect()">
+            🔄 Tentar Reconectar
+        </button>
+        
+        <div class="tips">
+            <h3>💡 Dicas para modo offline:</h3>
+            <ul>
+                <li>O PDV funciona offline - vendas serão sincronizadas</li>
+                <li>Consulte produtos já carregados</li>
+                <li>Verifique sua conexão Wi-Fi</li>
+                <li>Os dados serão atualizados automaticamente</li>
+            </ul>
+        </div>
+    </div>
+    
+    <script>
+        // Verificar estado da conexão
+        function updateStatus() {
+            const statusEl = document.getElementById('status');
+            if (navigator.onLine) {
+                statusEl.textContent = 'Online';
+                statusEl.style.color = '#22c55e';
+                // Redirecionar para página principal
+                setTimeout(() => {
+                    window.location.href = '/';
+                }, 1000);
+            } else {
+                statusEl.textContent = 'Offline';
+                statusEl.style.color = '#f59e0b';
+            }
+        }
+        
+        // Tentar reconectar
+        function tryReconnect() {
+            updateStatus();
+            if (!navigator.onLine) {
+                alert('Ainda não há conexão. Verifique sua rede.');
+            }
+        }
+        
+        // Última sincronização
+        const lastSync = localStorage.getItem('lastSync');
+        if (lastSync) {
+            document.getElementById('lastSync').textContent = new Date(parseInt(lastSync)).toLocaleString('pt-PT');
+        }
+        
+        // Vendas pendentes (IndexedDB)
+        if ('indexedDB' in window) {
+            const request = indexedDB.open('pap-offline', 1);
+            request.onsuccess = () => {
+                const db = request.result;
+                if (db.objectStoreNames.contains('sales')) {
+                    const tx = db.transaction('sales', 'readonly');
+                    const store = tx.objectStore('sales');
+                    const countRequest = store.count();
+                    countRequest.onsuccess = () => {
+                        document.getElementById('pendingSales').textContent = countRequest.result;
+                    };
+                }
+            };
+        }
+        
+        // Listeners de conexão
+        window.addEventListener('online', updateStatus);
+        window.addEventListener('offline', updateStatus);
+        
+        // Estado inicial
+        updateStatus();
+    </script>
+</body>
+</html>

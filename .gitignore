@@ -1,0 +1,25 @@
+# Dependências
+/vendor/
+/App/node_modules/
+/App/dist/
+
+# Ficheiros locais
+.env
+.env.local
+*.bak
+write_turno.py
+
+# Backups
+/backups/*.sql
+/backups/*.zip
+
+# macOS
+.DS_Store
+**/.DS_Store
+
+# Editor
+.vscode/
+*.code-workspace
+
+# Logs
+*.log

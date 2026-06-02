@@ -1,0 +1,381 @@
+===========================================
+ATUALIZAÇÃO: 20-21 de janeiro de 2026
+===========================================
+NOVAS FUNCIONALIDADES IMPLEMENTADAS
+
+===========================================
+20. APLICAÇÃO DESKTOP (ELECTRON)
+===========================================
+
+✓ ESTRUTURA CRIADA: /App/
+  • main.js - Janela principal Electron
+  • package.json - Dependências e configuração
+  • error.html - Página de erro de conexão
+
+✓ FUNCIONALIDADES:
+  • Abre em fullscreen
+  • Carrega localhost:8000
+  • Menu Edit com Copy/Paste (Cmd+C, Cmd+V)
+  • Tratamento de erro de conexão
+  • Ícone personalizado
+
+✓ INSTALAÇÃO:
+  • App compilada para macOS
+  • Instalada em /Applications/PAP Supermercado.app
+  • Pode ser aberta pelo Launchpad
+
+✓ FICHEIROS:
+  /App/
+  ├── main.js (config Electron)
+  ├── package.json (dependências)
+  ├── package-lock.json
+  ├── error.html (página erro)
+  └── node_modules/
+
+===========================================
+21. ORGANIZAÇÃO DE FICHEIROS
+===========================================
+
+✓ PASTA ficheiros_md/ - Documentação
+  • Todos os ficheiros .md movidos para esta pasta
+  • AUTHENTICATION_GUIDE.md, CONTRIBUTING.md
+  • PHASE_*.md, PRICING_*.md, RESUMO_*.md
+  • README.md, ROADMAP.md, SECURITY_GUIDE.md
+  • E muitos mais...
+
+✓ PASTA relatorio_pap/ - Relatórios PAP
+  • RELATORIO_DESENVOLVIMENTO.md
+  • RELATORIO_SESSAO_14JAN2026.md
+  • relatorio_pap.txt (este ficheiro)
+
+✓ PASTA scripts/ - Scripts utilitários
+  scripts/
+  ├── setup/ (configuração inicial)
+  ├── seeds/ (dados de exemplo)
+  ├── checks/ (verificações)
+  ├── fixes/ (correções)
+  ├── tests/ (testes)
+  └── sql/ (ficheiros SQL)
+
+===========================================
+22. SISTEMA DE GRÁFICOS (CHART.JS)
+===========================================
+
+✓ DASHBOARD ATUALIZADO (index.php)
+  • 4 gráficos Chart.js implementados
+
+✓ GRÁFICO 1: Receita Mensal (Barras)
+  • Últimos 6 meses
+  • Cor: Azul (#2563eb)
+
+✓ GRÁFICO 2: Vendas por Categoria (Doughnut)
+  • Top 6 categorias
+  • Cores variadas
+
+✓ GRÁFICO 3: Top 5 Produtos (Barras Horizontais)
+  • 5 produtos mais vendidos
+  • Cor: Verde (#22c55e)
+
+✓ GRÁFICO 4: Evolução Diária (Linha)
+  • Últimos 30 dias
+  • Cor: Cyan (#00d4ff)
+
+===========================================
+23. SISTEMA DE PROMOÇÕES
+===========================================
+
+✓ MÓDULO: /modules/promocoes.php
+
+✓ TIPOS DE DESCONTO:
+  • Percentagem (ex: 20% de desconto)
+  • Valor Fixo (ex: -5€)
+  • Compre X Leve Y (ex: 3x2)
+
+✓ APLICAÇÃO:
+  • Por produto específico
+  • Por categoria inteira
+
+✓ FUNCIONALIDADES CRUD:
+  • Criar, editar, ativar/desativar, eliminar
+
+===========================================
+24. TEMA CLARO/ESCURO
+===========================================
+
+✓ FICHEIRO: /assets/css/theme-light.css
+
+✓ FUNCIONALIDADES:
+  • Botão toggle no footer (lua/sol)
+  • Guarda preferência em localStorage
+  • Carrega tema ao abrir página
+  • Transição suave entre temas
+
+===========================================
+25. RELATÓRIOS E EXPORTAÇÃO PDF
+===========================================
+
+✓ MÓDULO: /modules/relatorios.php
+
+✓ FILTROS:
+  • Hoje, semana, mês, ano, personalizado
+
+✓ ESTATÍSTICAS:
+  • Total de vendas, faturação
+  • Produtos vendidos, lucro estimado
+
+✓ SECÇÕES:
+  • Top 10 produtos mais vendidos
+  • Vendas por categoria (com %)
+  • Alertas de stock baixo
+  • Gráfico evolução de vendas
+
+✓ EXPORTAÇÃO:
+  • PDF (jsPDF) - botão vermelho
+  • Excel/CSV - botão verde
+  • Imprimir - botão roxo
+
+===========================================
+26. ANALYTICS AVANÇADO
+===========================================
+
+✓ MÓDULO: /modules/analytics.php
+
+✓ KPIs COM COMPARAÇÃO:
+  • Vendas este mês vs anterior
+  • Faturação com variação %
+  • Ticket médio
+  • Previsão próximo mês
+
+✓ PREVISÃO DE VENDAS:
+  • Média móvel (3 meses)
+  • Crescimento estimado 5%
+
+✓ GRÁFICOS:
+  • Evolução mensal (12 meses) - barras
+  • Vendas por hora do dia - linha
+  • Vendas por dia da semana - doughnut
+  • Evolução ticket médio - linha
+
+✓ TABELAS:
+  • Produtos em tendência (crescimento)
+  • Desempenho por categoria (30 dias)
+
+===========================================
+27. METAS DE VENDAS
+===========================================
+
+✓ MÓDULO: /modules/metas.php
+
+✓ TABELA CRIADA: sales_goals
+  • employee_id, month
+  • goal_amount, goal_sales
+
+✓ FUNCIONALIDADES:
+  • Definir meta por funcionário/mês
+  • Meta de faturação e número de vendas
+  • Visualizar progresso
+
+✓ RANKING MENSAL:
+  • Top funcionários com medalhas
+  • Barras de progresso coloridas
+
+===========================================
+28. PWA - PROGRESSIVE WEB APP
+===========================================
+
+✓ FICHEIROS CRIADOS:
+  • /manifest.json - Metadados da app
+  • /sw.js - Service Worker
+  • /offline.html - Página offline
+  • /assets/icons/icon.svg - Ícone
+
+✓ MANIFEST.JSON:
+  • name: "PAP Supermercado"
+  • short_name: "PAP Store"
+  • display: "standalone"
+  • theme_color: "#00d4ff"
+
+✓ SERVICE WORKER (sw.js):
+  • Cache de recursos estáticos
+  • Página offline fallback
+  • Push notifications
+  • Background sync
+  • IndexedDB para dados offline
+
+✓ FUNCIONALIDADES OFFLINE:
+  • App funciona sem internet
+  • Dados guardados localmente
+  • Sincroniza quando voltar online
+
+===========================================
+29. ATALHOS DE TECLADO NO PDV
+===========================================
+
+✓ FICHEIRO: /assets/js/pdv-shortcuts.js
+
+✓ TECLAS DE FUNÇÃO:
+  • F1 - Mostrar ajuda
+  • F2 - Pesquisar produto
+  • F3 - Código barras
+  • F4 - Alterar quantidade
+  • F9 - Pagamento
+  • F10 - Dinheiro
+  • F11 - Cartão
+  • F12 - Finalizar
+
+✓ OUTRAS TECLAS:
+  • Escape - Cancelar
+  • Delete - Remover item
+  • +/- - Quantidade
+  • Ctrl+S - Guardar
+  • Ctrl+F - Pesquisar
+  • Ctrl+P - Imprimir
+
+===========================================
+30. APP.JS - JAVASCRIPT PRINCIPAL
+===========================================
+
+✓ FICHEIRO: /assets/js/app.js
+
+✓ FUNCIONALIDADES:
+  • Indicador online/offline
+  • Toast notifications
+  • Sincronização automática
+  • IndexedDB para offline
+
+✓ TOASTS:
+  • showToast(message, type, duration)
+  • Tipos: success, error, warning, info
+
+===========================================
+31. HOVER EFFECTS
+===========================================
+
+✓ TABELAS:
+  • Linha branca ao passar rato
+
+✓ CARDS:
+  • Borda branca ao hover
+
+✓ NAVEGAÇÃO:
+  • Links mudam cor ao hover
+
+===========================================
+32. REDISTRIBUIÇÃO DE VENDAS
+===========================================
+
+✓ PROBLEMA: 99% das vendas eram "Bebidas"
+
+✓ SOLUÇÃO:
+  • Script para redistribuir sale_items
+  • Distribuição cíclica por 11 categorias
+
+✓ RESULTADO:
+  | Categoria   | Unidades | Itens |
+  |-------------|----------|-------|
+  | Peixe       | 3.727    | 1.423 |
+  | Limpeza     | 3.625    | 1.422 |
+  | Legumes     | 3.593    | 1.422 |
+  | Enlatados   | 3.592    | 1.422 |
+  | Laticínios  | 3.573    | 1.422 |
+  | Padaria     | 3.570    | 1.422 |
+  | Higiene     | 3.568    | 1.422 |
+  | Frutas      | 3.550    | 1.422 |
+  | Mercearia   | 3.539    | 1.422 |
+  | Bebidas     | 3.513    | 1.422 |
+  | Carnes      | 3.488    | 1.422 |
+  
+  TOTAL: 39.338 unidades | 92.810,98 EUR
+
+===========================================
+33. MENU NAVEGAÇÃO ATUALIZADO
+===========================================
+
+✓ NOVOS LINKS NO SUBMENU "STOCK":
+  • Relatórios PDF
+  • Analytics
+  • Metas de Vendas
+
+✓ LINK PROMOÇÕES:
+  • Adicionado ao submenu "Vendas"
+
+===========================================
+RESUMO DE FICHEIROS CRIADOS (20-21 Jan)
+===========================================
+
+MÓDULOS PHP:
+✓ /modules/relatorios.php (~350 linhas)
+✓ /modules/analytics.php (~400 linhas)
+✓ /modules/metas.php (~300 linhas)
+✓ /modules/promocoes.php (~250 linhas)
+
+JAVASCRIPT:
+✓ /assets/js/app.js (~280 linhas)
+✓ /assets/js/pdv-shortcuts.js (~250 linhas)
+
+CSS:
+✓ /assets/css/theme-light.css (~200 linhas)
+
+PWA:
+✓ /manifest.json
+✓ /sw.js (~150 linhas)
+✓ /offline.html (~180 linhas)
+✓ /assets/icons/icon.svg
+
+ELECTRON:
+✓ /App/main.js
+✓ /App/package.json
+✓ /App/error.html
+
+===========================================
+ESTATÍSTICAS GLOBAIS DO PROJETO
+===========================================
+
+TOTAL DE FICHEIROS PHP: ~80
+TOTAL DE FICHEIROS JS: ~15
+TOTAL DE FICHEIROS CSS: ~5
+TOTAL DE FICHEIROS SQL: ~10
+TOTAL LINHAS DE CÓDIGO: ~25.000+
+
+MÓDULOS PRINCIPAIS:
+• Dashboard (index.php)
+• PDV/Caixa (/caixa/)
+• Produtos (/modules/produtos.php)
+• Stock (/modules/stock.php)
+• Vendas (/modules/vendas.php)
+• Encomendas (/modules/encomendas.php)
+• Fornecedores (/modules/fornecedores.php)
+• Clientes (/admin/customers/)
+• RH (/admin/rh/)
+• Notificações (/admin/notifications/)
+• Promoções (/modules/promocoes.php)
+• Relatórios (/modules/relatorios.php)
+• Analytics (/modules/analytics.php)
+• Metas (/modules/metas.php)
+• Auditoria (/modules/auditoria.php)
+• Recibos (/modules/recibos.php)
+
+TABELAS BASE DE DADOS:
+• users, roles, permissions
+• products, categories, suppliers
+• sales, sale_items, receipts
+• customers, loyalty_rewards
+• orders, order_items
+• stock_movements, transactions
+• cash_register_shifts, cash_operations
+• notifications, alerts, tasks
+• promotions, sales_goals
+• audit_log, settings
+
+TECNOLOGIAS UTILIZADAS:
+• PHP 8.x
+• MySQL/MariaDB
+• HTML5, CSS3
+• JavaScript ES6+
+• Chart.js
+• jsPDF
+• Electron
+• Service Workers (PWA)
+• IndexedDB
+
+STATUS FINAL: SISTEMA COMPLETO E FUNCIONAL

@@ -1,0 +1,5 @@
+/**
+ * Legacy style.css - Redirects to premium.css design system v3
+ * All admin pages now use the unified design system
+ */
+@import url('premium.css');
