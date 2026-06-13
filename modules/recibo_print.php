@@ -370,10 +370,29 @@ if (!$is_embed):
         }
 
         @media print {
-            body { background: white; padding: 0; }
+            * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+            body {
+                background: white !important;
+                padding: 0 !important;
+                margin: 0 !important;
+                display: block !important;
+                min-height: unset !important;
+            }
             .actions { display: none !important; }
-            .receipt-wrapper { filter: none; }
-            .receipt { box-shadow: none; }
+            .receipt-wrapper {
+                filter: none !important;
+                display: block !important;
+                margin: 0 auto !important;
+            }
+            .receipt {
+                box-shadow: none !important;
+                border: none !important;
+                width: 320px !important;
+                margin: 0 auto !important;
+                page-break-inside: avoid !important;
+            }
+            .receipt::before, .receipt::after { display: none !important; }
+            .receipt-inner::before { display: none !important; }
         }
     </style>
     <link href="https://fonts.googleapis.com/css2?family=Libre+Barcode+128&display=swap" rel="stylesheet">
@@ -434,7 +453,14 @@ if (!$is_embed):
                 
                 <!-- Cabeçalho da loja -->
                 <div class="store-header">
-                    <div class="store-logo">🛒</div>
+                    <div class="store-logo">
+                        <svg width="48" height="48" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <g stroke="#1a1a1a" stroke-width="34" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M118 306C158 180 231 151 256 240C282 332 355 342 406 216"/>
+                                <path d="M140 222C183 273 225 286 256 244C290 199 333 190 382 230"/>
+                            </g>
+                        </svg>
+                    </div>
                     <div class="store-name"><?= htmlspecialchars($store_name) ?></div>
                     <div class="store-info">
                         <?= htmlspecialchars($store_address) ?><br>
@@ -571,6 +597,17 @@ if (!$is_embed):
 
 <?php if (!$is_embed): ?>
     <script>
+    <?php if (isset($_GET['autoprint'])): ?>
+    window.addEventListener('load', function() {
+        setTimeout(function() {
+            window.print();
+        }, 600);
+    });
+    window.addEventListener('afterprint', function() {
+        window.close();
+    });
+    <?php endif; ?>
+
     function downloadReceipt() {
         const receipt = document.getElementById('receipt');
         const btn = document.querySelector('.btn-download');

@@ -420,11 +420,86 @@ if (!$db_error && defined('DB_ERROR')) {
       color: var(--txt3); opacity: .4;
     }
 
+    /* ─── Card enhancements ────────────────────────────────── */
+    .card {
+      box-shadow:
+        0 40px 90px rgba(0,0,0,.65),
+        0 1px 0 rgba(255,255,255,.055) inset,
+        0 0 0 1px rgba(255,255,255,.025);
+    }
+    [data-theme="light"] .card {
+      box-shadow:
+        0 16px 48px rgba(0,0,0,.11),
+        0 1px 0 rgba(255,255,255,.9) inset,
+        0 0 0 1px rgba(0,0,0,.025);
+    }
+    .card-left::after {
+      background:
+        radial-gradient(ellipse 100% 70% at 0% 100%, rgba(255,255,255,.045) 0%, transparent 60%),
+        radial-gradient(ellipse 70% 40% at 100% 0%, rgba(255,255,255,.02) 0%, transparent 55%);
+    }
+
+    /* ─── Logo mark – left panel ────────────────────────────── */
+    .l-logo {
+      display: flex; align-items: center; gap: 14px;
+      margin-bottom: 36px;
+    }
+    .l-logo-icon {
+      width: 54px; height: 54px;
+      border: 1px solid rgba(255,255,255,.1);
+      border-radius: 16px;
+      background: rgba(255,255,255,.045);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; position: relative; overflow: hidden;
+    }
+    .l-logo-icon::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(135deg, rgba(255,255,255,.1) 0%, transparent 55%);
+      pointer-events: none;
+    }
+    .l-logo-icon svg { position: relative; z-index: 1; color: rgba(255,255,255,.65); }
+    .l-logo-wordmark { display: flex; flex-direction: column; gap: 3px; }
+    .l-logo-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 17px; font-weight: 700;
+      letter-spacing: -.022em; color: rgba(255,255,255,.72);
+    }
+    .l-logo-sub {
+      font-size: 9px; font-weight: 600;
+      letter-spacing: .2em; text-transform: uppercase;
+      color: rgba(255,255,255,.22);
+    }
+
+    /* ─── Form logo badge ────────────────────────────────────── */
+    .f-logo-badge {
+      display: inline-flex; align-items: center; gap: 9px;
+      background: var(--bg3); border: 1px solid var(--border);
+      border-radius: 50px; padding: 5px 14px 5px 6px;
+      margin-bottom: 24px;
+    }
+    .f-logo-badge-icon {
+      width: 24px; height: 24px;
+      background: var(--border2); border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .f-logo-badge-icon svg {
+      width: 12px; height: 12px; color: var(--txt);
+      fill: none; stroke: currentColor;
+      stroke-width: 46; stroke-linecap: round; stroke-linejoin: round;
+    }
+    .f-logo-badge-txt {
+      font-size: 10.5px; font-weight: 600;
+      letter-spacing: .06em; color: var(--txt2);
+    }
+
     @media (max-width: 820px) {
       body { padding: 20px 16px; }
       .card { flex-direction: column; border-radius: 14px; }
       .card-left { flex: none; padding: 36px 32px 32px; border-right: none; border-bottom: 1px solid var(--border); }
       .card-left::after { display: none; }
+      .l-logo { margin-bottom: 24px; }
       .l-desc, .feats { display: none; }
       .headline { font-size: 28px; min-height: auto; }
       .card-right { padding: 36px 32px; }
@@ -440,6 +515,18 @@ if (!$db_error && defined('DB_ERROR')) {
   <!-- CARD LEFT -->
   <div class="card-left">
     <div>
+      <div class="l-logo">
+        <div class="l-logo-icon">
+          <svg width="28" height="28" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M118 306C158 180 231 151 256 240C282 332 355 342 406 216" stroke="currentColor" stroke-width="36" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M140 222C183 273 225 286 256 244C290 199 333 190 382 230" stroke="currentColor" stroke-width="36" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div class="l-logo-wordmark">
+          <span class="l-logo-name">PAP Market</span>
+          <span class="l-logo-sub">Plataforma de Gestão</span>
+        </div>
+      </div>
       <div class="l-rule"></div>
       <div class="l-tag">PAP Market &mdash; Sistema de Gestao</div>
       <h1 class="headline">
@@ -463,6 +550,15 @@ if (!$db_error && defined('DB_ERROR')) {
   <!-- CARD RIGHT -->
   <div class="card-right">
   <div class="form-box">
+    <div class="f-logo-badge">
+      <div class="f-logo-badge-icon">
+        <svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+          <path d="M118 306C158 180 231 151 256 240C282 332 355 342 406 216"/>
+          <path d="M140 222C183 273 225 286 256 244C290 199 333 190 382 230"/>
+        </svg>
+      </div>
+      <span class="f-logo-badge-txt">PAP Market</span>
+    </div>
     <div class="f-eyebrow">Acesso ao sistema</div>
     <h2 class="f-title">Bom regresso.</h2>
     <p class="f-sub">Autentique-se para continuar.</p>

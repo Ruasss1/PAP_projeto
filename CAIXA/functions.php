@@ -574,6 +574,7 @@ function pdv_process_sale($data) {
         
         return [
             'success' => true,
+            'sale_id' => $sale_id,
             'receipt_id' => $receipt_id,
             'receipt_number' => $receipt_number,
             'final_amount' => $final_amount,

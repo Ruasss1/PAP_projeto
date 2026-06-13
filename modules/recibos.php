@@ -13,44 +13,46 @@ $pdo = db_connect();
 $current_store_id = get_current_store_id();
 
 // Filtros
-$date_from = $_GET['date_from'] ?? date('Y-m-d', strtotime('-30 days'));
-$date_to = $_GET['date_to'] ?? date('Y-m-d');
-$payment = $_GET['payment'] ?? '';
-$search = $_GET['search'] ?? '';
+$has_filters = !empty($_GET);
+$date_from = $_GET['date_from'] ?? '';
+$date_to   = $_GET['date_to']   ?? '';
+$payment   = $_GET['payment']   ?? '';
+$search    = $_GET['search']    ?? '';
 
 // Query vendas
+$where  = ['s.store_id = ?'];
+$params = [$current_store_id];
+if ($date_from) { $where[] = 'DATE(s.sale_date) >= ?'; $params[] = $date_from; }
+if ($date_to)   { $where[] = 'DATE(s.sale_date) <= ?'; $params[] = $date_to; }
+if ($payment)   { $where[] = 's.payment_method = ?';   $params[] = $payment; }
+if ($search)    { $where[] = 's.id = ?';               $params[] = intval($search); }
+
 $sql = "SELECT s.*, COUNT(si.id) as items_count 
         FROM sales s 
         LEFT JOIN sale_items si ON s.id = si.sale_id 
-        WHERE s.store_id = ? AND DATE(s.sale_date) BETWEEN ? AND ?";
-$params = [$current_store_id, $date_from, $date_to];
-
-if ($payment) {
-    $sql .= " AND s.payment_method = ?";
-    $params[] = $payment;
-}
-
-if ($search) {
-    $sql .= " AND s.id = ?";
-    $params[] = intval($search);
-}
-
-$sql .= " GROUP BY s.id ORDER BY s.sale_date DESC LIMIT 100";
+        WHERE " . implode(' AND ', $where) . "
+        GROUP BY s.id ORDER BY s.sale_date DESC LIMIT 200";
 
 $stmt = $pdo->prepare($sql);
 $stmt->execute($params);
 $sales = $stmt->fetchAll();
 
-// Estatísticas do período
+// Estatísticas (mesmo filtro)
+$swhere  = ['store_id = ?'];
+$sparams = [$current_store_id];
+if ($date_from) { $swhere[] = 'DATE(sale_date) >= ?'; $sparams[] = $date_from; }
+if ($date_to)   { $swhere[] = 'DATE(sale_date) <= ?'; $sparams[] = $date_to; }
+if ($payment)   { $swhere[] = 'payment_method = ?';   $sparams[] = $payment; }
+
 $stats_sql = "SELECT 
     COUNT(*) as total_sales,
     COALESCE(SUM(total), 0) as total_revenue,
     COALESCE(AVG(total), 0) as avg_sale,
     COUNT(DISTINCT DATE(sale_date)) as days_with_sales
     FROM sales 
-    WHERE store_id = ? AND DATE(sale_date) BETWEEN ? AND ?";
+    WHERE " . implode(' AND ', $swhere);
 $stats = $pdo->prepare($stats_sql);
-$stats->execute([$current_store_id, $date_from, $date_to]);
+$stats->execute($sparams);
 $stats = $stats->fetch();
 
 // Ver detalhes de uma venda
@@ -111,11 +113,11 @@ require_once __DIR__ . '/../includes/header.php';
         <form method="get" style="display: flex; gap: 16px; align-items: flex-end; flex-wrap: wrap;">
             <div class="form-group" style="margin: 0;">
                 <label class="form-label">Data Início</label>
-                <input type="date" name="date_from" class="form-input" value="<?= $date_from ?>">
+                <input type="date" name="date_from" class="form-input" value="<?= htmlspecialchars($date_from) ?>">
             </div>
             <div class="form-group" style="margin: 0;">
                 <label class="form-label">Data Fim</label>
-                <input type="date" name="date_to" class="form-input" value="<?= $date_to ?>">
+                <input type="date" name="date_to" class="form-input" value="<?= htmlspecialchars($date_to) ?>">
             </div>
             <div class="form-group" style="margin: 0;">
                 <label class="form-label">Pagamento</label>

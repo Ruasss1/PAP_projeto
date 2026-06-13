@@ -263,9 +263,10 @@ window.addEventListener('load', function () {
                     </select>
                 </div>
                 <div class="form-group">
-                    <label class="form-label">Código de Barras</label>
+                    <label class="form-label">Código de Barras <?= !$editing ? '<span style="font-size:11px;color:var(--text-muted);font-weight:400;">(gerado automaticamente)</span>' : '' ?></label>
                     <input type="text" name="barcode" class="form-input"
-                           value="<?= $editing ? htmlspecialchars($edit_product['barcode'] ?? '') : '' ?>">
+                           value="<?= $editing ? htmlspecialchars($edit_product['barcode'] ?? '') : '' ?>"
+                           <?= !$editing ? 'placeholder="Gerado ao guardar — ou insere manualmente"' : '' ?>>
                 </div>
             </div>
             

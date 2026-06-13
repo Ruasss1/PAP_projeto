@@ -527,6 +527,7 @@ require_once __DIR__ . '/../includes/header.php';
             -€<?= number_format($qr_code_modal['value'], 2) ?>
             <?php endif; ?>
         </span>
+        <button onclick="closeQrModal()" title="Fechar" style="background:none;border:none;cursor:pointer;color:var(--text-secondary,#aaa);font-size:26px;line-height:1;padding:0 4px;margin-left:16px;transition:color .15s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='var(--text-secondary,#aaa)'">&times;</button>
     </div>
 
     <!-- QR + Nome -->

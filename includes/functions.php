@@ -485,6 +485,27 @@ function add_product($data)
         ];
     }
     
+    // Gera barcode único automaticamente se não for fornecido
+    $barcode = trim($data['barcode'] ?? '');
+    if ($barcode === '') {
+        do {
+            // Gera um EAN-13 com prefixo 200 (uso interno)
+            $prefix = '200';
+            $rand   = str_pad(mt_rand(0, 999999999), 9, '0', STR_PAD_LEFT);
+            $raw    = $prefix . $rand; // 12 dígitos
+            // Calcula dígito verificador EAN-13
+            $sum = 0;
+            for ($i = 0; $i < 12; $i++) {
+                $sum += (int)$raw[$i] * ($i % 2 === 0 ? 1 : 3);
+            }
+            $check   = (10 - ($sum % 10)) % 10;
+            $barcode = $raw . $check;
+            // Verifica unicidade
+            $chk = $pdo->prepare('SELECT COUNT(*) FROM products WHERE barcode = ?');
+            $chk->execute([$barcode]);
+        } while ($chk->fetchColumn() > 0);
+    }
+
     // Constrói INSERT dinâmico baseado nas colunas existentes
     $fields = ['name'];
     $placeholders = ['?'];
@@ -494,7 +515,7 @@ function add_product($data)
     $optionalFields = [
         'category' => $data['category'] ?? null,
         'brand' => $data['brand'] ?? null,
-        'barcode' => $data['barcode'] ?? null,
+        'barcode' => $barcode,
         'cost_price' => $data['cost_price'] ?? 0,
         'sell_price' => $data['sell_price'] ?? 0,
         'vat' => $data['vat'] ?? 23.00,

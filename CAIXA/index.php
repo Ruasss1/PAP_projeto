@@ -104,6 +104,7 @@ $weighted_json = json_encode($weighted_categories);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= $page_title ?> | SuperMarket</title>
+    <link rel="icon" href="/assets/icons/favicon.svg" type="image/svg+xml">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/assets/css/premium.css">
     <link rel="stylesheet" href="/assets/css/master-ui.css?v=<?= time() ?>">
@@ -191,19 +192,19 @@ $weighted_json = json_encode($weighted_categories);
         .pos-left {
             display: flex;
             flex-direction: column;
-            padding: 24px 24px 24px 68px;
+            padding: 20px 20px 20px 64px;
             overflow: hidden;
             position: relative;
-            background: linear-gradient(180deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+            background: var(--bg-primary);
         }
         
         .pos-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding-bottom: 20px;
+            padding-bottom: 16px;
             border-bottom: 1px solid var(--border);
-            margin-bottom: 20px;
+            margin-bottom: 16px;
         }
         
         .pos-info {
@@ -214,15 +215,16 @@ $weighted_json = json_encode($weighted_categories);
         }
         
         .pos-chip {
-            padding: 8px 16px;
+            padding: 6px 12px;
             background: var(--bg-secondary);
             border: 1px solid var(--border);
-            border-radius: 24px;
-            font-size: 12px;
+            border-radius: 20px;
+            font-size: 11.5px;
             color: var(--text-secondary);
             display: flex;
             align-items: center;
             gap: 6px;
+            font-weight: 500;
         }
         
         .pos-chip.accent {
@@ -267,13 +269,13 @@ $weighted_json = json_encode($weighted_categories);
             align-items: center;
             background: var(--bg-secondary);
             border: 1px solid var(--border);
-            border-radius: 10px;
-            padding: 4px;
-            margin-bottom: 16px;
+            border-radius: 9px;
+            margin-bottom: 14px;
+            transition: border-color 0.15s;
         }
         
         .pos-search:focus-within {
-            border-color: var(--accent);
+            border-color: var(--border-light);
         }
         
         .pos-search span {
@@ -285,9 +287,9 @@ $weighted_json = json_encode($weighted_categories);
             flex: 1;
             background: none;
             border: none;
-            padding: 12px;
+            padding: 11px 12px;
             color: var(--text-primary);
-            font-size: 14px;
+            font-size: 13.5px;
             outline: none;
         }
         
@@ -304,29 +306,33 @@ $weighted_json = json_encode($weighted_categories);
         .pos-categories::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
         
         .cat-btn {
-            padding: 10px 20px;
+            padding: 7px 16px;
             background: var(--bg-secondary);
             border: 1px solid var(--border);
-            border-radius: 24px;
+            border-radius: 20px;
             color: var(--text-secondary);
-            font-size: 13px;
+            font-size: 12.5px;
             font-weight: 500;
             cursor: pointer;
             white-space: nowrap;
-            transition: all 0.2s;
+            transition: all 0.15s;
+            font-family: inherit;
         }
         
         .cat-btn:hover {
             background: var(--bg-tertiary);
+            border-color: var(--border-light);
             color: var(--text-primary);
             transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0,0,0,.22);
         }
         
         .cat-btn.active {
             background: var(--bg-tertiary);
-            border-color: var(--border);
+            border-color: var(--border-light);
             color: var(--text-primary);
-            box-shadow: none;
+            font-weight: 600;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,.06), 0 2px 8px rgba(0,0,0,.15);
         }
         
         /* PRODUCTS GRID */
@@ -350,31 +356,14 @@ $weighted_json = json_encode($weighted_categories);
             padding: 16px 12px;
             text-align: center;
             cursor: pointer;
-            transition: all 0.15s ease;
+            transition: all 0.18s cubic-bezier(.16,1,.3,1);
         }
         
         .product-card:hover {
-            background: #1e1e1e;
-            border-color: #2a2a2a;
+            background: var(--bg-tertiary);
+            border-color: var(--border-light);
             transform: translateY(-2px);
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
-        }
-        
-        .product-card:hover .product-name,
-        .product-card:hover .product-price,
-        .product-card:hover .product-stock {
-            color: #ececec;
-        }
-        
-        [data-theme="light"] .product-card:hover {
-            background: #ffffff;
-            border-color: #d4d4d8;
-            box-shadow: 0 8px 24px rgba(0,0,0,.12);
-        }
-        [data-theme="light"] .product-card:hover .product-name,
-        [data-theme="light"] .product-card:hover .product-price,
-        [data-theme="light"] .product-card:hover .product-stock {
-            color: #09090b;
+            box-shadow: 0 8px 24px rgba(0,0,0,.45);
         }
         
         .product-card:active {
@@ -394,7 +383,7 @@ $weighted_json = json_encode($weighted_categories);
         }
         
         .product-name {
-            font-size: 12px;
+            font-size: 12.5px;
             font-weight: 600;
             margin-bottom: 6px;
             line-height: 1.4;
@@ -441,7 +430,7 @@ $weighted_json = json_encode($weighted_categories);
         }
         
         .cart-header {
-            padding: 16px 20px;
+            padding: 14px 18px;
             border-bottom: 1px solid var(--border);
             display: flex;
             justify-content: space-between;
@@ -505,13 +494,12 @@ $weighted_json = json_encode($weighted_categories);
             display: flex;
             align-items: center;
             gap: 10px;
-            padding: 11px 13px;
+            padding: 10px 12px;
             background: var(--bg-tertiary);
             border: 1px solid var(--border);
-            border-left: 3px solid transparent;
             border-radius: 8px;
-            margin-bottom: 7px;
-            transition: border-color 0.15s, background 0.15s;
+            margin-bottom: 6px;
+            transition: background 0.12s;
             animation: itemIn 0.18s ease;
         }
 
@@ -521,7 +509,6 @@ $weighted_json = json_encode($weighted_categories);
         }
 
         .cart-item:hover {
-            border-left-color: var(--border);
             background: var(--bg-hover);
         }
         
@@ -628,19 +615,29 @@ $weighted_json = json_encode($weighted_categories);
             letter-spacing: 0.03em;
             cursor: pointer;
             margin-bottom: 10px;
-            transition: all 0.2s cubic-bezier(.34,1.4,.64,1);
-            box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+            transition: all 0.22s cubic-bezier(.34,1.4,.64,1);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,.16);
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 8px;
+            position: relative;
+            overflow: hidden;
         }
-        
+        .btn-pay::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -70%; width: 40%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0,0,0,.07), transparent);
+            transform: skewX(-18deg);
+            transition: left .6s ease;
+            pointer-events: none;
+        }
+        .btn-pay:hover:not(:disabled)::before { left: 130%; }
         .btn-pay:disabled { opacity: 0.3; cursor: not-allowed; box-shadow: none; transform: none !important; }
         .btn-pay:hover:not(:disabled) { 
-            transform: translateY(-2px) scale(1.01);
-            box-shadow: 0 8px 24px rgba(0,0,0,0.3);
-            opacity: 0.9;
+            transform: translateY(-3px) scale(1.01);
+            box-shadow: 0 12px 32px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,.16);
         }
         .btn-pay:active:not(:disabled) { transform: scale(0.98); }
         
@@ -886,15 +883,34 @@ $weighted_json = json_encode($weighted_categories);
         
         .btn-cancel {
             background: var(--bg-tertiary);
+            border: 1px solid var(--border);
             color: var(--text-secondary);
+            transition: all 0.15s;
         }
+        .btn-cancel:hover { background: var(--bg-hover); color: var(--text-primary); }
         
         .btn-confirm {
-            background: linear-gradient(135deg, var(--success), #16a34a);
-            color: white;
+            background: var(--text-primary);
+            color: var(--bg-primary);
+            transition: all 0.15s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
         }
-        
-        .btn-confirm:disabled { opacity: 0.5; }
+        .btn-confirm:hover:not(:disabled) { opacity: 0.88; transform: translateY(-1px); }
+        .btn-confirm:disabled { opacity: 0.35; cursor: not-allowed; }
+
+        /* Loading spinner */
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .spinner {
+            width: 15px; height: 15px;
+            border: 2px solid rgba(0,0,0,0.15);
+            border-top-color: currentColor;
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+            flex-shrink: 0;
+        }
 
         /* DISCOUNT SECTION in cart */
         .cart-discount-row {
@@ -964,6 +980,46 @@ $weighted_json = json_encode($weighted_categories);
         [data-theme="light"] .quick-btn { background: #f4f4f6; border-color: #e2e2e8; color: #111118; }
         [data-theme="light"] .quick-btn:hover { background: #52525b; border-color: #52525b; color: #ffffff; }
         [data-theme="light"] .app-sidebar { background: #ffffff; border-color: #e2e2e8; }
+
+        /* ── Cart item classes matching JS template ───────────────────────── */
+        .item-info { flex: 1; min-width: 0; }
+        .item-name {
+            font-size: 13px; font-weight: 600;
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+            color: var(--text-primary);
+        }
+        .item-price {
+            font-size: 11px; color: var(--text-muted); margin-top: 2px;
+        }
+        .item-controls {
+            display: flex; align-items: center; gap: 4px; flex-shrink: 0;
+        }
+        .qty-display {
+            font-size: 13px; font-weight: 700;
+            min-width: 24px; text-align: center;
+            color: var(--text-primary);
+        }
+        .item-subtotal {
+            font-size: 13px; font-weight: 700;
+            min-width: 58px; text-align: right;
+            color: var(--text-primary); letter-spacing: -0.3px;
+        }
+        .remove-btn {
+            width: 26px; height: 26px;
+            background: none; border: 1px solid transparent;
+            border-radius: 6px; cursor: pointer;
+            color: var(--text-muted);
+            display: flex; align-items: center; justify-content: center;
+            transition: all 0.15s; flex-shrink: 0;
+        }
+        .remove-btn:hover {
+            background: rgba(248,113,113,.1);
+            border-color: rgba(248,113,113,.2);
+            color: var(--danger);
+        }
+        [data-theme="light"] .item-name { color: #111118; }
+        [data-theme="light"] .item-subtotal { color: #111118; }
+        [data-theme="light"] .qty-display { color: #111118; }
     </style>
 </head>
 <body>
@@ -996,15 +1052,13 @@ $weighted_json = json_encode($weighted_categories);
         <div class="sidebar-header">
             <a href="/" class="sidebar-logo">
                 <div class="sidebar-logo-icon">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M3 11L12 4L21 11" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
-                        <rect x="4" y="11" width="16" height="9" rx="1" fill="currentColor" opacity="0.15"/>
-                        <rect x="4" y="11" width="16" height="9" rx="1" stroke="currentColor" stroke-width="1.5"/>
-                        <rect x="9.5" y="15" width="5" height="5" rx="0.5" fill="currentColor"/>
-                        <rect x="6" y="13" width="3" height="2.5" rx="0.5" fill="currentColor" opacity="0.5"/>
-                        <rect x="15" y="13" width="3" height="2.5" rx="0.5" fill="currentColor" opacity="0.5"/>
-                    </svg>
-                </div>
+                        <svg width="20" height="20" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <g stroke="currentColor" stroke-width="34" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M118 306C158 180 231 151 256 240C282 332 355 342 406 216"/>
+                                <path d="M140 222C183 273 225 286 256 244C290 199 333 190 382 230"/>
+                            </g>
+                        </svg>
+                    </div>
                 <span class="sidebar-logo-text">PAP Market</span>
             </a>
         </div>
@@ -1305,31 +1359,37 @@ $weighted_json = json_encode($weighted_categories);
     <!-- MODAL RECIBO -->
     <div class="modal-overlay" id="receiptModal">
         <div class="modal-box">
-            <div class="modal-icon">✅</div>
-            <h2>Venda Concluída!</h2>
-            
-            <div style="background: var(--bg-tertiary); padding: 16px; border-radius: 10px; margin: 20px 0;">
-                <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 14px;">
-                    <span>Recibo Nº</span>
-                    <span id="receiptNumber">-</span>
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+                <div>
+                    <div style="font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:4px;">Venda concluída</div>
+                    <div style="font-size:18px;font-weight:700;color:var(--text-primary);" id="receiptNumber">—</div>
                 </div>
-                <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 14px;">
-                    <span>Total</span>
-                    <span id="receiptTotal">€0.00</span>
+                <div style="width:36px;height:36px;background:var(--bg-tertiary);border:1px solid var(--border);border-radius:8px;display:flex;align-items:center;justify-content:center;">
+                    <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
                 </div>
-                <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 14px;">
-                    <span>Pago</span>
-                    <span id="receiptPaid">€0.00</span>
+            </div>
+
+            <div style="background:var(--bg-tertiary);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:16px;">
+                <div style="display:flex;justify-content:space-between;align-items:center;padding:11px 14px;border-bottom:1px solid var(--border);font-size:13px;">
+                    <span style="color:var(--text-muted)">Total</span>
+                    <span style="font-weight:600;" id="receiptTotal">€0.00</span>
                 </div>
-                <div style="display: flex; justify-content: space-between; padding-top: 12px; border-top: 1px solid var(--border); font-size: 18px; font-weight: 700; color: var(--success);">
-                    <span>Troco</span>
+                <div style="display:flex;justify-content:space-between;align-items:center;padding:11px 14px;border-bottom:1px solid var(--border);font-size:13px;">
+                    <span style="color:var(--text-muted)">Pago</span>
+                    <span style="font-weight:600;" id="receiptPaid">€0.00</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 14px;font-size:20px;font-weight:800;letter-spacing:-0.03em;">
+                    <span style="font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;color:var(--text-muted)">Troco</span>
                     <span id="receiptChange">€0.00</span>
                 </div>
             </div>
             
             <div class="modal-actions">
                 <button class="btn-cancel" onclick="finishWithoutReceipt()">Fechar</button>
-                <button class="btn-confirm" onclick="printReceipt()">🖨️ Imprimir</button>
+                <button class="btn-confirm" onclick="printReceipt()">
+                    <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm1-4h4v4H10v-4z"/></svg>
+                    Imprimir Recibo
+                </button>
             </div>
         </div>
     </div>

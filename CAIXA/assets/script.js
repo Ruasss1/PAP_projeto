@@ -546,7 +546,7 @@ function confirmPayment() {
     // Desabilitar botão
     const btn = document.getElementById('btnConfirmPayment');
     btn.disabled = true;
-    btn.textContent = 'Processando...';
+    btn.innerHTML = '<span class="spinner"></span> A processar…';
     
     fetch('api.php', { method: 'POST', body: formData })
         .then(async (r) => {
@@ -561,6 +561,7 @@ function confirmPayment() {
             if (data.success) {
                 // Guardar dados para recibo
                 lastSaleData = {
+                    sale_id: data.sale_id,
                     receipt_number: data.receipt_number,
                     total: total,
                     paid: paid,
@@ -588,14 +589,14 @@ function confirmPayment() {
             } else {
                 showToast('Erro: ' + data.message, 'error');
                 btn.disabled = false;
-                btn.textContent = '✓ Finalizar Venda';
+                btn.innerHTML = '✓ Finalizar Venda';
             }
         })
         .catch(err => {
             console.error('Erro ao processar venda:', err);
             showToast('Erro de conexão!', 'error');
             btn.disabled = false;
-            btn.textContent = '✓ Finalizar Venda';
+            btn.innerHTML = '✓ Finalizar Venda';
         });
 }
 
@@ -637,75 +638,18 @@ function finishWithoutReceipt() {
 }
 
 function printReceipt() {
-    const wantNifEl = document.getElementById('wantNif');
-    const nifInputEl = document.getElementById('nifInput');
-    const nif = (wantNifEl && wantNifEl.checked && nifInputEl)
-        ? nifInputEl.value.trim()
-        : '';
-    
-    if (wantNifEl && wantNifEl.checked && nif.length !== 9) {
-        showToast('NIF deve ter 9 dígitos!', 'warning');
+    if (!lastSaleData || !lastSaleData.sale_id) {
+        showToast('Dados da venda não disponíveis.', 'error');
         return;
     }
-    
-    // Gerar conteúdo do recibo
-    const paper = document.getElementById('receiptPaper');
-    if (!paper) {
-        // Fallback simples caso template de impressão não exista nesta página
-        window.print();
-        return;
+    const url = '/modules/recibo_print.php?id=' + lastSaleData.sale_id + '&autoprint=1';
+    const popup = window.open(url, 'recibo_print', 'width=520,height=800,scrollbars=yes,resizable=yes');
+    if (!popup) {
+        // Se popup bloqueado, abrir em nova tab
+        window.open(url, '_blank');
     }
-    const now = new Date();
-    
-    let itemsHtml = lastSaleData.items.map(i => `
-        <div class="item-line">
-            <span>${escapeHtml(i.product_name)}</span>
-            <span>€${i.subtotal.toFixed(2)}</span>
-        </div>
-        <div class="item-line" style="font-size:10px;color:#666;">
-            ${i.is_weighted ? i.quantity.toFixed(3) + 'kg' : i.quantity + 'x'} @ €${i.unit_price.toFixed(2)}
-        </div>
-    `).join('');
-    
-    paper.innerHTML = `
-        <div class="header">
-            <div class="store-name">🛒 SUPERMARKET</div>
-            <div>Rua Principal, 123</div>
-            <div>Tel: 21 123 4567</div>
-            <div>NIF Empresa: 123456789</div>
-        </div>
-        
-        <div style="text-align:center;margin-bottom:12px;">
-            <strong>RECIBO Nº ${lastSaleData.receipt_number}</strong><br>
-            ${now.toLocaleDateString('pt-PT')} ${now.toLocaleTimeString('pt-PT')}
-        </div>
-        
-        ${nif ? `<div style="margin-bottom:12px;"><strong>NIF Cliente:</strong> ${nif}</div>` : ''}
-        
-        <div class="items">
-            ${itemsHtml}
-        </div>
-        
-        <div class="totals">
-            <div class="item-line"><span>Subtotal:</span><span>€${lastSaleData.total.toFixed(2)}</span></div>
-            <div class="total-line"><span>TOTAL:</span><span>€${lastSaleData.total.toFixed(2)}</span></div>
-            <div class="item-line"><span>Pago:</span><span>€${lastSaleData.paid.toFixed(2)}</span></div>
-            <div class="item-line"><span>Troco:</span><span>€${lastSaleData.change.toFixed(2)}</span></div>
-        </div>
-        
-        <div class="footer">
-            <div>Obrigado pela sua visita!</div>
-            <div style="margin-top:8px;font-size:10px;">Conserve este documento</div>
-        </div>
-    `;
-    
     closeModal('receiptModal');
-    const printModal = document.getElementById('printModal');
-    if (printModal) {
-        openModal('printModal');
-    } else {
-        window.print();
-    }
+    resetForNextSale();
 }
 
 function doPrint() {

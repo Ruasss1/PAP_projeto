@@ -254,6 +254,16 @@ $stmt = $pdo->prepare('
 $stmt->execute([$date_from, $date_to, $current_store_id]);
 $payment_methods = $stmt->fetchAll();
 
+// === CASHFLOW ===
+$stmt_receitas = $pdo->prepare('SELECT COALESCE(SUM(total),0) FROM sales WHERE store_id=?');
+$stmt_receitas->execute([$current_store_id]);
+$total_receitas = (float)$stmt_receitas->fetchColumn();
+
+$total_despesas_encomendas = (float)$pdo->query('SELECT COALESCE(SUM(total_cost),0) FROM orders WHERE status="delivered"')->fetchColumn();
+$total_despesas_salarios   = (float)$pdo->query('SELECT COALESCE(SUM(net_salary),0) FROM payroll WHERE status="paid"')->fetchColumn();
+$total_despesas   = $total_despesas_encomendas + $total_despesas_salarios;
+$saldo_cashflow   = $total_receitas - $total_despesas;
+
 $page_title = 'Dashboard';
 require_once __DIR__ . '/includes/header.php';
 ?>
@@ -467,6 +477,21 @@ require_once __DIR__ . '/includes/header.php';
                         <div class="stat-label">Produtos a expirar em 7 dias</div>
                     </div>
                     <?php endif; ?>
+
+                    <div class="stat-card fade-in" style="animation-delay:.35s;opacity:0">
+                        <div class="stat-header">
+                            <div class="stat-icon <?= $saldo_cashflow >= 0 ? 'green' : 'red' ?>">
+                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3"/></svg>
+                            </div>
+                            <div class="stat-change <?= $saldo_cashflow >= 0 ? 'positive' : 'negative' ?>">
+                                <?= $saldo_cashflow >= 0 ? '↑ Positivo' : '↓ Negativo' ?>
+                            </div>
+                        </div>
+                        <div class="stat-value <?= $saldo_cashflow >= 0 ? 'money-positive' : '' ?>" style="<?= $saldo_cashflow < 0 ? 'color:var(--danger)' : '' ?>">
+                            €<?= number_format(abs($saldo_cashflow), 2, ',', '.') ?>
+                        </div>
+                        <div class="stat-label">Saldo · Receitas − Despesas</div>
+                    </div>
                 </div>
 
                 <!-- Charts Grid -->

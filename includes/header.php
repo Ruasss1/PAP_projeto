@@ -54,11 +54,11 @@ function isActive($pages) {
 }
 ?>
 <!DOCTYPE html>
-<html lang="pt" data-theme="dark">
+<html lang="pt-PT" data-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= $page_title ?? 'PAP Market' ?></title>
+    <title><?= $page_title ?? 'Mercantec' ?></title>
     
     <!-- Favicon -->
     <link rel="icon" href="/assets/icons/favicon.svg" type="image/svg+xml">
@@ -72,11 +72,13 @@ function isActive($pages) {
     <!-- Design System v3 -->
     <link rel="stylesheet" href="/assets/css/premium.css?v=<?= time() ?>">
     <link rel="stylesheet" href="/assets/css/master-ui.css?v=<?= time() ?>">
+    <link rel="stylesheet" href="/assets/css/mercantec.css?v=<?= time() ?>">
     
     <!-- Theme Script - Prevent Flash -->
     <script>
         (function() {
-            const theme = localStorage.getItem('pap-theme') || 'dark';
+            const theme = 'light';
+            localStorage.setItem('pap-theme', theme);
             document.documentElement.setAttribute('data-theme', theme);
         })();
     </script>
@@ -95,16 +97,14 @@ function isActive($pages) {
             <div class="sidebar-header">
                 <a href="/" class="sidebar-logo">
                     <div class="sidebar-logo-icon">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M3 11L12 4L21 11" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
-                            <rect x="4" y="11" width="16" height="9" rx="1" fill="currentColor" opacity="0.15"/>
-                            <rect x="4" y="11" width="16" height="9" rx="1" stroke="currentColor" stroke-width="1.5"/>
-                            <rect x="9.5" y="15" width="5" height="5" rx="0.5" fill="currentColor"/>
-                            <rect x="6" y="13" width="3" height="2.5" rx="0.5" fill="currentColor" opacity="0.5"/>
-                            <rect x="15" y="13" width="3" height="2.5" rx="0.5" fill="currentColor" opacity="0.5"/>
+                        <svg width="22" height="22" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <g stroke="currentColor" stroke-width="34" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M118 306C158 180 231 151 256 240C282 332 355 342 406 216"/>
+                                <path d="M140 222C183 273 225 286 256 244C290 199 333 190 382 230"/>
+                            </g>
                         </svg>
                     </div>
-                    <span class="sidebar-logo-text">PAP Market</span>
+                    <span class="sidebar-logo-text">Mercantec</span>
                 </a>
             </div>
 
@@ -116,7 +116,7 @@ function isActive($pages) {
                         <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path>
                         </svg>
-                        Dashboard
+                        Painel
                     </a>
                     <a href="/CAIXA/" class="nav-item <?= isActive('CAIXA') ?>">
                         <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -206,7 +206,13 @@ function isActive($pages) {
                         <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
                         </svg>
-                        Analytics
+                        Analitica
+                    </a>
+                    <a href="/modules/despesas.php" class="nav-item <?= isActive('despesas') ?>">
+                        <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                        </svg>
+                        Despesas
                     </a>
                 </div>
 
@@ -252,11 +258,11 @@ function isActive($pages) {
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
                         </svg>
-                        Configurações
+                        Definicoes
                     </a>
                     <a href="/modules/backup.php" class="nav-item <?= isActive('backup') ?>">
                         <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4"></path></svg>
-                        Backup BD
+                        Copia de Seguranca BD
                     </a>
                     <a href="/modules/db_status.php" class="nav-item <?= isActive('db_status') ?>">
                         <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
@@ -293,7 +299,7 @@ function isActive($pages) {
         <main class="app-main">
             <header class="app-header">
                 <div class="header-left">
-                    <h1 class="page-title"><?= $page_title ?? 'Dashboard' ?></h1>
+                    <h1 class="page-title"><?= $page_title ?? 'Painel' ?></h1>
                 </div>
                 <div class="header-right">
                     <?php if (!empty($all_stores) && count($all_stores) > 1): ?>
