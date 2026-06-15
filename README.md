@@ -1,15 +1,111 @@
-# PAP Market
+# Mercantec
 
 Sistema de gestão de supermercado — stock, vendas, RH, caixa e relatórios.
 
 ---
 
+## Instalação local
+
+### Requisitos
+
+- PHP 8.1+
+- MySQL 8.0+ ou MariaDB 10.4+
+- Composer 2.x
+- XAMPP (recomendado) ou servidor Apache/MySQL separado
+
+### Passo a passo
+
+**1. Clonar o repositório**
+
+```bash
+git clone https://github.com/Ruasss1/PAP_projeto.git
+cd PAP_projeto
+```
+
+**2. Instalar dependências PHP**
+
+```bash
+composer install
+```
+
+**3. Criar a base de dados**
+
+Abre o phpMyAdmin em `http://127.0.0.1/phpmyadmin` e executa:
+
+```sql
+CREATE DATABASE supermercado CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+```
+
+**4. Importar as migrações**
+
+Importa os ficheiros da pasta `migrations/` por ordem:
+
+```bash
+mysql -u root supermercado < migrations/000_base_schema.sql
+mysql -u root supermercado < migrations/001_supermercado_migration.sql
+mysql -u root supermercado < migrations/002_add_security_and_audit.sql
+mysql -u root supermercado < migrations/002_pdv_tables.sql
+mysql -u root supermercado < migrations/003_add_pricing_management.sql
+mysql -u root supermercado < migrations/004_low_stock_settings.sql
+mysql -u root supermercado < migrations/005_cash_operations.sql
+mysql -u root supermercado < migrations/005_pdv_system.sql
+mysql -u root supermercado < migrations/005_rh_management.sql
+mysql -u root supermercado < migrations/006_customers_loyalty.sql
+mysql -u root supermercado < migrations/007_notifications_alerts.sql
+mysql -u root supermercado < migrations/008_new_features.sql
+mysql -u root supermercado < migrations/seed_data.sql
+```
+
+Ou importa cada ficheiro manualmente via phpMyAdmin (Importar → selecionar ficheiro).
+
+**5. Verificar a ligação à base de dados**
+
+As configurações predefinidas em `config/database.php` usam:
+
+| Parâmetro | Valor |
+|-----------|-------|
+| Host | `127.0.0.1` |
+| Porto | `3306` |
+| Base de dados | `supermercado` |
+| Utilizador | `root` |
+| Password | *(em branco)* |
+
+Se o teu ambiente for diferente, define as variáveis de ambiente `MYSQLDATABASE`, `MYSQLUSER` e `MYSQLPASSWORD`.
+
+**6. Iniciar o servidor**
+
+```bash
+composer serve
+```
+
+Ou manualmente:
+
+```bash
+php -S 127.0.0.1:8000 -t .
+```
+
+**7. Popular dados de exemplo** *(opcional)*
+
+```bash
+composer db:seed
+```
+
+**8. Abrir no browser**
+
+```
+http://127.0.0.1:8000
+```
+
+> Se `localhost:8000` não responder, usa sempre `127.0.0.1:8000`.
+
+---
+
 ## Credenciais de teste
 
-> Página visual: `http://localhost:8000/credenciais.php`
+> Página de credenciais: `http://127.0.0.1:8000/credenciais.php`
 
-| Role | Email | Password |
-|------|-------|----------|
+| Perfil | Email | Password |
+|--------|-------|----------|
 | Admin | admin@papmarket.pt | admin123 |
 | Gerente | gerente@papmarket.pt | gerente123 |
 | Caixa | caixa@papmarket.pt | caixa123 |
@@ -17,107 +113,32 @@ Sistema de gestão de supermercado — stock, vendas, RH, caixa e relatórios.
 
 ---
 
-## Base de dados
+## Módulos
 
-- **Nome:** `supermercado`
-- **Host:** `127.0.0.1` · **Porto:** `3306`
-- **Utilizador:** `root` · **Password:** *(em branco)*
-- **phpMyAdmin:** `http://localhost:8080` *(correr `php -S localhost:8080 -t /opt/homebrew/share/phpmyadmin`)*
-
----
-
-Começar (Passo a passo):
-
-1) Importar o esquema da base de dados
-
-   - Usa o ficheiro `schema.sql` para criar as tabelas e dados iniciais. Exemplo:
-
-     mysql -u pap_user -p supermercado < schema.sql
-
-   - Credenciais de exemplo incluídas no dump: `user=pap_user` / `password=pap_pass`.
-
-2) Configurar a ligação à base de dados
-
-   - Edita `config/database.php` para ajustar `DB_HOST`, `DB_NAME`, `DB_USER` e `DB_PASS` conforme o teu ambiente.
-
-3) Instalar dependências PHP
-
-   - Executa: `composer install`
-
-4) Arrancar o servidor de desenvolvimento
-
-   - Usa o script npm/composer para mais conveniência:
-     - `composer serve` (arranca o servidor em `127.0.0.1:8000`)
-     - Alternativa manual: `php -S 127.0.0.1:8000 -t .`
-
-5) Popular dados de exemplo (opcional)
-
-   - Executa: `composer db:seed` (popula vendas, daily_profit, monthly_top_product e outros exemplos)
-
-6) Testes
-
-   - Executa: `composer test` (ou `./vendor/bin/phpunit`) para correr os testes unitários.
-
-7) Aceder à aplicação
-
-   - Abre: `http://127.0.0.1:8000/` — a página inicial (Dashboard) mostra um resumo financeiro e links para módulos.
-
-Notas e dicas:
-
-- Se o site não responde em `localhost:8000`, tenta `127.0.0.1:8000` (evita problemas de resolução IPv6 `::1`).
-- Faz backup da base antes de aplicar alterações de esquema em ambientes de produção.
-- Para automatizar: podes adicionar mais scripts em `composer.json` ou criar um Makefile para tarefas frequentes.
-
-Funcionalidades incluídas:
-- Scaffold com módulos (`modules/`), includes (`includes/`) e assets (`assets/`).
-- CRUD básico para **produtos** e **fornecedores** (adicionar/editar/eliminar/listar).
-- Funções de negócio em `includes/functions.php` (vendas com IVA, quebras, encomendas, sumário financeiro).
-- Reabastecimento automático (`auto_reorder`) que gera encomendas quando o stock está abaixo do limiar.
-- Dashboard simples com gráfico exemplificativo.
-- **Página de administração:** `modules/db_status.php` — lista todas as tabelas da base de dados, contagem de registos e verifica tabelas esperadas.
-
-Próximos passos sugeridos:
-- Melhorar UI/UX e adicionar validações front-end.
-- Adicionar autenticação e permissões.
-- Implementar alertas por email e análise de perecíveis.
+| Módulo | URL |
+|--------|-----|
+| Dashboard | `/` |
+| PDV / Caixa | `/CAIXA/` |
+| Produtos | `/modules/produtos.php` |
+| Stock | `/modules/stock.php` |
+| Fornecedores | `/modules/fornecedores.php` |
+| Encomendas | `/modules/encomendas.php` |
+| Recursos Humanos | `/modules/rh.php` |
+| Clientes | `/modules/customers.php` |
+| Promoções | `/modules/promocoes.php` |
+| Relatórios | `/modules/relatorios.php` |
+| Analytics | `/modules/analytics.php` |
+| Notificações | `/modules/notifications.php` |
+| Configurações | `/modules/configuracoes.php` |
 
 ---
 
-## Como criar um repositório no GitHub, push e abrir um PR (passo a passo) ✨
+## Documentação
 
-Siga estes passos para publicar o código no GitHub e criar um Pull Request com as alterações que fiz (branch `fix/migration-add-created_at`):
-
-1) Instalar e autenticar o GitHub CLI (recomendado):
-
-   - macOS (Homebrew):
-     - `brew install gh`
-     - `gh auth login` (segue as instruções interactivas; escolhe GitHub.com, autenticação via browser e autoriza com o teu usuário)
-
-2) Configurar o remote (criar o repositório no GitHub):
-
-   - Se preferes criar o repositório manualmente no GitHub, cria um repo (ex.: `vascoruas/PAP_projeto`) e depois adiciona o remote:
-     - `git remote add origin git@github.com:USERNAME/REPO.git`
-
-   - Ou usar o GitHub CLI para criar e configurar o remote automaticamente:
-     - `gh repo create USERNAME/REPO --public --source=. --remote=origin --push`
-     - Substitui `USERNAME/REPO` pelo nome desejado (usa `--private` se preferires privado).
-
-3) Fazer push da branch e abrir o PR:
-
-   - `git checkout fix/migration-add-created_at`
-   - `git push -u origin fix/migration-add-created_at`
-   - Criar o Pull Request com `gh` (recomendado):
-     - `gh pr create --fill --title "Ensure orders.created_at migration" --body "Add migration step to ensure orders.created_at exists; also make list_orders tolerant to missing column."`
-
-   - Se preferires, podes criar o PR manualmente pela interface web do GitHub (vai a "Compare & pull request").
-
-4) Notas úteis:
-
-   - Testes locais: antes de abrir o PR executa `composer test` ou `./vendor/bin/phpunit`.
-   - Inclui no corpo do PR uma descrição das mudanças e o motivo (já coloquei sugestões no commit message).
-
-Se preferires, faço eu o passo final (criar o repo e o PR) assim que confirmares que tens o `gh` instalado e autenticado, ou se preferires usar outro repositório já existente diz o nome e eu o utilizo.
+- `Manual_Utilizador_Mercantec.pdf` — manual completo de utilizador e guia de instalação
+- `Mercantec_PAP_Vasco_Ruas.docx` — relatório PAP
+- `Secao_Modelo_Dados_PAP.docx` — secção de modelo de dados do relatório
 
 ---
 
-(Adicionei estas instruções para facilitar a subida e o PR — podes editá-las conforme necessário.)
+PAP 2025/2026 — Vasco Ruas
