@@ -127,8 +127,8 @@ require_once __DIR__ . '/../includes/header.php';
             <div>
                 <label class="form-label">Tipo</label>
                 <select name="type" class="form-select" required>
-                    <option value="in">📥 Entrada</option>
-                    <option value="out">📤 Saída</option>
+                    <option value="in"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Entrada</option>
+                    <option value="out"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg> Saída</option>
                 </select>
             </div>
             <div>
@@ -158,7 +158,7 @@ require_once __DIR__ . '/../includes/header.php';
     </div>
     <div><label class="form-label">Produto</label><input type="text" name="search" class="form-input" placeholder="Nome..." value="<?= htmlspecialchars($search) ?>"></div>
     <button type="submit" class="btn btn-secondary">Filtrar</button>
-    <a href="?<?= http_build_query(array_merge($_GET, ['export'=>'csv'])) ?>" class="btn btn-secondary">⬇ CSV</a>
+    <a href="?<?= http_build_query(array_merge($_GET, ['export'=>'csv'])) ?>" class="btn btn-secondary"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/></svg> CSV</a>
 </form>
 
 <!-- Tabela -->
@@ -178,7 +178,7 @@ require_once __DIR__ . '/../includes/header.php';
                 <td style="white-space:nowrap"><?= date('d/m/Y H:i', strtotime($m['created_at'])) ?></td>
                 <td><?= htmlspecialchars($m['product_name']) ?></td>
                 <td style="color:var(--text-muted)"><?= htmlspecialchars($m['category']) ?></td>
-                <td class="type-<?= $m['type'] ?>"><?= $m['type']==='in'?'📥 Entrada':'📤 Saída' ?></td>
+                <td class="type-<?= $m['type'] ?>"><?= $m['type']==='in'?'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Entrada':'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg> Saída' ?></td>
                 <td><strong><?= $m['qty'] ?></strong></td>
                 <td style="color:var(--text-muted)"><?= $m['previous_stock'] ?></td>
                 <td><strong><?= $m['new_stock'] ?></strong></td>

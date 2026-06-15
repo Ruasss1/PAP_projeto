@@ -82,7 +82,7 @@ if (isset($_GET['success'])) {
         body {
             background: #0a0a0a;
             color: #ffffff;
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
             line-height: 1.6;
         }
         .container { max-width: 860px; margin: 0 auto; padding: 32px; }
@@ -360,11 +360,11 @@ if (isset($_GET['success'])) {
                             <input type="hidden" name="action" value="mark_paid">
                             <button type="submit" class="btn btn-success"
                                 onclick="return confirm('Confirmar pagamento desta folha?');">
-                                ✓ Marcar como Pago
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Marcar como Pago
                             </button>
                         </form>
                     <?php endif; ?>
-                    <button class="btn btn-outline" onclick="window.print()">🖨 Imprimir</button>
+                    <button class="btn btn-outline" onclick="window.print()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg> Imprimir</button>
                     <a href="/admin/payroll/list.php?month=<?php echo $month_str; ?>&year=<?php echo $year_str; ?>"
                        class="btn btn-primary">← Voltar</a>
                 </div>

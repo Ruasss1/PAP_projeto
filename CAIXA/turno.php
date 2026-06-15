@@ -156,90 +156,249 @@ if ($current_shift) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestao de Turno | POS Premium</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/assets/css/premium.css">
-    <link rel="stylesheet" href="/assets/css/master-ui.css?v=<?= time() ?>">
+    <link rel="stylesheet" href="/assets/css/design-system.css?v=<?= time() ?>">
     <script>(function(){const t=localStorage.getItem('pap-theme')||'dark';document.documentElement.setAttribute('data-theme',t);})();</script>
     <style>
+        /* ── Reset & base ─────────────────────────────────────────────────── */
         *{margin:0;padding:0;box-sizing:border-box}
-        body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg-primary);min-height:100vh;color:var(--text-primary);padding:24px}
-        .container{max-width:1400px;margin:0 auto}
-        .header{display:flex;justify-content:space-between;align-items:center;margin-bottom:32px;padding-bottom:24px;border-bottom:1px solid var(--border)}
-        .header h1{font-size:28px;font-weight:700;display:flex;align-items:center;gap:12px}
-        .back-btn{display:flex;align-items:center;gap:8px;padding:12px 20px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:var(--radius);color:var(--text-secondary);text-decoration:none;font-size:14px;font-weight:500;transition:all 0.2s}
-        .back-btn:hover{background:var(--accent);border-color:var(--accent);color:white}
-        .alert{padding:16px 20px;border-radius:var(--radius);margin-bottom:24px;font-size:14px;display:flex;align-items:center;gap:10px}
-        .alert-success{background:rgba(34,197,94,0.12);color:var(--success);border:1px solid rgba(34,197,94,0.3)}
-        .alert-danger{background:rgba(239,68,68,0.12);color:var(--danger);border:1px solid rgba(239,68,68,0.3)}
-        .stats-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:16px;margin-bottom:24px}
-        .stat-card{background:var(--bg-secondary);border:1px solid var(--border);border-radius:var(--radius);padding:20px}
-        .stat-icon{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:14px;background:var(--bg-tertiary)}
-        .stat-value{font-size:22px;font-weight:700;margin-bottom:4px}
-        .stat-value.positive{color:var(--success)}
-        .stat-label{font-size:12px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.4px}
-        .shift-info-bar{background:var(--bg-secondary);border:1px solid var(--border);border-radius:var(--radius);padding:16px 24px;margin-bottom:24px;display:flex;gap:28px;align-items:center;flex-wrap:wrap}
-        .shift-info-item{display:flex;align-items:center;gap:8px}
-        .shift-info-label{font-size:11px;color:var(--text-muted);text-transform:uppercase}
-        .shift-info-value{font-size:14px;font-weight:600}
-        .shift-status-badge{margin-left:auto;display:flex;align-items:center;gap:6px;padding:6px 14px;border-radius:20px;font-size:13px;font-weight:600;background:rgba(34,197,94,0.15);color:var(--success);border:1px solid rgba(34,197,94,0.3)}
-        .shift-status-dot{width:8px;height:8px;border-radius:50%;background:var(--success);animation:pulse 2s infinite}
-        @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
-        .tabs{display:flex;gap:4px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:var(--radius);padding:6px;margin-bottom:24px}
-        .tab-btn{flex:1;padding:12px 16px;background:transparent;border:none;border-radius:8px;color:var(--text-muted);font-size:13px;font-weight:500;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;justify-content:center;gap:7px;font-family:inherit}
-        .tab-btn.active{background:var(--bg-tertiary);color:var(--text-primary)}
+        body{
+            font-family:'Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,sans-serif;
+            background:var(--bg-primary);
+            min-height:100vh;
+            color:var(--text-primary);
+            padding:28px 24px;
+            font-size:14px;
+            line-height:1.5;
+        }
+        .container{max-width:1440px;margin:0 auto}
+
+        /* ── Header ───────────────────────────────────────────────────────── */
+        .header{
+            display:flex;justify-content:space-between;align-items:center;
+            margin-bottom:28px;padding-bottom:20px;
+            border-bottom:1px solid var(--border);
+        }
+        .header h1{
+            font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;
+            font-size:26px;font-weight:700;letter-spacing:-.01em;
+            display:flex;align-items:center;gap:12px;
+        }
+        .back-btn{
+            display:inline-flex;align-items:center;gap:7px;
+            padding:9px 18px;
+            background:var(--bg-secondary);border:1px solid var(--border);
+            border-radius:8px;color:var(--text-secondary);
+            text-decoration:none;font-size:13px;font-weight:500;
+            transition:all .18s;
+        }
+        .back-btn:hover{background:var(--bg-hover);border-color:var(--border-light);color:var(--text-primary)}
+
+        /* ── Alerts ───────────────────────────────────────────────────────── */
+        .alert{
+            padding:14px 18px;border-radius:10px;
+            margin-bottom:20px;font-size:13.5px;
+            display:flex;align-items:center;gap:10px;
+            border-left:3px solid;
+        }
+        .alert-success{background:var(--success-subtle);color:var(--success);border-color:var(--success)}
+        .alert-danger{background:var(--danger-subtle);color:var(--danger);border-color:var(--danger)}
+
+        /* ── Stats grid ───────────────────────────────────────────────────── */
+        .stats-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-bottom:20px}
+        .stat-card{
+            background:var(--bg-secondary);border:1px solid var(--border);
+            border-radius:12px;padding:18px 20px;
+            position:relative;overflow:hidden;
+        }
+        .stat-card::before{
+            content:'';position:absolute;top:0;left:0;
+            width:3px;height:100%;border-radius:3px 0 0 3px;
+            background:var(--border);
+        }
+        .stat-card.card-green::before{background:var(--success)}
+        .stat-card.card-red::before{background:var(--danger)}
+        .stat-card.card-neutral::before{background:var(--border-light)}
+        .stat-icon{
+            width:38px;height:38px;border-radius:9px;
+            display:flex;align-items:center;justify-content:center;
+            margin-bottom:12px;background:var(--bg-tertiary);
+            flex-shrink:0;
+        }
+        .stat-value{
+            font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;
+            font-size:21px;font-weight:700;margin-bottom:3px;letter-spacing:-.01em;
+        }
+        .stat-value.v-green{color:var(--success)}
+        .stat-value.v-red{color:var(--danger)}
+        .stat-label{font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;font-weight:500}
+
+        /* ── Shift info bar ───────────────────────────────────────────────── */
+        .shift-info-bar{
+            background:var(--bg-secondary);border:1px solid var(--border);
+            border-radius:12px;padding:14px 22px;
+            margin-bottom:20px;
+            display:flex;gap:0;align-items:center;flex-wrap:wrap;
+        }
+        .shift-info-item{
+            display:flex;align-items:center;gap:10px;
+            padding:0 22px;
+            border-right:1px solid var(--border);
+        }
+        .shift-info-item:first-child{padding-left:0}
+        .shift-info-item:last-of-type{border-right:none}
+        .shift-info-label{font-size:10.5px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px;font-weight:500}
+        .shift-info-value{font-size:13.5px;font-weight:600;line-height:1.2}
+        .shift-info-value.v-red{color:var(--danger)}
+        .shift-status-badge{
+            margin-left:auto;padding-left:22px;
+            display:flex;align-items:center;gap:6px;
+            font-size:12.5px;font-weight:600;
+            color:var(--success);
+        }
+        .shift-status-dot{width:7px;height:7px;border-radius:50%;background:var(--success);animation:pulse 2s infinite;flex-shrink:0}
+        @keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+
+        /* ── Tabs ─────────────────────────────────────────────────────────── */
+        .tabs{
+            display:flex;gap:2px;
+            background:var(--bg-secondary);border:1px solid var(--border);
+            border-radius:10px;padding:5px;
+            margin-bottom:20px;
+        }
+        .tab-btn{
+            flex:1;padding:10px 12px;
+            background:transparent;border:none;border-radius:7px;
+            color:var(--text-muted);font-size:12.5px;font-weight:500;
+            cursor:pointer;transition:all .18s;
+            display:flex;align-items:center;justify-content:center;gap:6px;
+            font-family:inherit;white-space:nowrap;
+        }
+        .tab-btn.active{background:var(--bg-tertiary);color:var(--text-primary);font-weight:600}
         .tab-btn:hover:not(.active){color:var(--text-secondary)}
         .tab-panel{display:none}
         .tab-panel.active{display:block}
-        .table-card{background:var(--bg-secondary);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
-        .table-header{display:flex;justify-content:space-between;align-items:center;padding:20px 24px;border-bottom:1px solid var(--border)}
-        .table-header h2{font-size:18px;font-weight:600;display:flex;align-items:center;gap:10px}
+
+        /* ── Table card ───────────────────────────────────────────────────── */
+        .table-card{background:var(--bg-secondary);border:1px solid var(--border);border-radius:12px;overflow:hidden}
+        .table-header{display:flex;justify-content:space-between;align-items:center;padding:18px 22px;border-bottom:1px solid var(--border)}
+        .table-header h2{font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:17px;font-weight:700;display:flex;align-items:center;gap:9px}
         table{width:100%;border-collapse:collapse}
-        th,td{padding:14px 24px;text-align:left;border-bottom:1px solid var(--border)}
-        th{font-size:11px;font-weight:500;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;background:var(--bg-tertiary)}
+        th,td{padding:12px 22px;text-align:left;border-bottom:1px solid var(--border)}
+        th{font-size:10.5px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;background:var(--bg-tertiary)}
         tr:last-child td{border-bottom:none}
-        tr:hover td{background:var(--bg-tertiary)}
-        .badge{display:inline-flex;align-items:center;gap:5px;padding:5px 12px;border-radius:6px;font-size:12px;font-weight:500}
-        .badge-sangria{background:rgba(239,68,68,.15);color:var(--danger)}
-        .badge-reforco{background:rgba(34,197,94,.15);color:var(--success)}
-        .badge-abertura{background:rgba(59,130,246,.15);color:#60a5fa}
-        .badge-despesa{background:rgba(245,158,11,.15);color:var(--warning)}
+        tr:hover td{background:var(--bg-hover)}
+
+        /* ── Badges ───────────────────────────────────────────────────────── */
+        .badge{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:6px;font-size:11.5px;font-weight:600;letter-spacing:.01em}
+        .badge-sangria{background:var(--danger-subtle);color:var(--danger)}
+        .badge-reforco{background:var(--success-subtle);color:var(--success)}
+        .badge-abertura{background:var(--info-subtle);color:var(--info)}
+        .badge-despesa{background:var(--danger-subtle);color:var(--danger)}
         .badge-muted{background:var(--bg-tertiary);color:var(--text-muted)}
-        .amount-positive{color:var(--success);font-weight:700}
-        .amount-negative{color:var(--danger);font-weight:700}
-        .amount-neutral{color:var(--warning);font-weight:700}
-        .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px}
-        .form-card{background:var(--bg-secondary);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
-        .form-card-header{padding:18px 24px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}
-        .form-card-header h3{font-size:16px;font-weight:600}
-        .form-card-body{padding:24px}
-        .form-group{margin-bottom:16px}
-        .form-group label{display:block;font-size:12px;color:var(--text-muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:.4px}
-        .form-group input,.form-group select,.form-group textarea{width:100%;padding:12px 16px;background:var(--bg-tertiary);border:1px solid var(--border);border-radius:8px;color:var(--text-primary);font-size:14px;font-family:inherit;transition:border-color .2s}
-        .form-group input:focus,.form-group select:focus,.form-group textarea:focus{outline:none;border-color:var(--accent)}
+
+        /* ── Money values ─────────────────────────────────────────────────── */
+        .amount-positive{color:var(--success);font-weight:700;font-variant-numeric:tabular-nums}
+        .amount-negative{color:var(--danger);font-weight:700;font-variant-numeric:tabular-nums}
+
+        /* ── Forms ────────────────────────────────────────────────────────── */
+        .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+        .form-card{background:var(--bg-secondary);border:1px solid var(--border);border-radius:12px;overflow:hidden}
+        .form-card-header{
+            padding:16px 22px;border-bottom:1px solid var(--border);
+            display:flex;align-items:center;gap:10px;
+        }
+        .form-card-header h3{font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:15px;font-weight:700}
+        .form-card-body{padding:22px}
+        .form-group{margin-bottom:15px}
+        .form-group label{
+            display:block;font-size:11px;color:var(--text-muted);
+            margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px;font-weight:600;
+        }
+        .form-group input,.form-group select,.form-group textarea{
+            width:100%;padding:11px 15px;
+            background:var(--bg-tertiary);border:1px solid var(--border);
+            border-radius:8px;color:var(--text-primary);
+            font-size:13.5px;font-family:inherit;transition:border-color .18s;
+        }
+        .form-group input:focus,.form-group select:focus,.form-group textarea:focus{
+            outline:none;border-color:var(--border-focus);
+            box-shadow:0 0 0 3px var(--accent-ring);
+        }
         .form-group select option{background:var(--bg-secondary)}
-        .input-large{font-size:24px !important;text-align:center;font-weight:700;padding:16px !important}
-        .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:13px 24px;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;transition:all .2s;width:100%;font-family:inherit}
-        .btn-success{background:var(--success);color:white}
-        .btn-danger{background:var(--danger);color:white}
-        .btn-warning{background:var(--warning);color:#000}
-        .btn-orange{background:#f97316;color:white}
-        .btn:hover{opacity:.88;transform:translateY(-1px)}
-        .expected-row{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;background:var(--bg-tertiary);border-radius:8px;margin-bottom:12px;font-size:14px}
-        .no-shift-wrapper{display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start}
-        .no-shift-info{background:var(--bg-secondary);border:1px solid var(--border);border-radius:var(--radius);padding:48px 32px;text-align:center}
-        .no-shift-info h2{font-size:22px;margin-bottom:8px}
-        .no-shift-info p{color:var(--text-muted);font-size:14px;line-height:1.6}
-        .section-title{font-size:15px;font-weight:600;margin-bottom:16px;margin-top:32px;display:flex;align-items:center;gap:8px;color:var(--text-secondary)}
-        .diff-positive{color:var(--success)}
-        .diff-negative{color:var(--danger)}
-        .empty-state{text-align:center;padding:48px;color:var(--text-muted)}
-        .empty-state p{font-size:14px;margin-top:8px}
-        .breakdown-list{display:flex;flex-direction:column;gap:10px}
-        .breakdown-item{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:var(--bg-tertiary);border-radius:8px;font-size:14px}
-        .breakdown-item .label{color:var(--text-muted)}
-        .breakdown-divider{border:none;border-top:1px solid var(--border);margin:6px 0}
-        .breakdown-item.total{background:transparent;padding:10px 14px 0;font-size:16px;font-weight:700}
-        .help-text{font-size:13px;color:var(--text-muted);margin-bottom:20px;line-height:1.5}
+        .input-large{font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:28px !important;text-align:center;font-weight:700;padding:18px !important;letter-spacing:-.01em}
+        .btn{
+            display:inline-flex;align-items:center;justify-content:center;gap:8px;
+            padding:12px 22px;border:none;border-radius:9px;
+            font-size:13.5px;font-weight:600;cursor:pointer;
+            transition:all .18s;width:100%;font-family:inherit;
+        }
+        .btn-success{background:var(--success);color:#fff}
+        .btn-danger{background:var(--danger);color:#fff}
+        .btn-warning{background:var(--warning);color:#fff}
+        .btn-warning-soft{background:var(--warning-subtle);color:var(--warning);border:1px solid rgba(161,98,7,.25)}
+        .btn:hover{opacity:.87;transform:translateY(-1px)}
+
+        /* ── Breakdown & summary ──────────────────────────────────────────── */
+        .expected-row{
+            display:flex;justify-content:space-between;align-items:center;
+            padding:11px 15px;background:var(--bg-tertiary);
+            border-radius:8px;margin-bottom:10px;font-size:13.5px;
+        }
+        .breakdown-list{display:flex;flex-direction:column;gap:8px}
+        .breakdown-item{
+            display:flex;justify-content:space-between;align-items:center;
+            padding:10px 14px;background:var(--bg-tertiary);
+            border-radius:8px;font-size:13.5px;
+        }
+        .breakdown-item .label{color:var(--text-muted);font-size:13px}
+        .breakdown-divider{border:none;border-top:1px solid var(--border);margin:4px 0}
+        .breakdown-item.total{
+            background:transparent;padding:10px 14px 0;
+            font-size:15px;font-weight:700;
+        }
+
+        /* ── Misc ─────────────────────────────────────────────────────────── */
+        .no-shift-wrapper{display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:start}
+        .no-shift-info{
+            background:var(--bg-secondary);border:1px solid var(--border);
+            border-radius:12px;padding:52px 32px;text-align:center;
+        }
+        .no-shift-info h2{font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:22px;margin-bottom:10px}
+        .no-shift-info p{color:var(--text-muted);font-size:13.5px;line-height:1.65}
+        .section-title{
+            font-size:13.5px;font-weight:600;
+            margin-bottom:14px;margin-top:28px;
+            display:flex;align-items:center;gap:8px;
+            color:var(--text-secondary);text-transform:uppercase;letter-spacing:.04em;
+        }
+        .diff-positive{color:var(--success);font-weight:700}
+        .diff-negative{color:var(--danger);font-weight:700}
+        .empty-state{text-align:center;padding:48px 24px;color:var(--text-muted)}
+        .empty-state p{font-size:13.5px;margin-top:10px}
+        .help-text{font-size:13px;color:var(--text-muted);margin-bottom:18px;line-height:1.6}
+
+        /* ── Light mode overrides ─────────────────────────────────────────── */
+        [data-theme="light"] body { background: var(--bg-primary); color: var(--text-primary); }
+        [data-theme="light"] .stat-card { background: var(--bg-secondary); border-color: var(--border); box-shadow: var(--shadow); }
+        [data-theme="light"] .stat-icon { background: var(--bg-tertiary); }
+        [data-theme="light"] .shift-info-bar { background: var(--bg-secondary); border-color: var(--border); box-shadow: var(--shadow-xs); }
+        [data-theme="light"] .table-card { background: var(--bg-secondary); border-color: var(--border); box-shadow: var(--shadow); }
+        [data-theme="light"] .table-header { border-bottom-color: var(--border); }
+        [data-theme="light"] th { background: var(--bg-tertiary); color: var(--text-muted); border-bottom-color: var(--border); }
+        [data-theme="light"] td { border-bottom-color: var(--border); color: var(--text-primary); }
+        [data-theme="light"] tr:hover td { background: var(--bg-hover); color: var(--text-primary); }
+        [data-theme="light"] .form-card { background: var(--bg-secondary); border-color: var(--border); box-shadow: var(--shadow); }
+        [data-theme="light"] .form-card-header { border-bottom-color: var(--border); }
+        [data-theme="light"] .form-group input,
+        [data-theme="light"] .form-group select,
+        [data-theme="light"] .form-group textarea { background: var(--bg-secondary); border-color: var(--border); color: var(--text-primary); }
+        [data-theme="light"] .expected-row { background: var(--bg-tertiary); }
+        [data-theme="light"] .breakdown-item { background: var(--bg-tertiary); }
+        [data-theme="light"] .tabs { background: var(--bg-secondary); border-color: var(--border); }
+        [data-theme="light"] .tab-btn.active { background: var(--bg-card); color: var(--text-primary); box-shadow: var(--shadow-xs); }
+        [data-theme="light"] .no-shift-info { background: var(--bg-secondary); border-color: var(--border); box-shadow: var(--shadow); }
+        [data-theme="light"] .back-btn { background: var(--bg-secondary); border-color: var(--border); color: var(--text-secondary); }
+        [data-theme="light"] .shift-info-item { border-right-color: var(--border); }
     </style>
 </head>
 <body>
@@ -270,29 +429,29 @@ if ($current_shift) {
 
     <?php if ($current_shift): ?>
     <div class="stats-grid">
-        <div class="stat-card">
-            <div class="stat-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#60a5fa" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg></div>
+        <div class="stat-card card-neutral">
+            <div class="stat-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="opacity:.6"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg></div>
             <div class="stat-value">€<?= number_format($current_shift['opening_balance'],2) ?></div>
             <div class="stat-label">Fundo Inicial</div>
         </div>
-        <div class="stat-card">
-            <div class="stat-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div>
-            <div class="stat-value positive">€<?= number_format($vendas_cash,2) ?></div>
+        <div class="stat-card card-green">
+            <div class="stat-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div>
+            <div class="stat-value v-green">€<?= number_format($vendas_cash,2) ?></div>
             <div class="stat-label">Vendas Dinheiro</div>
         </div>
-        <div class="stat-card">
-            <div class="stat-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg></div>
-            <div class="stat-value" style="color:#a78bfa">€<?= number_format($vendas_card,2) ?></div>
+        <div class="stat-card card-green">
+            <div class="stat-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg></div>
+            <div class="stat-value v-green">€<?= number_format($vendas_card,2) ?></div>
             <div class="stat-label">Vendas Cartao/MB</div>
         </div>
-        <div class="stat-card">
-            <div class="stat-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#f97316" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+        <div class="stat-card card-neutral">
+            <div class="stat-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="opacity:.6"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
             <div class="stat-value"><?= $num_vendas ?></div>
-            <div class="stat-label">N Vendas</div>
+            <div class="stat-label">N.º Vendas</div>
         </div>
-        <div class="stat-card" style="border-color:rgba(34,197,94,.3)">
-            <div class="stat-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div>
-            <div class="stat-value positive">€<?= number_format($current_balance,2) ?></div>
+        <div class="stat-card card-green">
+            <div class="stat-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div>
+            <div class="stat-value v-green">€<?= number_format($current_balance,2) ?></div>
             <div class="stat-label">Saldo Atual</div>
         </div>
     </div>
@@ -316,11 +475,11 @@ if ($current_shift) {
         </div>
         <div class="shift-info-item">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-            <div><div class="shift-info-label">Sangrias</div><div class="shift-info-value" style="color:var(--danger)">-€<?= number_format($total_sangrias,2) ?></div></div>
+            <div><div class="shift-info-label">Sangrias</div><div class="shift-info-value v-red">-€<?= number_format($total_sangrias,2) ?></div></div>
         </div>
         <div class="shift-info-item">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-            <div><div class="shift-info-label">Despesas</div><div class="shift-info-value" style="color:var(--warning)">-€<?= number_format($total_despesas,2) ?></div></div>
+            <div><div class="shift-info-label">Despesas</div><div class="shift-info-value v-red">-€<?= number_format($total_despesas,2) ?></div></div>
         </div>
         <div class="shift-status-badge"><div class="shift-status-dot"></div>Em curso</div>
     </div>
@@ -447,7 +606,7 @@ if ($current_shift) {
                         <div class="form-group"><label>Categoria</label><select name="category"><option>Fornecedor</option><option>Material de Limpeza</option><option>Embalagens</option><option>Transporte</option><option>Alimentacao Staff</option><option>Reparacao / Manutencao</option><option>Outro</option></select></div>
                         <div class="form-group"><label>Valor (€) - Saldo: €<?= number_format($current_balance,2) ?></label><input type="number" name="amount" step="0.01" min="0.01" max="<?= $current_balance ?>" class="input-large" placeholder="0.00" required></div>
                         <div class="form-group"><label>Descricao *</label><input type="text" name="reason" placeholder="Ex: Compra de sacos, pagamento fornecedor..." required></div>
-                        <button type="submit" class="btn btn-orange"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>Registar Despesa</button>
+                        <button type="submit" class="btn btn-danger"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>Registar Despesa</button>
                     </form>
                 </div>
             </div>
@@ -457,8 +616,8 @@ if ($current_shift) {
                     <?php $despesas=array_filter($operations,fn($o)=>$o['operation_type']==='despesa'); ?>
                     <?php if(empty($despesas)): ?><div class="empty-state" style="padding:32px"><p>Sem despesas neste turno</p></div>
                     <?php else: ?><div class="breakdown-list">
-                        <?php foreach($despesas as $d): ?><div class="breakdown-item"><div><div style="font-size:13px"><?= htmlspecialchars($d['reason']) ?></div><div style="font-size:11px;color:var(--text-muted)"><?= date('H:i',strtotime($d['created_at'])) ?></div></div><span class="amount-neutral">-€<?= number_format($d['amount'],2) ?></span></div><?php endforeach; ?>
-                        <hr class="breakdown-divider"><div class="breakdown-item total"><span>Total Despesas</span><span class="amount-neutral">-€<?= number_format($total_despesas,2) ?></span></div>
+                        <?php foreach($despesas as $d): ?><div class="breakdown-item"><div><div style="font-size:13px"><?= htmlspecialchars($d['reason']) ?></div><div style="font-size:11px;color:var(--text-muted)"><?= date('H:i',strtotime($d['created_at'])) ?></div></div><span class="amount-negative">-€<?= number_format($d['amount'],2) ?></span></div><?php endforeach; ?>
+                        <hr class="breakdown-divider"><div class="breakdown-item total"><span>Total Despesas</span><span class="amount-negative">-€<?= number_format($total_despesas,2) ?></span></div>
                     </div><?php endif; ?>
                 </div>
             </div>
@@ -477,7 +636,7 @@ if ($current_shift) {
                         <div class="expected-row"><span style="color:var(--text-muted)">Saldo esperado:</span><strong>€<?= number_format($current_balance,2) ?></strong></div>
                         <div class="expected-row"><span style="color:var(--text-muted)">Diferenca:</span><strong id="diffValue">€0.00</strong></div>
                         <div class="form-group" style="margin-top:16px"><label>Notas (opcional)</label><textarea name="notes" rows="2" placeholder="Observacoes..."></textarea></div>
-                        <button type="submit" class="btn btn-warning"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>Confirmar Fecho de Turno</button>
+                        <button type="submit" class="btn btn-warning-soft"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>Confirmar Fecho de Turno</button>
                     </form>
                 </div>
             </div>
@@ -489,7 +648,7 @@ if ($current_shift) {
                         <div class="breakdown-item"><span class="label">+ Vendas a Dinheiro</span><span class="amount-positive">+€<?= number_format($vendas_cash,2) ?></span></div>
                         <div class="breakdown-item"><span class="label">+ Reforcos</span><span class="amount-positive">+€<?= number_format($total_reforcos,2) ?></span></div>
                         <div class="breakdown-item"><span class="label">- Sangrias</span><span class="amount-negative">-€<?= number_format($total_sangrias,2) ?></span></div>
-                        <div class="breakdown-item"><span class="label">- Despesas</span><span class="amount-neutral">-€<?= number_format($total_despesas,2) ?></span></div>
+                        <div class="breakdown-item"><span class="label">- Despesas</span><span class="amount-negative">-€<?= number_format($total_despesas,2) ?></span></div>
                         <hr class="breakdown-divider">
                         <div class="breakdown-item total"><span>Saldo Esperado</span><span class="amount-positive">€<?= number_format($current_balance,2) ?></span></div>
                         <hr class="breakdown-divider">
@@ -557,8 +716,8 @@ if ($current_shift) {
 
 </div>
 <button class="theme-toggle" onclick="toggleTheme()" title="Alternar tema">
-    <span class="icon-moon">🌙</span>
-    <span class="icon-sun">☀️</span>
+    <span class="icon-moon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></span>
+    <span class="icon-sun"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></span>
 </button>
 <script>
 function toggleTheme(){const h=document.documentElement;const n=h.getAttribute('data-theme')==='dark'?'light':'dark';h.setAttribute('data-theme',n);localStorage.setItem('pap-theme',n);}

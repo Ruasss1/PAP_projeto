@@ -226,10 +226,10 @@ require_once __DIR__ . '/../includes/header.php';
             <div style="font-size: 24px;">
                 <?php
                 $icon = match($alert['type'] ?? 'info') {
-                    'error' => '❌',
-                    'warning' => '⚠️',
-                    'success' => '✅',
-                    default => '🔔'
+                    'error' => '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>',
+                    'warning' => '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>',
+                    'success' => '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>',
+                    default => '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>'
                 };
                 echo $icon;
                 ?>
@@ -242,7 +242,7 @@ require_once __DIR__ . '/../includes/header.php';
                 </div>
             </div>
             <?php if (!$alert['is_read']): ?>
-            <a href="?mark_read=<?= $alert['id'] ?>" class="btn btn-secondary btn-sm">✓</a>
+            <a href="?mark_read=<?= $alert['id'] ?>" class="btn btn-secondary btn-sm"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></a>
             <?php endif; ?>
         </div>
         <?php endforeach; ?>
@@ -254,7 +254,7 @@ require_once __DIR__ . '/../includes/header.php';
 <?php if (empty($low_stock_products) && empty($expiring_products) && empty($expired_products) && empty($system_alerts)): ?>
 <div class="card">
     <div class="card-body" style="padding: 64px; text-align: center;">
-        <div style="font-size: 64px; margin-bottom: 16px;">✅</div>
+        <div style="font-size: 64px; margin-bottom: 16px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
         <h3 style="margin-bottom: 8px;">Tudo em Ordem!</h3>
         <p style="color: var(--text-muted);">Não existem alertas ou notificações pendentes.</p>
     </div>

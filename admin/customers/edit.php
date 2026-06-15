@@ -217,21 +217,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     
     <div class="edit-container">
         <div class="header">
-            <h1>✏️ Editar Cliente</h1>
+            <h1><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg> Editar Cliente</h1>
             <a href="index.php" class="btn-back">← Voltar</a>
         </div>
         
         <?php if ($message): ?>
-            <div class="alert alert-success">✅ <?= htmlspecialchars($message) ?></div>
+            <div class="alert alert-success"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> <?= htmlspecialchars($message) ?></div>
         <?php endif; ?>
         
         <?php if ($error): ?>
-            <div class="alert alert-error">❌ <?= htmlspecialchars($error) ?></div>
+            <div class="alert alert-error"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg> <?= htmlspecialchars($error) ?></div>
         <?php endif; ?>
         
         <!-- Cartão de Fidelidade -->
         <div class="loyalty-card">
-            🎫 <?= htmlspecialchars($customer['loyalty_card_number']) ?>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v2z"/></svg> <?= htmlspecialchars($customer['loyalty_card_number']) ?>
         </div>
         
         <!-- Informação de Pontos -->
@@ -299,7 +299,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <textarea name="notes"><?= htmlspecialchars($customer['notes'] ?? '') ?></textarea>
                 </div>
                 
-                <button type="submit" class="btn-save">💾 Guardar Alterações</button>
+                <button type="submit" class="btn-save"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg> Guardar Alterações</button>
             </form>
         </div>
     </div>

@@ -30,7 +30,7 @@ $end_date = date('Y-m-d');
 
 <div class="dashboard-container">
     <div class="dashboard-header">
-        <h1>📊 Análises Avançadas</h1>
+        <h1><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg> Análises Avançadas</h1>
         <div class="period-selector">
             <select id="period-select" onchange="changePeriod(this.value)">
                 <option value="7" <?= $period == 7 ? 'selected' : '' ?>>Última Semana</option>
@@ -139,7 +139,7 @@ $end_date = date('Y-m-d');
 
         <!-- Top Produtos -->
         <div class="analytics-section">
-            <h2>🏆 Top 10 Produtos Mais Vendidos</h2>
+            <h2><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="8 21 12 21 16 21"/><line x1="12" y1="17" x2="12" y2="21"/><path d="M7 4h10v7a5 5 0 0 1-10 0V4z"/><path d="M5 4a2 2 0 0 0 0 4h-.5"/><path d="M19 4a2 2 0 0 1 0 4h.5"/></svg> Top 10 Produtos Mais Vendidos</h2>
             <table class="analytics-table">
                 <thead>
                     <tr>
@@ -187,7 +187,7 @@ $end_date = date('Y-m-d');
 
         <!-- Vendas por Categoria -->
         <div class="analytics-section">
-            <h2>📦 Vendas por Categoria</h2>
+            <h2><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg> Vendas por Categoria</h2>
             <table class="analytics-table">
                 <thead>
                     <tr>
@@ -236,7 +236,7 @@ $end_date = date('Y-m-d');
 
         <!-- Top Clientes -->
         <div class="analytics-section">
-            <h2>👥 Top Clientes</h2>
+            <h2><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg> Top Clientes</h2>
             <table class="analytics-table">
                 <thead>
                     <tr>

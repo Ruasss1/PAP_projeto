@@ -37,10 +37,7 @@ if (!$db_error && defined('DB_ERROR')) {
   <title>PAP Market</title>
   <link rel="icon" href="/assets/icons/favicon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="/assets/icons/favicon.svg">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/assets/css/master-ui.css?v=<?= time() ?>">
+  <link rel="stylesheet" href="/assets/css/design-system.css?v=<?= time() ?>">
   <script>(function(){var t=localStorage.getItem('pap-theme')||'dark';document.documentElement.setAttribute('data-theme',t)})();</script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -74,7 +71,7 @@ if (!$db_error && defined('DB_ERROR')) {
 
     html { -webkit-font-smoothing: antialiased; height: 100%; }
     body {
-      font-family: 'Inter', system-ui, sans-serif;
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
@@ -91,7 +88,7 @@ if (!$db_error && defined('DB_ERROR')) {
     .bg-deco {
       position: fixed;
       bottom: -120px; right: -40px;
-      font-family: 'Playfair Display', serif;
+      font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;
       font-size: clamp(240px, 28vw, 360px);
       font-weight: 900; line-height: 1;
       color: transparent;
@@ -146,7 +143,7 @@ if (!$db_error && defined('DB_ERROR')) {
     [data-theme="light"] .l-tag { color: #999; }
 
     .headline {
-      font-family: 'Playfair Display', serif;
+      font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;
       font-size: clamp(28px, 3.2vw, 44px);
       font-weight: 900;
       line-height: 1.1; letter-spacing: -.025em;
@@ -163,8 +160,7 @@ if (!$db_error && defined('DB_ERROR')) {
     @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
 
     .l-desc {
-      font-family: 'Playfair Display', serif;
-      font-style: italic; font-size: 13.5px;
+      font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-style:italic; font-size: 13.5px;
       color: #888; line-height: 1.85;
       margin-bottom: 36px;
       opacity: 0; transform: translateY(8px);
@@ -174,8 +170,7 @@ if (!$db_error && defined('DB_ERROR')) {
 
     .feats { list-style: none; display: flex; flex-direction: column; gap: 9px; }
     .feats li {
-      font-family: 'Playfair Display', serif;
-      font-style: italic; font-size: 12.5px;
+      font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-style:italic; font-size: 12.5px;
       color: #777; display: flex; align-items: center; gap: 12px;
       opacity: 0; transform: translateX(-10px);
       transition: opacity .45s, transform .45s;
@@ -184,8 +179,7 @@ if (!$db_error && defined('DB_ERROR')) {
     .feats li::before { content: ''; width: 16px; height: 1px; background: #333; flex-shrink: 0; }
 
     .l-foot {
-      font-family: 'Playfair Display', serif;
-      font-style: italic; font-size: 10.5px;
+      font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-style:italic; font-size: 10.5px;
       color: #444; letter-spacing: .02em;
       margin-top: 40px;
     }
@@ -210,15 +204,14 @@ if (!$db_error && defined('DB_ERROR')) {
     }
 
     .f-title {
-      font-family: 'Playfair Display', serif;
+      font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;
       font-size: 28px; font-weight: 700;
       letter-spacing: -.022em; color: var(--txt);
       line-height: 1.1; margin-bottom: 5px;
     }
 
     .f-sub {
-      font-family: 'Playfair Display', serif;
-      font-style: italic; font-size: 13.5px;
+      font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-style:italic; font-size: 13.5px;
       color: var(--txt2); margin-bottom: 32px; line-height: 1.5;
     }
 
@@ -382,7 +375,7 @@ if (!$db_error && defined('DB_ERROR')) {
     }
     .creds strong { color: var(--txt); font-weight: 500; }
     .creds code {
-      font-family: 'SF Mono', 'Fira Code', monospace; font-size: 11px;
+      font-family: 'Plus Jakarta Sans', monospace; font-size: 11px;
       background: var(--bg3); color: var(--txt);
       padding: 1px 6px; border-radius: 4px; border: 1px solid var(--border);
     }
@@ -390,7 +383,7 @@ if (!$db_error && defined('DB_ERROR')) {
     .f-foot {
       margin-top: 26px; font-size: 11px; color: var(--txt3);
       text-align: center;
-      font-family: 'Playfair Display', serif; font-style: italic;
+      font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-style:italic;
     }
 
     /* Theme toggle */
@@ -415,8 +408,7 @@ if (!$db_error && defined('DB_ERROR')) {
     .page-foot {
       position: relative; z-index: 1;
       margin-top: 24px;
-      font-family: 'Playfair Display', serif;
-      font-style: italic; font-size: 11px;
+      font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-style:italic; font-size: 11px;
       color: var(--txt3); opacity: .4;
     }
 
@@ -461,7 +453,7 @@ if (!$db_error && defined('DB_ERROR')) {
     .l-logo-icon svg { position: relative; z-index: 1; color: rgba(255,255,255,.65); }
     .l-logo-wordmark { display: flex; flex-direction: column; gap: 3px; }
     .l-logo-name {
-      font-family: 'Playfair Display', serif;
+      font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;
       font-size: 17px; font-weight: 700;
       letter-spacing: -.022em; color: rgba(255,255,255,.72);
     }

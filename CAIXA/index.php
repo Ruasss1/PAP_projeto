@@ -105,24 +105,16 @@ $weighted_json = json_encode($weighted_categories);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= $page_title ?> | SuperMarket</title>
     <link rel="icon" href="/assets/icons/favicon.svg" type="image/svg+xml">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/assets/css/premium.css">
-    <link rel="stylesheet" href="/assets/css/master-ui.css?v=<?= time() ?>">
-    <script>
-        (function() {
-            const theme = localStorage.getItem('pap-theme') || 'dark';
-            document.documentElement.setAttribute('data-theme', theme);
-        })();
-    </script>
+    <link rel="stylesheet" href="/assets/css/design-system.css?v=<?= time() ?>">
+    <script>(function(){const t=localStorage.getItem('pap-theme')||'dark';document.documentElement.setAttribute('data-theme',t);})();</script>
     <style>
         * { box-sizing: border-box; }
         body { overflow: hidden; display: flex; height: 100vh; }
 
-        /* SIDEBAR within POS — overlay, does not steal layout space */
+        /* SIDEBAR within POS — collapsible overlay */
         .app-sidebar {
             position: absolute;
-            left: 0;
-            top: 0;
+            left: 0; top: 0;
             z-index: 200;
             height: 100vh;
             width: 52px;
@@ -130,42 +122,36 @@ $weighted_json = json_encode($weighted_categories);
             border-right: 1px solid var(--border);
             display: flex;
             flex-direction: column;
-            transition: width 0.22s cubic-bezier(.4,0,.2,1);
-            overflow-x: hidden;
-            overflow-y: auto;
+            transition: width 0.2s var(--ease);
+            overflow: hidden;
         }
-        .app-sidebar::-webkit-scrollbar { width: 0; }
-        .app-sidebar:hover {
-            width: 220px;
-            box-shadow: 4px 0 24px rgba(0,0,0,0.25);
-        }
+        .app-sidebar:hover { width: 220px; }
         body { position: relative; }
         .app-sidebar .sidebar-header { padding: 14px 8px; border-bottom: 1px solid var(--border); display: flex; align-items: center; overflow: hidden; flex-shrink: 0; }
         .app-sidebar .sidebar-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--text-primary); white-space: nowrap; }
-        .app-sidebar .sidebar-logo-icon { width: 32px; height: 32px; background: var(--bg-tertiary); border: 1px solid var(--border); border-radius: var(--radius); display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
-        .app-sidebar .sidebar-logo-text { font-family: 'Playfair Display', serif; font-weight: 700; font-size: 15px; letter-spacing: -0.02em; opacity: 0; transition: opacity 0.15s ease; white-space: nowrap; }
+        .app-sidebar .sidebar-logo-icon { width: 32px; height: 32px; background: var(--bg-tertiary); border: 1px solid var(--border); border-radius: var(--radius); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .app-sidebar .sidebar-logo-text { font-weight: 700; font-size: 14px; letter-spacing: -0.02em; opacity: 0; transition: opacity 0.2s; white-space: nowrap; }
         .app-sidebar:hover .sidebar-logo-text { opacity: 1; }
         .app-sidebar .sidebar-nav { padding: 10px 6px; flex: 1; overflow-y: auto; overflow-x: hidden; min-height: 0; }
-        .app-sidebar .sidebar-nav::-webkit-scrollbar { width: 3px; }
+        .app-sidebar .sidebar-nav::-webkit-scrollbar { width: 2px; }
         .app-sidebar .sidebar-nav::-webkit-scrollbar-thumb { background: var(--border); border-radius: 100px; }
         .app-sidebar .nav-section { margin-bottom: 14px; }
-        .app-sidebar .nav-section-title { font-size: 9px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted); padding: 0 10px; margin-bottom: 4px; opacity: 0; transition: opacity 0.15s ease; white-space: nowrap; overflow: hidden; }
+        .app-sidebar .nav-section-title { font-size: 9px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted); padding: 0 10px; margin-bottom: 4px; opacity: 0; transition: opacity 0.2s; white-space: nowrap; overflow: hidden; }
         .app-sidebar:hover .nav-section-title { opacity: 1; }
-        .app-sidebar .nav-item { display: flex; align-items: center; gap: 10px; padding: 8px 10px; font-size: 13px; font-weight: 500; color: var(--text-secondary); border-radius: var(--radius); text-decoration: none; transition: background 0.15s, color 0.15s, transform 0.15s; margin-bottom: 1px; position: relative; white-space: nowrap; overflow: hidden; }
+        .app-sidebar .nav-item { display: flex; align-items: center; gap: 10px; padding: 8px 10px; font-size: 13px; font-weight: 500; color: var(--text-secondary); border-radius: var(--radius); text-decoration: none; transition: background 0.2s, color 0.2s; margin-bottom: 1px; position: relative; white-space: nowrap; overflow: hidden; }
         .app-sidebar .nav-item:hover { background: var(--bg-secondary); color: var(--text-primary); }
-        .app-sidebar:hover .nav-item:hover { transform: translateX(2px); }
         .app-sidebar .nav-item.active { background: var(--bg-tertiary); color: var(--text-primary); font-weight: 600; }
         .app-sidebar .nav-item.active::before { content: ''; position: absolute; left: 0; top: 50%; transform: translateY(-50%); width: 2px; height: 14px; background: var(--text-primary); border-radius: 0 2px 2px 0; }
-        .app-sidebar .nav-icon { width: 17px; height: 17px; flex-shrink: 0; opacity: 0.65; }
+        .app-sidebar .nav-icon { width: 16px; height: 16px; flex-shrink: 0; opacity: 0.5; transition: opacity 0.2s; }
         .app-sidebar .nav-item:hover .nav-icon, .app-sidebar .nav-item.active .nav-icon { opacity: 1; }
-        .app-sidebar .nav-item span { opacity: 0; transition: opacity 0.15s ease; }
+        .app-sidebar .nav-item span { opacity: 0; transition: opacity 0.2s; }
         .app-sidebar:hover .nav-item span { opacity: 1; }
         .app-sidebar .nav-badge { background: var(--danger); color: #fff; border-radius: 100px; font-size: 9px; padding: 1px 5px; font-weight: 700; margin-left: auto; min-width: 16px; text-align: center; }
-        .app-sidebar .sidebar-footer { padding: 8px 6px; border-top: 1px solid var(--border); overflow: hidden; }
-        .app-sidebar .user-menu-box { display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: var(--radius); background: var(--bg-secondary); transition: background 0.15s; cursor: pointer; overflow: hidden; }
+        .app-sidebar .sidebar-footer { padding: 8px 6px; border-top: 1px solid var(--border); overflow: hidden; flex-shrink: 0; }
+        .app-sidebar .user-menu-box { display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: var(--radius); background: var(--bg-secondary); transition: background 0.2s; cursor: pointer; overflow: hidden; }
         .app-sidebar .user-menu-box:hover { background: var(--bg-tertiary); }
-        .app-sidebar .user-avatar { width: 28px; height: 28px; border-radius: 50%; background: var(--bg-tertiary); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; flex-shrink: 0; }
-        .app-sidebar .user-info { flex: 1; min-width: 0; opacity: 0; transition: opacity 0.15s ease; }
+        .app-sidebar .user-avatar { width: 28px; height: 28px; border-radius: 50%; background: var(--bg-tertiary); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; flex-shrink: 0; }
+        .app-sidebar .user-info { flex: 1; min-width: 0; opacity: 0; transition: opacity 0.2s; }
         .app-sidebar:hover .user-info { opacity: 1; }
         .app-sidebar .user-name { font-size: 12px; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
         .app-sidebar .user-role { font-size: 10.5px; color: var(--text-muted); }
@@ -182,17 +168,17 @@ $weighted_json = json_encode($weighted_categories);
         /* POS LAYOUT */
         .pos-container {
             display: grid;
-            grid-template-columns: 1fr 420px;
+            grid-template-columns: 1fr 400px;
             flex: 1;
             overflow: hidden;
             background: var(--bg-primary);
         }
-        
+
         /* LEFT PANEL */
         .pos-left {
             display: flex;
             flex-direction: column;
-            padding: 20px 20px 20px 64px;
+            padding: 16px 18px 16px 62px;
             overflow: hidden;
             position: relative;
             background: var(--bg-primary);
@@ -202,23 +188,24 @@ $weighted_json = json_encode($weighted_categories);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding-bottom: 16px;
+            padding-bottom: 14px;
             border-bottom: 1px solid var(--border);
-            margin-bottom: 16px;
+            margin-bottom: 14px;
+            flex-shrink: 0;
         }
-        
+
         .pos-info {
             display: flex;
-            gap: 10px;
+            gap: 6px;
             align-items: center;
             flex-wrap: wrap;
         }
-        
+
         .pos-chip {
-            padding: 6px 12px;
+            padding: 5px 10px;
             background: var(--bg-secondary);
             border: 1px solid var(--border);
-            border-radius: 20px;
+            border-radius: var(--radius);
             font-size: 11.5px;
             color: var(--text-secondary);
             display: flex;
@@ -226,40 +213,36 @@ $weighted_json = json_encode($weighted_categories);
             gap: 6px;
             font-weight: 500;
         }
-        
         .pos-chip.accent {
             background: var(--bg-tertiary);
-            border-color: var(--border);
+            border-color: var(--border-light);
             color: var(--text-primary);
         }
-        
         .pos-chip select {
             background: transparent;
             border: none;
             color: inherit;
-            font-size: 12px;
+            font-size: 11.5px;
             cursor: pointer;
+            outline: none;
         }
-        
-        .pos-actions {
-            display: flex;
-            gap: 8px;
-        }
-        
+
+        .pos-actions { display: flex; gap: 6px; }
         .pos-actions a {
-            padding: 10px 14px;
+            padding: 7px 12px;
             background: var(--bg-secondary);
             border: 1px solid var(--border);
-            border-radius: 8px;
+            border-radius: var(--radius);
             color: var(--text-secondary);
             text-decoration: none;
             font-size: 12px;
-            transition: all 0.2s;
+            font-weight: 500;
+            display: flex; align-items: center; gap: 5px;
+            transition: background 0.2s, color 0.2s, border-color 0.2s;
         }
-        
         .pos-actions a:hover {
             background: var(--bg-tertiary);
-            border-color: var(--border);
+            border-color: var(--border-light);
             color: var(--text-primary);
         }
         
@@ -269,157 +252,136 @@ $weighted_json = json_encode($weighted_categories);
             align-items: center;
             background: var(--bg-secondary);
             border: 1px solid var(--border);
-            border-radius: 9px;
-            margin-bottom: 14px;
-            transition: border-color 0.15s;
+            border-radius: var(--radius);
+            margin-bottom: 12px;
+            transition: border-color 0.2s;
+            flex-shrink: 0;
         }
-        
-        .pos-search:focus-within {
-            border-color: var(--border-light);
-        }
-        
-        .pos-search span {
-            padding: 0 14px;
-            color: var(--text-muted);
-        }
-        
+        .pos-search:focus-within { border-color: var(--border-focus); }
         .pos-search input {
             flex: 1;
             background: none;
             border: none;
-            padding: 11px 12px;
+            padding: 10px 12px;
             color: var(--text-primary);
             font-size: 13.5px;
             outline: none;
+            font-family: inherit;
         }
-        
+        .pos-search input::placeholder { color: var(--text-muted); }
+
         /* CATEGORIES */
         .pos-categories {
             display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
+            gap: 6px;
+            margin-bottom: 14px;
             overflow-x: auto;
-            padding-bottom: 8px;
+            padding-bottom: 4px;
+            flex-shrink: 0;
         }
-        
-        .pos-categories::-webkit-scrollbar { height: 4px; }
-        .pos-categories::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+        .pos-categories::-webkit-scrollbar { height: 3px; }
+        .pos-categories::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
         
         .cat-btn {
-            padding: 7px 16px;
+            padding: 6px 14px;
             background: var(--bg-secondary);
             border: 1px solid var(--border);
-            border-radius: 20px;
+            border-radius: var(--radius);
             color: var(--text-secondary);
-            font-size: 12.5px;
+            font-size: 12px;
             font-weight: 500;
             cursor: pointer;
             white-space: nowrap;
-            transition: all 0.15s;
+            transition: background 0.2s, color 0.2s, border-color 0.2s;
             font-family: inherit;
         }
-        
         .cat-btn:hover {
             background: var(--bg-tertiary);
             border-color: var(--border-light);
             color: var(--text-primary);
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(0,0,0,.22);
         }
-        
         .cat-btn.active {
-            background: var(--bg-tertiary);
-            border-color: var(--border-light);
-            color: var(--text-primary);
+            background: var(--text-primary);
+            border-color: var(--text-primary);
+            color: var(--bg-primary);
             font-weight: 600;
-            box-shadow: inset 0 1px 0 rgba(255,255,255,.06), 0 2px 8px rgba(0,0,0,.15);
         }
         
         /* PRODUCTS GRID */
         .pos-products {
             flex: 1;
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-            gap: 14px;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 10px;
             overflow-y: auto;
-            padding-right: 8px;
-            padding-bottom: 70px;
+            padding-right: 6px;
+            padding-bottom: 56px;
         }
-        
-        .pos-products::-webkit-scrollbar { width: 6px; }
-        .pos-products::-webkit-scrollbar-thumb { background: var(--border); border-radius: 6px; }
-        
+        .pos-products::-webkit-scrollbar { width: 4px; }
+        .pos-products::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
         .product-card {
             background: var(--bg-secondary);
             border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 16px 12px;
+            border-radius: var(--radius);
+            padding: 14px 12px 12px;
             text-align: center;
             cursor: pointer;
-            transition: all 0.18s cubic-bezier(.16,1,.3,1);
+            transition: background 0.2s, border-color 0.2s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            user-select: none;
         }
-        
         .product-card:hover {
             background: var(--bg-tertiary);
             border-color: var(--border-light);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 24px rgba(0,0,0,.45);
         }
-        
-        .product-card:active {
-            transform: scale(0.98);
-        }
-        
+        .product-card:active { opacity: .7; }
         .product-card.no-stock {
-            opacity: 0.4;
+            opacity: 0.35;
             pointer-events: none;
         }
-        
+
         .product-icon {
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-bottom: 8px;
+            flex-shrink: 0;
         }
-        
+
         .product-name {
-            font-size: 12.5px;
+            font-size: 12px;
             font-weight: 600;
-            margin-bottom: 6px;
-            line-height: 1.4;
-            height: 34px;
+            line-height: 1.35;
+            height: 32px;
             overflow: hidden;
             display: -webkit-box;
             -webkit-line-clamp: 2;
             -webkit-box-orient: vertical;
             color: var(--text-primary);
             word-break: break-word;
+            width: 100%;
         }
-        
+
         .product-price {
-            font-size: 16px;
+            font-size: 15px;
             font-weight: 700;
             color: var(--text-primary);
-            margin-bottom: 4px;
+            letter-spacing: -0.02em;
         }
-        
+
         .product-stock {
-            font-size: 11px;
-            color: var(--text-secondary);
-            padding: 4px 10px;
+            font-size: 10.5px;
+            color: var(--text-muted);
+            padding: 2px 8px;
             background: var(--bg-tertiary);
-            border-radius: 10px;
-            display: inline-block;
+            border-radius: 4px;
             font-weight: 600;
         }
-        
-        .product-stock.low { color: #b45309; background: rgba(245, 158, 11, 0.2); }
-        .product-stock.out { color: #dc2626; background: rgba(239, 68, 68, 0.2); }
-        
-        /* Light mode adjustments for stock */
-        [data-theme="light"] .product-stock { background: #e4e4e7; color: #3f3f46; }
-        [data-theme="light"] .product-stock.low { color: #b45309; background: rgba(245, 158, 11, 0.25); }
-        [data-theme="light"] .product-stock.out { color: #dc2626; background: rgba(239, 68, 68, 0.25); }
+        .product-stock.low { color: var(--warning); background: var(--warning-subtle); }
+        .product-stock.out { color: var(--danger); background: var(--danger-subtle); }
         
         /* RIGHT PANEL - CART */
         .pos-right {
@@ -428,284 +390,242 @@ $weighted_json = json_encode($weighted_categories);
             display: flex;
             flex-direction: column;
         }
-        
+
         .cart-header {
-            padding: 14px 18px;
+            padding: 12px 16px;
             border-bottom: 1px solid var(--border);
             display: flex;
             justify-content: space-between;
             align-items: center;
-        }
-        
-        .cart-header h2 {
-            font-size: 12px;
-            font-weight: 700;
-            letter-spacing: 0.08em;
-            text-transform: uppercase;
-            color: var(--text-primary);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .cart-header h2::before {
-            content: '';
-            width: 3px;
-            height: 14px;
-            background: var(--success);
-            border-radius: 2px;
-            display: inline-block;
             flex-shrink: 0;
         }
-        
+
         .item-count {
             font-size: 11px;
             font-weight: 600;
             color: var(--text-secondary);
-            padding: 3px 10px;
+            padding: 2px 8px;
             background: var(--bg-tertiary);
             border: 1px solid var(--border);
-            border-radius: 20px;
+            border-radius: var(--radius);
         }
-        
+
         .cart-items {
             flex: 1;
             overflow-y: auto;
-            padding: 12px 14px;
+            padding: 10px 12px;
             scrollbar-width: thin;
             scrollbar-color: var(--border) transparent;
         }
-        
+        .cart-items::-webkit-scrollbar { width: 3px; }
+        .cart-items::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
         .empty-cart {
-            text-align: center;
-            padding: 50px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 48px 20px;
             color: var(--text-muted);
+            gap: 10px;
         }
-        
-        .empty-cart span {
-            font-size: 44px;
-            display: block;
-            margin-bottom: 10px;
-            opacity: 0.15;
-            filter: grayscale(1);
-        }
+        .empty-cart p { font-size: 13px; }
         
         .cart-item {
             display: flex;
             align-items: center;
-            gap: 10px;
-            padding: 10px 12px;
+            gap: 8px;
+            padding: 9px 10px;
             background: var(--bg-tertiary);
             border: 1px solid var(--border);
-            border-radius: 8px;
-            margin-bottom: 6px;
-            transition: background 0.12s;
-            animation: itemIn 0.18s ease;
+            border-radius: var(--radius);
+            margin-bottom: 5px;
+            transition: background 0.2s;
+            animation: itemIn 0.15s ease both;
         }
-
         @keyframes itemIn {
-            from { opacity: 0; transform: translateX(10px); }
-            to   { opacity: 1; transform: translateX(0); }
+            from { opacity: 0; }
+            to   { opacity: 1; }
         }
+        .cart-item:hover { background: var(--bg-hover); }
 
-        .cart-item:hover {
-            background: var(--bg-hover);
-        }
-        
-        .cart-item-emoji { font-size: 22px; flex-shrink: 0; }
-        
         .cart-item-info { flex: 1; min-width: 0; }
-        
-        .cart-item-name { font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        
-        .cart-item-price { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
-        
+        .cart-item-name { font-size: 12.5px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .cart-item-price { font-size: 11px; color: var(--text-muted); margin-top: 1px; }
+
         .cart-item-qty {
             display: flex;
             align-items: center;
-            gap: 5px;
-            background: var(--bg-primary);
-            padding: 3px 5px;
-            border-radius: 8px;
-            border: 1px solid var(--border);
+            gap: 4px;
         }
-        
+
         .qty-btn {
-            width: 26px;
-            height: 26px;
+            width: 24px; height: 24px;
             border: 1px solid var(--border);
             background: var(--bg-secondary);
-            color: var(--text-primary);
+            color: var(--text-secondary);
             border-radius: 6px;
             cursor: pointer;
-            font-size: 15px;
-            font-weight: 700;
-            transition: all 0.15s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .qty-btn:hover { background: var(--bg-primary); border-color: var(--text-primary); color: var(--text-primary); transform: scale(1.1); }
-        .qty-btn.danger:hover { background: var(--danger); border-color: var(--danger); color: #fff; }
-        
-        .cart-item-total {
             font-size: 14px;
             font-weight: 700;
+            transition: background 0.2s, color 0.2s, border-color 0.2s;
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0;
+        }
+        .qty-btn:hover { background: var(--bg-hover); color: var(--text-primary); border-color: var(--border-light); }
+        .qty-btn.danger:hover { background: var(--danger-subtle); border-color: var(--danger); color: var(--danger); }
+
+        .cart-item-total {
+            font-size: 13px;
+            font-weight: 700;
             color: var(--text-primary);
-            min-width: 58px;
+            min-width: 52px;
             text-align: right;
             letter-spacing: -0.3px;
+            flex-shrink: 0;
         }
         
-        /* CART FOOTER */
         /* CART SUMMARY */
         .cart-summary {
-            padding: 14px 18px;
-            background: linear-gradient(180deg, var(--bg-tertiary) 0%, var(--bg-secondary) 100%);
+            padding: 12px 16px;
+            background: var(--bg-tertiary);
             border-top: 1px solid var(--border);
+            flex-shrink: 0;
         }
-        
+
         .summary-row {
             display: flex;
             justify-content: space-between;
             align-items: center;
             font-size: 12px;
             color: var(--text-secondary);
-            margin-bottom: 5px;
+            margin-bottom: 4px;
         }
-        
+
         .summary-row.total {
             display: flex;
             justify-content: space-between;
             align-items: baseline;
-            padding-top: 12px;
+            padding-top: 10px;
             border-top: 1px solid var(--border);
-            margin: 10px 0 0 0;
+            margin: 8px 0 0 0;
         }
         .summary-row.total > span:first-child {
-            font-size: 11px;
+            font-size: 10px;
             font-weight: 700;
-            letter-spacing: 0.08em;
+            letter-spacing: 0.1em;
             text-transform: uppercase;
-            color: var(--text-secondary);
+            color: var(--text-muted);
         }
         .summary-row.total > span:last-child {
-            font-size: 28px;
+            font-size: 26px;
             font-weight: 800;
             color: var(--text-primary);
-            letter-spacing: -0.5px;
+            letter-spacing: -0.04em;
+            line-height: 1;
         }
         
         /* CART ACTIONS */
         .cart-actions {
-            padding: 12px 18px 18px;
+            padding: 10px 14px 14px;
             border-top: 1px solid var(--border);
+            flex-shrink: 0;
         }
-        
+
         .btn-pay {
             width: 100%;
-            padding: 16px;
+            padding: 14px;
             background: var(--text-primary);
             border: none;
-            border-radius: 10px;
+            border-radius: var(--radius);
             color: var(--bg-primary);
-            font-size: 15px;
+            font-size: 14px;
             font-weight: 700;
-            letter-spacing: 0.03em;
+            letter-spacing: 0.01em;
             cursor: pointer;
-            margin-bottom: 10px;
-            transition: all 0.22s cubic-bezier(.34,1.4,.64,1);
-            box-shadow: 0 4px 20px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,.16);
+            margin-bottom: 8px;
+            transition: opacity 0.2s;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 8px;
-            position: relative;
-            overflow: hidden;
+            font-family: inherit;
         }
-        .btn-pay::before {
-            content: '';
-            position: absolute;
-            top: 0; left: -70%; width: 40%; height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(0,0,0,.07), transparent);
-            transform: skewX(-18deg);
-            transition: left .6s ease;
-            pointer-events: none;
-        }
-        .btn-pay:hover:not(:disabled)::before { left: 130%; }
-        .btn-pay:disabled { opacity: 0.3; cursor: not-allowed; box-shadow: none; transform: none !important; }
-        .btn-pay:hover:not(:disabled) { 
-            transform: translateY(-3px) scale(1.01);
-            box-shadow: 0 12px 32px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,.16);
-        }
-        .btn-pay:active:not(:disabled) { transform: scale(0.98); }
-        
+        .btn-pay:disabled { opacity: 0.25; cursor: not-allowed; }
+        .btn-pay:hover:not(:disabled) { opacity: 0.88; }
+        .btn-pay:active:not(:disabled) { opacity: 0.7; }
+
         .secondary-btns {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 8px;
+            gap: 6px;
         }
-        
+
         .btn-sec {
-            padding: 11px 8px;
+            padding: 9px 8px;
             background: var(--bg-tertiary);
             border: 1px solid var(--border);
-            border-radius: 8px;
+            border-radius: var(--radius);
             color: var(--text-secondary);
             font-size: 12px;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.15s;
+            transition: background 0.2s, color 0.2s, border-color 0.2s;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 5px;
+            font-family: inherit;
         }
-        
-        .btn-sec:hover { background: var(--bg-hover); color: var(--text-primary); transform: translateY(-1px); border-color: var(--border-light); }
-        .btn-sec.danger { color: var(--danger); border-color: rgba(239, 68, 68, 0.25); background: rgba(239, 68, 68, 0.06); }
-        .btn-sec.danger:hover { background: var(--danger); color: white; border-color: var(--danger); box-shadow: 0 4px 14px rgba(239,68,68,0.3); }
+        .btn-sec:hover { background: var(--bg-hover); color: var(--text-primary); border-color: var(--border-light); }
+        .btn-sec.danger { color: var(--danger); border-color: var(--border); background: var(--bg-tertiary); }
+        .btn-sec.danger:hover { background: var(--danger-subtle); border-color: var(--danger); color: var(--danger); }
         
         /* MODALS */
         .modal-overlay {
             display: none;
             position: fixed;
             inset: 0;
-            background: rgba(0,0,0,0.85);
+            background: rgba(0,0,0,0.7);
             backdrop-filter: blur(4px);
             z-index: 1000;
             align-items: center;
             justify-content: center;
+            padding: 20px;
         }
-        
         .modal-overlay.active { display: flex; }
-        
+
         .modal-box {
             background: var(--bg-secondary);
             border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 28px;
-            width: 90%;
-            max-width: 450px;
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            width: 100%;
+            max-width: 440px;
         }
-        
         .modal-box h2 {
             text-align: center;
-            margin-bottom: 8px;
+            font-size: 16px;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            margin-bottom: 6px;
         }
-        
         .modal-box .subtitle {
             text-align: center;
             color: var(--text-muted);
             font-size: 13px;
-            margin-bottom: 24px;
+            margin-bottom: 20px;
         }
-        
         .modal-icon {
-            text-align: center;
-            font-size: 48px;
-            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 48px; height: 48px;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            margin: 0 auto 14px;
+            color: var(--text-secondary);
         }
         
         .form-group {
@@ -721,147 +641,272 @@ $weighted_json = json_encode($weighted_categories);
         
         .form-group input, .form-group textarea {
             width: 100%;
-            padding: 12px;
+            padding: 10px 12px;
             background: var(--bg-tertiary);
             border: 1px solid var(--border);
-            border-radius: 8px;
+            border-radius: var(--radius);
             color: var(--text-primary);
-            font-size: 14px;
-        }
-        
-        .form-group input:focus {
-            border-color: var(--accent);
+            font-size: 13.5px;
+            font-family: inherit;
             outline: none;
+            transition: border-color 0.2s;
         }
-        
+        .form-group input:focus, .form-group textarea:focus { border-color: var(--border-focus); }
+
         .input-large {
             font-size: 28px !important;
             text-align: center;
             font-weight: 700;
+            letter-spacing: -0.03em;
         }
-        
+
         .btn-submit {
             width: 100%;
-            padding: 14px;
-            background: linear-gradient(135deg, var(--success), #16a34a);
+            padding: 13px;
+            background: var(--success);
             border: none;
-            border-radius: 10px;
-            color: white;
-            font-size: 15px;
-            font-weight: 600;
+            border-radius: var(--radius);
+            color: #000;
+            font-size: 14px;
+            font-weight: 700;
             cursor: pointer;
+            transition: opacity 0.2s;
+            font-family: inherit;
+            display: flex; align-items: center; justify-content: center; gap: 6px;
         }
-        
-        .btn-submit:hover { transform: translateY(-1px); }
+        .btn-submit:hover { opacity: 0.88; }
         
         /* SHORTCUTS BAR */
         .shortcuts-bar {
             position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: var(--bg-secondary);
+            bottom: 0; left: 0; right: 0;
+            background: var(--bg-primary);
             border-top: 1px solid var(--border);
             display: flex;
             justify-content: center;
-            gap: 16px;
-            padding: 10px;
+            gap: 20px;
+            padding: 8px 12px;
         }
-        
+
         .shortcut {
             font-size: 11px;
             color: var(--text-muted);
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 5px;
         }
-        
         .shortcut kbd {
             background: var(--bg-tertiary);
-            padding: 3px 8px;
+            border: 1px solid var(--border);
+            padding: 2px 6px;
             border-radius: 4px;
-            font-family: monospace;
+            font-family: inherit;
             font-size: 10px;
-            color: var(--accent);
+            font-weight: 600;
+            color: var(--text-secondary);
         }
         
         /* PAYMENT MODAL */
-        .modal-wide { max-width: 700px; }
-        
+        .modal-wide { max-width: 640px; width: 95%; }
+
+        .pay-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 18px;
+            padding-bottom: 14px;
+            border-bottom: 1px solid var(--border);
+        }
+        .pay-header-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--text-primary);
+            letter-spacing: -0.02em;
+        }
+        .pay-header-close {
+            width: 30px; height: 30px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: transparent;
+            color: var(--text-muted);
+            cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            transition: background 0.15s, color 0.15s;
+        }
+        .pay-header-close:hover { background: var(--bg-hover); color: var(--text-primary); }
+
         .payment-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 24px;
+            gap: 20px;
+            align-items: start;
         }
-        
+
+        /* Left col — order summary */
+        .pay-summary-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .pay-label {
+            font-size: 10.5px;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+        }
         .payment-items {
             background: var(--bg-tertiary);
+            border: 1px solid var(--border);
             border-radius: 10px;
-            padding: 14px;
-            max-height: 180px;
+            overflow: hidden;
+            max-height: 200px;
             overflow-y: auto;
-            margin-bottom: 16px;
         }
-        
         .payment-item {
             display: flex;
             justify-content: space-between;
-            padding: 8px 0;
-            font-size: 13px;
+            align-items: center;
+            padding: 9px 12px;
+            font-size: 12.5px;
             border-bottom: 1px solid var(--border);
+            gap: 8px;
         }
-        
         .payment-item:last-child { border: none; }
-        
+        .payment-item-name {
+            color: var(--text-secondary);
+            flex: 1;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .payment-item-qty {
+            font-size: 11px;
+            color: var(--text-muted);
+            background: var(--bg-hover);
+            border-radius: 4px;
+            padding: 1px 6px;
+            flex-shrink: 0;
+        }
+        .payment-item-price {
+            font-weight: 600;
+            color: var(--text-primary);
+            flex-shrink: 0;
+            font-variant-numeric: tabular-nums;
+        }
+
         .payment-total {
             background: var(--bg-tertiary);
-            padding: 16px;
+            border: 1px solid var(--border);
             border-radius: 10px;
-            text-align: center;
+            padding: 14px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 4px;
         }
-        
-        .payment-total span { color: var(--text-muted); font-size: 12px; }
-        .payment-total div { font-size: 32px; font-weight: 700; color: var(--success); margin-top: 4px; }
-        
+        .payment-total-label {
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+        }
+        .payment-total-value {
+            font-size: 28px;
+            font-weight: 800;
+            color: var(--text-primary);
+            letter-spacing: -0.04em;
+            line-height: 1;
+        }
+
+        /* Right col — input */
+        .pay-input-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .input-large {
+            width: 100%;
+            padding: 12px 16px;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            color: var(--text-primary);
+            font-size: 32px;
+            font-weight: 700;
+            text-align: center;
+            letter-spacing: -0.04em;
+            transition: border-color 0.2s;
+            outline: none;
+            font-family: inherit;
+        }
+        .input-large:focus { border-color: var(--border-focus); }
+        .input-large::placeholder { color: var(--text-muted); font-size: 20px; font-weight: 400; }
+
         .quick-amounts {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 8px;
-            margin: 16px 0;
+            gap: 6px;
         }
-        
         .quick-btn {
-            padding: 12px;
+            padding: 9px 4px;
             background: var(--bg-tertiary);
             border: 1px solid var(--border);
-            border-radius: 8px;
-            color: var(--text-primary);
-            font-size: 14px;
+            border-radius: var(--radius);
+            color: var(--text-secondary);
+            font-size: 13px;
+            font-weight: 600;
             cursor: pointer;
+            transition: background 0.2s, color 0.2s, border-color 0.2s;
+            text-align: center;
+            font-family: inherit;
         }
-        
-        .quick-btn:hover { background: var(--accent); border-color: var(--accent); }
-        
+        .quick-btn:hover {
+            background: var(--bg-hover);
+            border-color: var(--border-light);
+            color: var(--text-primary);
+        }
+        .quick-btn.exact {
+            background: var(--success-subtle);
+            border-color: var(--success);
+            color: var(--success);
+        }
+
         .change-box {
-            background: rgba(34, 197, 94, 0.1);
+            background: var(--success-subtle);
             border: 1px solid var(--success);
             border-radius: 10px;
-            padding: 16px;
-            text-align: center;
-            margin: 16px 0;
+            padding: 14px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
         }
-        
-        .change-box .label { font-size: 12px; color: var(--success); }
-        .change-box .value { font-size: 28px; font-weight: 700; color: var(--success); margin-top: 4px; }
-        
+        .change-box .label {
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            color: var(--success);
+        }
+        .change-box .value {
+            font-size: 26px;
+            font-weight: 800;
+            color: var(--success);
+            letter-spacing: -0.04em;
+            line-height: 1;
+        }
+
         .error-box {
-            background: rgba(239, 68, 68, 0.1);
+            background: var(--danger-subtle);
             border: 1px solid var(--danger);
             color: var(--danger);
-            padding: 12px;
+            padding: 10px 14px;
             border-radius: 8px;
             text-align: center;
-            font-size: 13px;
+            font-size: 12.5px;
+            font-weight: 600;
             display: none;
         }
         
@@ -873,33 +918,34 @@ $weighted_json = json_encode($weighted_categories);
         
         .modal-actions button {
             flex: 1;
-            padding: 14px;
-            border-radius: 8px;
-            font-size: 14px;
+            padding: 12px;
+            border-radius: var(--radius);
+            font-size: 13.5px;
             font-weight: 600;
             cursor: pointer;
             border: none;
+            font-family: inherit;
         }
-        
+
         .btn-cancel {
             background: var(--bg-tertiary);
             border: 1px solid var(--border);
             color: var(--text-secondary);
-            transition: all 0.15s;
+            transition: background 0.2s, color 0.2s;
         }
         .btn-cancel:hover { background: var(--bg-hover); color: var(--text-primary); }
-        
+
         .btn-confirm {
             background: var(--text-primary);
             color: var(--bg-primary);
-            transition: all 0.15s;
+            transition: opacity 0.2s;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 8px;
         }
-        .btn-confirm:hover:not(:disabled) { opacity: 0.88; transform: translateY(-1px); }
-        .btn-confirm:disabled { opacity: 0.35; cursor: not-allowed; }
+        .btn-confirm:hover:not(:disabled) { opacity: 0.88; }
+        .btn-confirm:disabled { opacity: 0.3; cursor: not-allowed; }
 
         /* Loading spinner */
         @keyframes spin { to { transform: rotate(360deg); } }
@@ -927,99 +973,73 @@ $weighted_json = json_encode($weighted_categories);
             padding: 2px 8px;
             background: var(--bg-tertiary);
             border: 1px solid var(--border);
-            border-radius: 12px;
+            border-radius: var(--radius);
         }
         .btn-discount {
-            padding: 5px 12px;
+            padding: 4px 10px;
             background: var(--bg-tertiary);
             border: 1px solid var(--border);
-            border-radius: 7px;
+            border-radius: var(--radius);
             font-size: 11px;
             font-weight: 600;
             color: var(--text-secondary);
             cursor: pointer;
-            transition: all 0.15s;
+            transition: background 0.2s, color 0.2s;
+            font-family: inherit;
         }
-        .btn-discount:hover { background: var(--bg-tertiary); border-color: var(--border); color: var(--text-primary); }
-        .btn-discount.active { background: var(--bg-tertiary); border-color: var(--border); color: var(--text-primary); }
+        .btn-discount:hover { background: var(--bg-hover); color: var(--text-primary); }
+        .btn-discount.active { color: var(--text-primary); border-color: var(--border-light); }
 
         /* Discount Modal */
-        .promo-list { display: flex; flex-direction: column; gap: 8px; margin: 16px 0; }
+        .promo-list { display: flex; flex-direction: column; gap: 6px; margin: 14px 0; }
         .promo-item {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 12px 14px;
+            padding: 10px 12px;
             background: var(--bg-tertiary);
             border: 1px solid var(--border);
-            border-radius: 8px;
+            border-radius: var(--radius);
             cursor: pointer;
-            transition: all 0.15s;
+            transition: background 0.2s, border-color 0.2s;
         }
-        .promo-item:hover { border-color: var(--border); background: var(--bg-secondary); }
+        .promo-item:hover { background: var(--bg-hover); border-color: var(--border-light); }
         .promo-item.selected { border-color: var(--text-primary); background: var(--bg-secondary); }
         .promo-name { font-size: 13px; font-weight: 600; }
-        .promo-value { font-size: 14px; font-weight: 700; color: var(--text-primary); }
+        .promo-value { font-size: 13px; font-weight: 700; color: var(--text-primary); }
 
-        /* Light mode improvements */
-        [data-theme="light"] .pos-left { background: #f8f8fa; }
-        [data-theme="light"] .pos-header { background: #ffffff; }
-        [data-theme="light"] .pos-right { background: #ffffff; }
-        [data-theme="light"] .cart-summary { background: #f4f4f6; }
-        [data-theme="light"] .product-card { background: #ffffff; border-color: #e2e2e8; }
-        [data-theme="light"] .product-card:hover { background: #f8f8fa; border-color: #d1d1db; box-shadow: 0 4px 12px rgba(0,0,0,.08); }
-        [data-theme="light"] .product-price { color: #16a34a; }
-        [data-theme="light"] .pos-chip { background: #ffffff; border-color: #e2e2e8; color: #52525b; }
-        [data-theme="light"] .cat-btn { background: #ffffff; border-color: #e2e2e8; color: #5a5a6e; }
-        [data-theme="light"] .cat-btn:hover, [data-theme="light"] .cat-btn.active { background: #eff0f3; border-color: #d1d1db; color: #111118; }
-        [data-theme="light"] .pos-search { background: #ffffff; border-color: #e2e2e8; }
-        [data-theme="light"] .cart-item { background: #f4f4f6; border-color: #e2e2e8; }
-        [data-theme="light"] .qty-btn { background: #ffffff; border-color: #e2e2e8; color: #111118; }
-        [data-theme="light"] .btn-sec { background: #f4f4f6; border-color: #e2e2e8; color: #5a5a6e; }
-        [data-theme="light"] .modal-box { background: #ffffff; border-color: #e2e2e8; }
-        [data-theme="light"] .quick-btn { background: #f4f4f6; border-color: #e2e2e8; color: #111118; }
-        [data-theme="light"] .quick-btn:hover { background: #52525b; border-color: #52525b; color: #ffffff; }
-        [data-theme="light"] .app-sidebar { background: #ffffff; border-color: #e2e2e8; }
+        /* ── Light mode — all driven by CSS variables, no overrides needed ── */
+        /* Active category pill needs flip in light mode */
+        [data-theme="light"] .cat-btn.active { background: var(--text-primary); border-color: var(--text-primary); color: var(--bg-primary); }
 
         /* ── Cart item classes matching JS template ───────────────────────── */
         .item-info { flex: 1; min-width: 0; }
         .item-name {
-            font-size: 13px; font-weight: 600;
+            font-size: 12.5px; font-weight: 600;
             white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
             color: var(--text-primary);
         }
-        .item-price {
-            font-size: 11px; color: var(--text-muted); margin-top: 2px;
-        }
-        .item-controls {
-            display: flex; align-items: center; gap: 4px; flex-shrink: 0;
-        }
+        .item-price { font-size: 11px; color: var(--text-muted); margin-top: 1px; }
+        .item-controls { display: flex; align-items: center; gap: 4px; flex-shrink: 0; }
         .qty-display {
             font-size: 13px; font-weight: 700;
-            min-width: 24px; text-align: center;
+            min-width: 22px; text-align: center;
             color: var(--text-primary);
         }
         .item-subtotal {
-            font-size: 13px; font-weight: 700;
-            min-width: 58px; text-align: right;
-            color: var(--text-primary); letter-spacing: -0.3px;
+            font-size: 12.5px; font-weight: 700;
+            min-width: 50px; text-align: right;
+            color: var(--text-primary); letter-spacing: -0.3px; flex-shrink: 0;
         }
         .remove-btn {
-            width: 26px; height: 26px;
+            width: 24px; height: 24px;
             background: none; border: 1px solid transparent;
             border-radius: 6px; cursor: pointer;
             color: var(--text-muted);
             display: flex; align-items: center; justify-content: center;
-            transition: all 0.15s; flex-shrink: 0;
+            transition: background 0.2s, border-color 0.2s, color 0.2s; flex-shrink: 0;
         }
-        .remove-btn:hover {
-            background: rgba(248,113,113,.1);
-            border-color: rgba(248,113,113,.2);
-            color: var(--danger);
-        }
-        [data-theme="light"] .item-name { color: #111118; }
-        [data-theme="light"] .item-subtotal { color: #111118; }
-        [data-theme="light"] .qty-display { color: #111118; }
+        .remove-btn:hover { background: var(--danger-subtle); border-color: var(--danger); color: var(--danger); }
     </style>
 </head>
 <body>
@@ -1027,7 +1047,7 @@ $weighted_json = json_encode($weighted_categories);
     <!-- MODAL ABRIR TURNO -->
     <div class="modal-overlay active" id="shiftModal">
         <div class="modal-box">
-            <div class="modal-icon"><svg width="36" height="36" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="margin:0 auto"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg></div>
+            <div class="modal-icon"><svg width="36" height="36" fill="none" stroke="currentColor" viewBox="0 0 24 24" ><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg></div>
             <h2>Iniciar Turno</h2>
             <p class="subtitle">Configure o saldo inicial para começar</p>
             
@@ -1041,7 +1061,7 @@ $weighted_json = json_encode($weighted_categories);
                     <label>Notas (opcional)</label>
                     <input type="text" name="notes" placeholder="Observações...">
                 </div>
-                <button type="submit" class="btn-submit">✓ Iniciar Turno</button>
+                <button type="submit" class="btn-submit"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Iniciar Turno</button>
             </form>
         </div>
     </div>
@@ -1059,7 +1079,7 @@ $weighted_json = json_encode($weighted_categories);
                             </g>
                         </svg>
                     </div>
-                <span class="sidebar-logo-text">PAP Market</span>
+                <span class="sidebar-logo-text">Mercantec</span>
             </a>
         </div>
         <nav class="sidebar-nav">
@@ -1095,10 +1115,6 @@ $weighted_json = json_encode($weighted_categories);
                     <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
                     <span>Produtos</span>
                 </a>
-                <a href="/CAIXA/qrcodes_produtos.php" target="_blank" class="nav-item">
-                    <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"/></svg>
-                    <span>QR Produtos</span>
-                </a>
                 <a href="/modules/stock.php" class="nav-item">
                     <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"/></svg>
                     <span>Stock</span>
@@ -1110,12 +1126,58 @@ $weighted_json = json_encode($weighted_categories);
                     <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
                     <span>Encomendas</span>
                 </a>
+                <a href="/modules/validades.php" class="nav-item">
+                    <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                    <span>Validades</span>
+                </a>
+                <a href="/modules/fornecedores.php" class="nav-item">
+                    <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+                    <span>Fornecedores</span>
+                </a>
             </div>
             <div class="nav-section">
                 <div class="nav-section-title">Relatórios</div>
                 <a href="/modules/relatorios.php" class="nav-item">
                     <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
                     <span>Relatórios</span>
+                </a>
+                <a href="/modules/analytics.php" class="nav-item">
+                    <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
+                    <span>Analítica</span>
+                </a>
+                <a href="/modules/despesas.php" class="nav-item">
+                    <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+                    <span>Despesas</span>
+                </a>
+            </div>
+            <div class="nav-section">
+                <div class="nav-section-title">Equipa</div>
+                <a href="/admin/rh/equipa.php" class="nav-item">
+                    <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+                    <span>Equipa</span>
+                </a>
+                <a href="/modules/customers.php" class="nav-item">
+                    <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                    <span>Clientes</span>
+                </a>
+                <a href="/modules/ponto.php" class="nav-item">
+                    <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    <span>Controlo de Ponto</span>
+                </a>
+                <a href="/admin/vacation/calendario.php" class="nav-item">
+                    <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                    <span>Mapa de Férias</span>
+                </a>
+            </div>
+            <div class="nav-section">
+                <div class="nav-section-title">Sistema</div>
+                <a href="/modules/alerts.php" class="nav-item">
+                    <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
+                    <span>Alertas</span>
+                </a>
+                <a href="/modules/configuracoes.php" class="nav-item">
+                    <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                    <span>Definições</span>
                 </a>
             </div>
         </nav>
@@ -1226,14 +1288,14 @@ $weighted_json = json_encode($weighted_categories);
             <?php endif; ?>
             
             <div class="cart-header">
-                <span style="font-size:13px;font-weight:600;color:var(--text-secondary);text-transform:uppercase;letter-spacing:0.05em;">Carrinho</span>
+                <span style="font-size:10.5px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.1em;">Carrinho</span>
                 <span class="item-count" id="itemCount">0 itens</span>
             </div>
-            
+
             <div class="cart-items" id="cartItems">
                 <div class="empty-cart">
-                    <svg width="40" height="40" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="margin:0 auto 12px;display:block;opacity:0.2"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
-                    <p>Carrinho vazio</p>
+                    <svg width="32" height="32" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="opacity:0.2;color:var(--text-muted)"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+                    <p style="font-size:12.5px;color:var(--text-muted);">Carrinho vazio</p>
                 </div>
             </div>
             
@@ -1281,7 +1343,7 @@ $weighted_json = json_encode($weighted_categories);
     <!-- MODAL PESO -->
     <div class="modal-overlay" id="weightModal">
         <div class="modal-box">
-            <div class="modal-icon"><svg width="36" height="36" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="margin:0 auto"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 6l3 13h12l3-13M3 6h18M3 6a2 2 0 01-2-2V3a1 1 0 011-1h20a1 1 0 011 1v1a2 2 0 01-2 2M12 6V3m0 0a2 2 0 100-4 2 2 0 000 4z"/></svg></div>
+            <div class="modal-icon"><svg width="36" height="36" fill="none" stroke="currentColor" viewBox="0 0 24 24" ><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 6l3 13h12l3-13M3 6h18M3 6a2 2 0 01-2-2V3a1 1 0 011-1h20a1 1 0 011 1v1a2 2 0 01-2 2M12 6V3m0 0a2 2 0 100-4 2 2 0 000 4z"/></svg></div>
             <h2>Peso</h2>
             <p class="subtitle" id="weightProductName">Produto</p>
             
@@ -1306,7 +1368,7 @@ $weighted_json = json_encode($weighted_categories);
             
             <div class="modal-actions">
                 <button class="btn-cancel" onclick="closeModal('weightModal')">Cancelar</button>
-                <button class="btn-confirm" onclick="confirmWeight()">✓ Confirmar</button>
+                <button class="btn-confirm" onclick="confirmWeight()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Confirmar</button>
             </div>
         </div>
     </div>
@@ -1314,44 +1376,51 @@ $weighted_json = json_encode($weighted_categories);
     <!-- MODAL PAGAMENTO -->
     <div class="modal-overlay" id="paymentModal">
         <div class="modal-box modal-wide">
-            <h2 style="display:flex;align-items:center;gap:8px;justify-content:center">
-                <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
-                Pagamento
-            </h2>
-            
+            <div class="pay-header">
+                <span class="pay-header-title">Pagamento</span>
+                <button class="pay-header-close" onclick="closeModal('paymentModal')">
+                    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                </button>
+            </div>
+
             <div class="payment-grid">
-                <div>
-                    <h4 style="font-size: 13px; color: var(--text-muted); margin-bottom: 12px;">📋 Resumo</h4>
+                <!-- Coluna esquerda: resumo da encomenda -->
+                <div class="pay-summary-panel">
+                    <div class="pay-label">Resumo da venda</div>
                     <div class="payment-items" id="paymentItems"></div>
                     <div class="payment-total">
-                        <span>Total a Pagar</span>
-                        <div id="paymentTotal">€0.00</div>
+                        <span class="payment-total-label">Total a pagar</span>
+                        <span class="payment-total-value" id="paymentTotal">€0,00</span>
                     </div>
                 </div>
-                
-                <div>
-                    <h4 style="font-size: 13px; color: var(--text-muted); margin-bottom: 12px;">💵 Valor Entregue</h4>
-                    
-                    <div class="form-group">
-                        <input type="number" id="amountPaid" step="0.01" class="input-large" placeholder="0.00" oninput="calculateChange()">
+
+                <!-- Coluna direita: valor entregue -->
+                <div class="pay-input-panel">
+                    <div>
+                        <div class="pay-label" style="margin-bottom:6px;">Valor entregue</div>
+                        <input type="number" id="amountPaid" step="0.01" class="input-large" placeholder="0,00" oninput="calculateChange()">
                     </div>
-                    
+
                     <div class="quick-amounts" id="quickAmounts"></div>
-                    
+
                     <div class="change-box" id="changeBox">
-                        <div class="label">Troco</div>
-                        <div class="value" id="changeValue">€0.00</div>
+                        <span class="label">Troco</span>
+                        <span class="value" id="changeValue">€0,00</span>
                     </div>
-                    
+
                     <div class="error-box" id="paymentError">
-                        Valor insuficiente!
+                        <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" style="vertical-align:-2px;margin-right:4px"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                        Valor insuficiente
                     </div>
                 </div>
             </div>
-            
-            <div class="modal-actions">
+
+            <div class="modal-actions" style="margin-top:20px;">
                 <button class="btn-cancel" onclick="closeModal('paymentModal')">Cancelar</button>
-                <button class="btn-confirm" onclick="confirmPayment()" id="btnConfirmPayment" disabled>✓ Finalizar Venda</button>
+                <button class="btn-confirm" onclick="confirmPayment()" id="btnConfirmPayment" disabled>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                    Finalizar Venda
+                </button>
             </div>
         </div>
     </div>
@@ -1439,7 +1508,7 @@ $weighted_json = json_encode($weighted_categories);
     <!-- QR Code Scanner Modal -->
     <div id="scannerModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.9);z-index:9999;align-items:center;justify-content:center;flex-direction:column">
         <div style="background:var(--bg-secondary,#1c1c1e);border-radius:16px;padding:24px;max-width:420px;width:95%;text-align:center">
-            <h3 style="font-size:16px;font-weight:700;margin-bottom:6px">📷 Leitor QR Code</h3>
+            <h3 style="font-size:16px;font-weight:700;margin-bottom:6px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 0 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg> Leitor QR Code</h3>
             <p style="font-size:12px;color:#888;margin-bottom:14px">Aponte a câmara para o QR code do produto.</p>
             <div style="position:relative;width:100%;border-radius:10px;overflow:hidden;background:#000;min-height:280px">
                 <video id="qrVideo" style="width:100%;display:block" playsinline autoplay muted></video>
@@ -1475,7 +1544,7 @@ $weighted_json = json_encode($weighted_categories);
                 video.addEventListener('loadedmetadata', () => scanFrame());
             })
             .catch(err => {
-                document.getElementById('scanResult').textContent = '⚠️ Sem acesso à câmara: ' + err.message;
+                document.getElementById('scanResult').textContent = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg> Sem acesso à câmara: ' + err.message;
             });
     }
 
@@ -1496,7 +1565,7 @@ $weighted_json = json_encode($weighted_categories);
         if (code && !scannerCooldown) {
             scannerCooldown = true;
             const val = code.data.trim().replace(/\s+/g, '');
-            document.getElementById('scanResult').textContent = '✓ Lido: ' + val;
+            document.getElementById('scanResult').textContent = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Lido: ' + val;
             closeScanner();
             searchByBarcode(val);
             return;
@@ -1527,8 +1596,8 @@ $weighted_json = json_encode($weighted_categories);
 
     <!-- Theme Toggle Button -->
     <button class="theme-toggle" onclick="toggleTheme()" title="Alternar tema" style="bottom: 80px;">
-        <span class="icon-moon">🌙</span>
-        <span class="icon-sun">☀️</span>
+        <span class="icon-moon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></span>
+        <span class="icon-sun"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></span>
     </button>
 
     <script>

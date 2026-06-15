@@ -64,7 +64,7 @@ fi
 
 # Verificar se MySQL está activo
 if ! mysqladmin ping -u pap_user -ppap_pass --silent 2>/dev/null; then
-    echo "⚠️  MySQL não detectado. Certifica-te que o MySQL está a correr."
+    echo "⚠  MySQL não detectado. Certifica-te que o MySQL está a correr."
 fi
 
 # Iniciar servidor PHP em background

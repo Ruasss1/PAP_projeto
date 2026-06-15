@@ -149,21 +149,21 @@ require_once __DIR__ . '/../../includes/header.php';
         background: var(--bg-secondary); border: 1px solid var(--border);
         border-radius: var(--radius-lg); overflow: hidden;
     }
-    .payroll-table { width: 100%; border-collapse: collapse; }
+    .payroll-table { width: 100%; border-collapse: collapse; table-layout: fixed; }
     .payroll-table th {
-        text-align: left; padding: 14px 20px; font-size: 11px; font-weight: 600;
+        text-align: left; padding: 12px 14px; font-size: 10px; font-weight: 600;
         color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em;
         background: var(--bg-tertiary); border-bottom: 1px solid var(--border);
-        cursor: pointer; user-select: none;
+        cursor: pointer; user-select: none; white-space: nowrap;
     }
     .payroll-table th:hover { color: var(--text-primary); }
     .payroll-table td {
-        padding: 14px 20px; font-size: 14px; border-bottom: 1px solid var(--border);
+        padding: 12px 14px; font-size: 13px; border-bottom: 1px solid var(--border);
     }
     .payroll-table tbody tr:hover td { background: var(--bg-hover); }
     .payroll-table tbody tr:last-child td { border-bottom: none; }
     .payroll-table .number {
-        text-align: right; font-family: 'SF Mono', 'Monaco', monospace;
+        text-align: right; font-family: 'Plus Jakarta Sans', monospace;
         font-size: 13px; font-variant-numeric: tabular-nums;
     }
     .payroll-table .total-row td {
@@ -207,14 +207,12 @@ require_once __DIR__ . '/../../includes/header.php';
     }
 </style>
 
-<!-- Breadcrumb -->
-<div style="display: flex; align-items: center; gap: 8px; margin-bottom: 24px; font-size: 14px;">
-    <a href="/admin/rh/equipa.php" style="color: var(--text-muted); text-decoration: none;">
-        <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="vertical-align: -2px;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
-        Dashboard RH
+<!-- Back button -->
+<div style="margin-bottom: 24px;">
+    <a href="/admin/rh/equipa.php" style="display:inline-flex;align-items:center;gap:8px;font-size:11px;font-weight:600;letter-spacing:.15em;text-transform:uppercase;color:var(--text-muted);border:1px solid var(--border);border-radius:8px;padding:9px 16px;background:var(--bg-secondary);text-decoration:none;transition:border-color .15s,color .15s;" onmouseover="this.style.borderColor='var(--border-light)';this.style.color='var(--text-primary)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text-muted)'">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+        Voltar à Equipa
     </a>
-    <span style="color: var(--text-muted);">/</span>
-    <span style="color: var(--text-primary); font-weight: 600;">Folha de Pagamento</span>
 </div>
 
 <!-- Title & Actions -->
@@ -237,13 +235,13 @@ require_once __DIR__ . '/../../includes/header.php';
 
 <?php if ($message): ?>
 <div class="alert alert-success fade-in" style="margin-bottom: 20px;">
-    <span class="alert-icon">✓</span>
+    <span class="alert-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
     <div class="alert-content"><div class="alert-message"><?= htmlspecialchars($message) ?></div></div>
 </div>
 <?php endif; ?>
 <?php if ($error): ?>
 <div class="alert alert-danger fade-in" style="margin-bottom: 20px;">
-    <span class="alert-icon">⚠️</span>
+    <span class="alert-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></span>
     <div class="alert-content"><div class="alert-message"><?= htmlspecialchars($error) ?></div></div>
 </div>
 <?php endif; ?>
@@ -287,27 +285,27 @@ require_once __DIR__ . '/../../includes/header.php';
 <?php if (!empty($payroll_records)): ?>
 <div class="summary-grid">
     <div class="stat-card">
-        <div class="stat-header"><div class="stat-icon blue">💰</div></div>
+        <div class="stat-header"><div class="stat-icon blue"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div></div>
         <div class="stat-value"><?= number_format($total_gross, 2, ',', '.') ?>€</div>
         <div class="stat-label">Total Bruto</div>
     </div>
     <div class="stat-card">
-        <div class="stat-header"><div class="stat-icon red">📉</div></div>
+        <div class="stat-header"><div class="stat-icon red"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 18 13.5 8.5 8.5 13.5 1 6"/><polyline points="17 18 23 18 23 12"/></svg></div></div>
         <div class="stat-value" style="color: var(--danger);"><?= number_format($total_discounts, 2, ',', '.') ?>€</div>
         <div class="stat-label">Total Descontos</div>
     </div>
     <div class="stat-card">
-        <div class="stat-header"><div class="stat-icon green">💵</div></div>
+        <div class="stat-header"><div class="stat-icon green"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2"/><circle cx="12" cy="12" r="3"/></svg></div></div>
         <div class="stat-value" style="color: var(--success);"><?= number_format($total_net, 2, ',', '.') ?>€</div>
         <div class="stat-label">Total Líquido</div>
     </div>
     <div class="stat-card">
-        <div class="stat-header"><div class="stat-icon green">✅</div></div>
+        <div class="stat-header"><div class="stat-icon green"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div></div>
         <div class="stat-value"><?= $total_paid ?></div>
         <div class="stat-label">Pagos</div>
     </div>
     <div class="stat-card">
-        <div class="stat-header"><div class="stat-icon orange">⏳</div>
+        <div class="stat-header"><div class="stat-icon orange"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
         <?php if ($total_pending > 0): ?><div class="stat-change negative">Pendente</div><?php endif; ?></div>
         <div class="stat-value"><?= $total_pending ?></div>
         <div class="stat-label">Pendentes</div>
@@ -336,15 +334,14 @@ require_once __DIR__ . '/../../includes/header.php';
     <table class="payroll-table" id="payrollTable">
         <thead>
             <tr>
-                <th onclick="sortTable(0)">Colaborador ↕</th>
-                <th onclick="sortTable(1)">Departamento ↕</th>
-                <th onclick="sortTable(2)">Cargo ↕</th>
-                <th class="number" onclick="sortTable(3)">Salário Base ↕</th>
-                <th class="number" onclick="sortTable(4)">Bónus ↕</th>
-                <th class="number" onclick="sortTable(5)">Descontos ↕</th>
-                <th class="number" onclick="sortTable(6)">Líquido ↕</th>
-                <th>Status</th>
-                <th>Ações</th>
+                <th onclick="sortTable(0)" style="width:220px">Colaborador ↕</th>
+                <th onclick="sortTable(1)" style="width:120px">Departamento ↕</th>
+                <th class="number" onclick="sortTable(2)" style="width:110px">Salário Base ↕</th>
+                <th class="number" onclick="sortTable(3)" style="width:90px">Bónus ↕</th>
+                <th class="number" onclick="sortTable(4)" style="width:90px">Descontos ↕</th>
+                <th class="number" onclick="sortTable(5)" style="width:100px">Líquido ↕</th>
+                <th style="width:100px">Estado</th>
+                <th style="width:110px">Ações</th>
             </tr>
         </thead>
         <tbody>
@@ -365,14 +362,13 @@ require_once __DIR__ . '/../../includes/header.php';
                         </div>
                     </td>
                     <td><span class="dept-badge"><?= htmlspecialchars($record['department'] ?? 'N/A') ?></span></td>
-                    <td style="color: var(--text-secondary);"><?= htmlspecialchars($record['position'] ?? '') ?></td>
                     <td class="number"><?= number_format($record['base_salary'] ?? 0, 2, ',', '.') ?>€</td>
                     <td class="number" style="color: var(--success);">+<?= number_format($bonus, 2, ',', '.') ?>€</td>
                     <td class="number" style="color: var(--danger);">-<?= number_format($record['deductions'] ?? 0, 2, ',', '.') ?>€</td>
                     <td class="number"><strong style="color: var(--success);"><?= number_format($record['net_salary'] ?? 0, 2, ',', '.') ?>€</strong></td>
                     <td>
                         <?php if (strtolower($record['status'] ?? '') === 'pago'): ?>
-                            <span class="status-badge status-pago">✓ Pago</span>
+                            <span class="status-badge status-pago"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Pago</span>
                         <?php else: ?>
                             <span class="status-badge status-pendente">Pendente</span>
                         <?php endif; ?>
@@ -392,7 +388,7 @@ require_once __DIR__ . '/../../includes/header.php';
                 </tr>
             <?php endforeach; ?>
             <tr class="total-row">
-                <td colspan="3"><strong>TOTAL (<?= count($payroll_records) ?> colaboradores)</strong></td>
+                <td colspan="2"><strong>TOTAL (<?= count($payroll_records) ?> colaboradores)</strong></td>
                 <td class="number"><strong><?= number_format(array_sum(array_column($payroll_records, 'base_salary')), 2, ',', '.') ?>€</strong></td>
                 <td class="number"></td>
                 <td class="number"><strong style="color: var(--danger);">-<?= number_format($total_discounts, 2, ',', '.') ?>€</strong></td>
@@ -404,7 +400,7 @@ require_once __DIR__ . '/../../includes/header.php';
 </div>
 <?php else: ?>
 <div class="empty-state card" style="border: 1px solid var(--border);">
-    <div class="empty-state-icon">📋</div>
+    <div class="empty-state-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg></div>
     <p>Nenhuma folha de pagamento para <strong><?= $months[$current_month] ?>/<?= $current_year ?></strong></p>
     <form method="post" style="display: inline;">
         <input type="hidden" name="action" value="generate">

@@ -97,7 +97,7 @@ require_once __DIR__ . '/../includes/header.php';
     <form method="get" style="display:flex;gap:8px">
         <input type="hidden" name="filter" value="<?= htmlspecialchars($filter) ?>">
         <input type="text" name="search" class="form-input" placeholder="Pesquisar produto..." value="<?= htmlspecialchars($search) ?>" style="width:200px">
-        <button type="submit" class="btn btn-secondary">🔍</button>
+        <button type="submit" class="btn btn-secondary"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></button>
     </form>
 </div>
 
@@ -116,9 +116,9 @@ require_once __DIR__ . '/../includes/header.php';
             <?php else: foreach ($products as $p):
                 $exp = $p['expiry_date'];
                 if (!$exp) { $cls = 'exp-none'; $label = 'Não definida'; }
-                elseif ($exp < $today) { $cls = 'exp-expired'; $label = '⛔ Expirado'; $days = (int)((strtotime($today)-strtotime($exp))/86400); $label .= " há {$days}d"; }
-                elseif ($exp <= $warn) { $cls = 'exp-warning'; $days = (int)((strtotime($exp)-strtotime($today))/86400); $label = "⚠️ Em {$days} dias"; }
-                else { $cls = 'exp-ok'; $days = (int)((strtotime($exp)-strtotime($today))/86400); $label = "✅ Em {$days} dias"; }
+                elseif ($exp < $today) { $cls = 'exp-expired'; $label = ' Expirado'; $days = (int)((strtotime($today)-strtotime($exp))/86400); $label .= " há {$days}d"; }
+                elseif ($exp <= $warn) { $cls = 'exp-warning'; $days = (int)((strtotime($exp)-strtotime($today))/86400); $label = "<svg width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z'/><line x1='12' y1='9' x2='12' y2='13'/><line x1='12' y1='17' x2='12.01' y2='17'/></svg> Em {$days} dias"; }
+                else { $cls = 'exp-ok'; $days = (int)((strtotime($exp)-strtotime($today))/86400); $label = "<svg width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'><polyline points='20 6 9 17 4 12'/></svg> Em {$days} dias"; }
             ?>
             <tr>
                 <td><a href="/modules/produtos.php?action=edit&id=<?= $p['id'] ?>" style="color:var(--text-primary);font-weight:600;text-decoration:none;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'"><?= htmlspecialchars($p['name']) ?></a></td>

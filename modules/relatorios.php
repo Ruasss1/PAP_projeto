@@ -149,7 +149,7 @@ require_once __DIR__ . '/../includes/header.php';
 <div class="card" style="margin-bottom: 24px;">
     <div class="card-body" style="padding: 16px 24px;">
         <div style="display: flex; gap: 8px; align-items: center;">
-            <span style="font-size: 14px; color: var(--text-secondary);">📅 Período:</span>
+            <span style="font-size: 14px; color: var(--text-secondary);"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> Período:</span>
             <a href="?period=week" class="btn <?= $period === 'week' ? 'btn-primary' : 'btn-secondary' ?> btn-sm">7 Dias</a>
             <a href="?period=month" class="btn <?= $period === 'month' ? 'btn-primary' : 'btn-secondary' ?> btn-sm">30 Dias</a>
             <a href="?period=quarter" class="btn <?= $period === 'quarter' ? 'btn-primary' : 'btn-secondary' ?> btn-sm">90 Dias</a>
@@ -157,7 +157,7 @@ require_once __DIR__ . '/../includes/header.php';
             <span style="margin-left: auto; font-size: 13px; color: var(--text-muted);">
                 <?= date('d/m/Y', strtotime($date_from)) ?> - <?= date('d/m/Y', strtotime($date_to)) ?>
             </span>
-            <a href="?period=<?= $period ?>&export_csv=1" class="btn btn-secondary btn-sm">⬇ CSV</a>
+            <a href="?period=<?= $period ?>&export_csv=1" class="btn btn-secondary btn-sm"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/></svg> CSV</a>
         </div>
     </div>
 </div>
@@ -209,7 +209,7 @@ require_once __DIR__ . '/../includes/header.php';
     <!-- Gráfico de vendas -->
     <div class="card">
         <div class="card-header">
-            <h3 class="card-title">📈 Evolução de Vendas</h3>
+            <h3 class="card-title"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg> Evolução de Vendas</h3>
         </div>
         <div class="card-body">
             <canvas id="salesChart" height="300"></canvas>
@@ -219,7 +219,7 @@ require_once __DIR__ . '/../includes/header.php';
     <!-- Gráfico de pagamentos -->
     <div class="card">
         <div class="card-header">
-            <h3 class="card-title">💳 Métodos de Pagamento</h3>
+            <h3 class="card-title"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg> Métodos de Pagamento</h3>
         </div>
         <div class="card-body">
             <canvas id="paymentChart" height="300"></canvas>
@@ -231,7 +231,7 @@ require_once __DIR__ . '/../includes/header.php';
     <!-- Top Produtos -->
     <div class="card">
         <div class="card-header">
-            <h3 class="card-title">🏆 Top 10 Produtos</h3>
+            <h3 class="card-title"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="8 21 12 21 16 21"/><line x1="12" y1="17" x2="12" y2="21"/><path d="M7 4h10v7a5 5 0 0 1-10 0V4z"/><path d="M5 4a2 2 0 0 0 0 4h-.5"/><path d="M19 4a2 2 0 0 1 0 4h.5"/></svg> Top 10 Produtos</h3>
         </div>
         <div class="card-body" style="padding: 0;">
             <table class="table">
@@ -265,7 +265,7 @@ require_once __DIR__ . '/../includes/header.php';
     <!-- Categorias -->
     <div class="card">
         <div class="card-header">
-            <h3 class="card-title">📂 Vendas por Categoria</h3>
+            <h3 class="card-title"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg> Vendas por Categoria</h3>
         </div>
         <div class="card-body">
             <canvas id="categoryChart" height="250"></canvas>
@@ -276,7 +276,7 @@ require_once __DIR__ . '/../includes/header.php';
 <!-- Gráfico de horários -->
 <div class="card">
     <div class="card-header">
-        <h3 class="card-title">⏰ Vendas por Hora do Dia</h3>
+        <h3 class="card-title"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> Vendas por Hora do Dia</h3>
     </div>
     <div class="card-body">
         <canvas id="hourlyChart" height="150"></canvas>
@@ -284,11 +284,28 @@ require_once __DIR__ . '/../includes/header.php';
 </div>
 
 <script>
+function themeColors() {
+    const dark = document.documentElement.getAttribute('data-theme') !== 'light';
+    return {
+        grid: dark ? 'rgba(255,255,255,.04)' : 'rgba(0,0,0,.05)',
+        tick: dark ? '#4a4a54' : '#8a8a9e',
+        bar:  dark ? 'rgba(236,236,236,.14)' : 'rgba(17,17,17,.10)',
+        barBorder: dark ? '#cecece' : '#111111',
+        line: dark ? 'rgba(236,236,236,.10)' : 'rgba(17,17,17,.07)',
+        lineBorder: dark ? '#e8e8e8' : '#111111',
+        doughnut: dark
+            ? ['#52525b','#71717a','#a1a1aa','#3f3f46','#27272a']
+            : ['#52525b','#71717a','#a1a1aa','#3f3f46','#d4d4d8'],
+    };
+}
+
 // Dados para gráficos
 const dailyData = <?= json_encode($daily) ?>;
 const paymentData = <?= json_encode($payments) ?>;
 const categoryData = <?= json_encode($categories) ?>;
 const hourlyData = <?= json_encode($hourly) ?>;
+
+const tc = themeColors();
 
 // Gráfico de vendas diárias
 new Chart(document.getElementById('salesChart'), {
@@ -301,8 +318,8 @@ new Chart(document.getElementById('salesChart'), {
         datasets: [{
             label: 'Receita (€)',
             data: dailyData.map(d => d.total),
-            borderColor: '#a1a1aa',
-            backgroundColor: 'rgba(161, 161, 170, 0.1)',
+            borderColor: tc.lineBorder,
+            backgroundColor: tc.line,
             fill: true,
             tension: 0.4
         }]
@@ -312,15 +329,8 @@ new Chart(document.getElementById('salesChart'), {
         maintainAspectRatio: false,
         plugins: { legend: { display: false } },
         scales: {
-            y: { 
-                beginAtZero: true,
-                grid: { color: 'rgba(255,255,255,0.05)' },
-                ticks: { color: '#71717a' }
-            },
-            x: { 
-                grid: { display: false },
-                ticks: { color: '#71717a' }
-            }
+            y: { beginAtZero: true, grid: { color: tc.grid }, ticks: { color: tc.tick } },
+            x: { grid: { display: false }, ticks: { color: tc.tick } }
         }
     }
 });
@@ -330,20 +340,12 @@ new Chart(document.getElementById('paymentChart'), {
     type: 'doughnut',
     data: {
         labels: paymentData.map(p => p.payment_method || 'N/A'),
-        datasets: [{
-            data: paymentData.map(p => p.total),
-            backgroundColor: ['#a1a1aa', '#71717a', '#52525b', '#3f3f46', '#a3a3a3']
-        }]
+        datasets: [{ data: paymentData.map(p => p.total), backgroundColor: tc.doughnut }]
     },
     options: {
         responsive: true,
         maintainAspectRatio: false,
-        plugins: {
-            legend: {
-                position: 'bottom',
-                labels: { color: '#a1a1aa', padding: 16 }
-            }
-        }
+        plugins: { legend: { position: 'bottom', labels: { color: tc.tick, padding: 16 } } }
     }
 });
 
@@ -352,11 +354,7 @@ new Chart(document.getElementById('categoryChart'), {
     type: 'bar',
     data: {
         labels: categoryData.map(c => c.category || 'Sem categoria'),
-        datasets: [{
-            label: 'Receita (€)',
-            data: categoryData.map(c => c.total),
-            backgroundColor: '#a1a1aa'
-        }]
+        datasets: [{ label: 'Receita (€)', data: categoryData.map(c => c.total), backgroundColor: tc.bar, borderColor: tc.barBorder, borderWidth: 1 }]
     },
     options: {
         responsive: true,
@@ -364,15 +362,8 @@ new Chart(document.getElementById('categoryChart'), {
         indexAxis: 'y',
         plugins: { legend: { display: false } },
         scales: {
-            x: { 
-                beginAtZero: true,
-                grid: { color: 'rgba(255,255,255,0.05)' },
-                ticks: { color: '#71717a' }
-            },
-            y: { 
-                grid: { display: false },
-                ticks: { color: '#71717a' }
-            }
+            x: { beginAtZero: true, grid: { color: tc.grid }, ticks: { color: tc.tick } },
+            y: { grid: { display: false }, ticks: { color: tc.tick } }
         }
     }
 });
@@ -388,26 +379,15 @@ new Chart(document.getElementById('hourlyChart'), {
     type: 'bar',
     data: {
         labels: hours.map(h => `${h}h`),
-        datasets: [{
-            label: 'Vendas',
-            data: hourCounts,
-            backgroundColor: '#10b981'
-        }]
+        datasets: [{ label: 'Vendas', data: hourCounts, backgroundColor: tc.bar, borderColor: tc.barBorder, borderWidth: 1 }]
     },
     options: {
         responsive: true,
         maintainAspectRatio: false,
         plugins: { legend: { display: false } },
         scales: {
-            y: { 
-                beginAtZero: true,
-                grid: { color: 'rgba(255,255,255,0.05)' },
-                ticks: { color: '#71717a' }
-            },
-            x: { 
-                grid: { display: false },
-                ticks: { color: '#71717a' }
-            }
+            y: { beginAtZero: true, grid: { color: tc.grid }, ticks: { color: tc.tick } },
+            x: { grid: { display: false }, ticks: { color: tc.tick } }
         }
     }
 });
@@ -430,14 +410,14 @@ new Chart(document.getElementById('hourlyChart'), {
 </div>
 
 <div class="card" style="margin-bottom:24px">
-    <div class="card-header"><h3 class="card-title">💹 Evolução do Lucro Bruto</h3></div>
+    <div class="card-header"><h3 class="card-title"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg> Evolução do Lucro Bruto</h3></div>
     <div class="card-body"><canvas id="profitChart" height="140"></canvas></div>
 </div>
 
 <!-- ═══════════ COMPARAÇÃO LOJAS ═══════════ -->
 <?php if (count($store_cmp) > 1): ?>
 <div class="card" style="margin-bottom:24px">
-    <div class="card-header"><h3 class="card-title">🏪 Comparação de Lojas</h3></div>
+    <div class="card-header"><h3 class="card-title"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg> Comparação de Lojas</h3></div>
     <div class="card-body" style="padding:0">
         <table class="table">
             <thead><tr><th>Loja</th><th>Nº Vendas</th><th>Receita</th><th>Ticket Médio</th></tr></thead>
@@ -459,7 +439,7 @@ new Chart(document.getElementById('hourlyChart'), {
 <!-- ═══════════ PREVISÃO STOCK ═══════════ -->
 <?php if (!empty($reorder)): ?>
 <div class="card" style="margin-bottom:24px">
-    <div class="card-header"><h3 class="card-title">⚠️ Previsão de Reabastecimento (próx. 7 dias)</h3></div>
+    <div class="card-header"><h3 class="card-title"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg> Previsão de Reabastecimento (próx. 7 dias)</h3></div>
     <div class="card-body" style="padding:0">
         <table class="table">
             <thead><tr><th>Produto</th><th>Stock Atual</th><th>Mín.</th><th>Venda/Dia (média)</th><th>Dias restantes</th><th>Sugestão enc.</th></tr></thead>
@@ -487,14 +467,15 @@ new Chart(document.getElementById('hourlyChart'), {
 <script>
 // Gráfico de lucro
 const profitDailyData = <?= json_encode($profit_daily) ?>;
+const tc2 = themeColors();
 new Chart(document.getElementById('profitChart'), {
     type: 'bar',
     data: {
         labels: profitDailyData.map(d => { const dt=new Date(d.date); return dt.toLocaleDateString('pt-PT',{day:'2-digit',month:'short'}); }),
-        datasets: [{ label: 'Lucro (€)', data: profitDailyData.map(d => d.profit), backgroundColor: '#10b981' }]
+        datasets: [{ label: 'Lucro (€)', data: profitDailyData.map(d => d.profit), backgroundColor: tc2.bar, borderColor: tc2.barBorder, borderWidth: 1 }]
     },
     options: { responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}},
-        scales: { y:{beginAtZero:true,grid:{color:'rgba(255,255,255,0.05)'},ticks:{color:'#71717a'}}, x:{grid:{display:false},ticks:{color:'#71717a'}} }
+        scales: { y:{beginAtZero:true,grid:{color:tc2.grid},ticks:{color:tc2.tick}}, x:{grid:{display:false},ticks:{color:tc2.tick}} }
     }
 });
 </script>

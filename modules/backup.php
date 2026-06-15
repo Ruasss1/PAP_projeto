@@ -84,15 +84,15 @@ require_once __DIR__ . '/../includes/header.php';
 .backup-hero p  { color:var(--text-muted); margin-bottom:20px; }
 </style>
 
-<?php if ($error):   ?><div class="alert alert-danger"  style="margin-bottom:16px">⚠️ <?= htmlspecialchars($error)   ?></div><?php endif; ?>
-<?php if ($success): ?><div class="alert alert-success" style="margin-bottom:16px">✓ <?= htmlspecialchars($success) ?></div><?php endif; ?>
+<?php if ($error):   ?><div class="alert alert-danger"  style="margin-bottom:16px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg> <?= htmlspecialchars($error)   ?></div><?php endif; ?>
+<?php if ($success): ?><div class="alert alert-success" style="margin-bottom:16px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> <?= htmlspecialchars($success) ?></div><?php endif; ?>
 
 <div class="backup-hero">
-    <h2>🗄️ Backup da Base de Dados</h2>
+    <h2><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg> Backup da Base de Dados</h2>
     <p>Crie um dump completo da base de dados para salvaguarda ou migração.</p>
     <form method="post" onsubmit="this.querySelector('button').disabled=true;this.querySelector('button').textContent='A processar...'">
         <input type="hidden" name="action" value="backup">
-        <button type="submit" class="btn btn-primary" style="padding:12px 36px;font-size:15px">⬇ Criar Backup Agora</button>
+        <button type="submit" class="btn btn-primary" style="padding:12px 36px;font-size:15px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/></svg> Criar Backup Agora</button>
     </form>
 </div>
 
@@ -113,8 +113,8 @@ require_once __DIR__ . '/../includes/header.php';
                 <td><?= number_format($b['size']/1024/1024, 2) ?> MB</td>
                 <td><?= date('d/m/Y H:i:s', $b['date']) ?></td>
                 <td>
-                    <a href="?download=<?= urlencode($b['name']) ?>" class="btn btn-secondary" style="font-size:12px;padding:5px 12px">⬇ Download</a>
-                    <a href="?delete=<?= urlencode($b['name']) ?>" class="btn btn-secondary" style="font-size:12px;padding:5px 12px;color:var(--danger,#ef4444)" onclick="return confirm('Eliminar este backup?')">🗑 Eliminar</a>
+                    <a href="?download=<?= urlencode($b['name']) ?>" class="btn btn-secondary" style="font-size:12px;padding:5px 12px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/></svg> Download</a>
+                    <a href="?delete=<?= urlencode($b['name']) ?>" class="btn btn-secondary" style="font-size:12px;padding:5px 12px;color:var(--danger,#ef4444)" onclick="return confirm('Eliminar este backup?')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg> Eliminar</a>
                 </td>
             </tr>
             <?php endforeach; endif; ?>
@@ -124,7 +124,7 @@ require_once __DIR__ . '/../includes/header.php';
 </div>
 
 <div style="background:var(--bg-secondary);border:1px solid var(--border);border-radius:10px;padding:16px;margin-top:16px;font-size:13px;color:var(--text-muted)">
-    <strong>ℹ️ Nota:</strong> Os backups são ficheiros SQL gerados pelo <code>mysqldump</code>. Certifique-se de que o binário está acessível no servidor. Os backups antigos são automaticamente eliminados conforme a política de retenção configurada em <a href="configuracoes.php" style="color:var(--text-primary)">Configurações</a>.
+    <strong>ℹ Nota:</strong> Os backups são ficheiros SQL gerados pelo <code>mysqldump</code>. Certifique-se de que o binário está acessível no servidor. Os backups antigos são automaticamente eliminados conforme a política de retenção configurada em <a href="configuracoes.php" style="color:var(--text-primary)">Configurações</a>.
 </div>
 
 <?php require_once __DIR__ . '/../includes/footer.php'; ?>

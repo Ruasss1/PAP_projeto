@@ -306,7 +306,7 @@ require_once __DIR__ . '/../includes/header.php';
 
 <?php if ($message): ?>
 <div class="alert alert-<?= $message_type ?> fade-in">
-    <span class="alert-icon"><?= $message_type === 'success' ? '✓' : '⚠️' ?></span>
+    <span class="alert-icon"><?= $message_type === 'success' ? '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>' : '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>' ?></span>
     <div class="alert-content">
         <div class="alert-message"><?= htmlspecialchars($message) ?></div>
     </div>
@@ -349,12 +349,12 @@ require_once __DIR__ . '/../includes/header.php';
     <!-- Carrinho -->
     <div class="cart-panel">
         <div class="cart-header">
-            <h3 style="font-size: 18px; font-weight: 700;">🛒 Carrinho</h3>
+            <h3 style="font-size: 18px; font-weight: 700;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg> Carrinho</h3>
         </div>
         
         <div class="cart-items" id="cart-items">
             <div class="cart-empty" id="cart-empty">
-                <div class="cart-empty-icon">🛒</div>
+                <div class="cart-empty-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg></div>
                 <div>Carrinho vazio</div>
                 <div style="font-size: 12px; margin-top: 4px;">Clique nos produtos para adicionar</div>
             </div>
@@ -367,9 +367,9 @@ require_once __DIR__ . '/../includes/header.php';
             </div>
             
             <div class="payment-methods">
-                <button type="button" class="payment-btn active" onclick="setPayment('Dinheiro')">💵 Dinheiro</button>
-                <button type="button" class="payment-btn" onclick="setPayment('Cartão')">💳 Cartão</button>
-                <button type="button" class="payment-btn" onclick="setPayment('MBWay')">📱 MBWay</button>
+                <button type="button" class="payment-btn active" onclick="setPayment('Dinheiro')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2"/><circle cx="12" cy="12" r="3"/></svg> Dinheiro</button>
+                <button type="button" class="payment-btn" onclick="setPayment('Cartão')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg> Cartão</button>
+                <button type="button" class="payment-btn" onclick="setPayment('MBWay')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg> MBWay</button>
             </div>
             
             <form method="post" id="sale-form">
@@ -377,12 +377,12 @@ require_once __DIR__ . '/../includes/header.php';
                 <input type="hidden" name="items" id="cart-data">
                 <input type="hidden" name="payment_method" id="payment-method" value="Dinheiro">
                 <button type="submit" class="btn btn-success w-full" style="padding: 16px; font-size: 16px;" id="complete-btn" disabled>
-                    ✓ Finalizar Venda
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Finalizar Venda
                 </button>
             </form>
             
             <button type="button" class="btn btn-secondary w-full" style="margin-top: 8px;" onclick="clearCart()">
-                🗑️ Limpar Carrinho
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg> Limpar Carrinho
             </button>
         </div>
     </div>
@@ -464,7 +464,7 @@ function renderCart() {
     if (cart.length === 0) {
         container.innerHTML = `
             <div class="cart-empty" id="cart-empty">
-                <div class="cart-empty-icon">🛒</div>
+                <div class="cart-empty-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg></div>
                 <div>Carrinho vazio</div>
                 <div style="font-size: 12px; margin-top: 4px;">Clique nos produtos para adicionar</div>
             </div>
@@ -494,7 +494,7 @@ function renderCart() {
                     <button type="button" onclick="updateQty(${item.id}, 1)">+</button>
                 </div>
                 <div class="cart-item-total">€${itemTotal.toFixed(2)}</div>
-                <div class="cart-item-remove" onclick="removeFromCart(${item.id})">✕</div>
+                <div class="cart-item-remove" onclick="removeFromCart(${item.id})"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></div>
             </div>
         `;
     });

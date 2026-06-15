@@ -74,7 +74,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             if ($orders_created > 0) {
                 $message .= " Encomenda automática criada ({$orders_created} encomenda(s), {$items_created} produto(s)).";
-                $corner_toast_message = "📦 Encomenda automática criada ({$orders_created} encomenda(s), {$items_created} produto(s)).";
+                $corner_toast_message = "<svg width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z'/><polyline points='3.27 6.96 12 12.01 20.73 6.96'/><line x1='12' y1='22.08' x2='12' y2='12'/></svg> Encomenda automática criada ({$orders_created} encomenda(s), {$items_created} produto(s)).";
                 $corner_toast_type = 'warning';
             }
         }
@@ -200,7 +200,7 @@ require_once __DIR__ . '/../includes/header.php';
 
 <?php if ($message): ?>
 <div class="alert alert-<?= $message_type ?> fade-in">
-    <span class="alert-icon"><?= $message_type === 'success' ? '✓' : '⚠️' ?></span>
+    <span class="alert-icon"><?= $message_type === 'success' ? '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>' : '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>' ?></span>
     <div class="alert-content">
         <div class="alert-message"><?= htmlspecialchars($message) ?></div>
     </div>
@@ -392,7 +392,7 @@ window.addEventListener('load', function () {
                 <tr>
                     <td colspan="8" class="table-empty">
                         <div class="empty-state">
-                            <div class="empty-icon">📦</div>
+                            <div class="empty-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg></div>
                             <div class="empty-title">Sem produtos</div>
                             <div class="empty-text">Adicione o primeiro produto usando o formulário acima.</div>
                         </div>
@@ -417,7 +417,7 @@ window.addEventListener('load', function () {
                     <td>
                         <span class="<?= $is_low ? 'text-danger font-bold' : '' ?>">
                             <?= (int)$p['stock'] ?>
-                            <?php if ($is_low): ?><span style="font-size: 11px;">⚠</span><?php endif; ?>
+                            <?php if ($is_low): ?><span style="font-size: 11px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></span><?php endif; ?>
                         </span>
                         <span class="table-sub-text">/ mín: <?= (int)$p['min_stock'] ?></span>
                     </td>

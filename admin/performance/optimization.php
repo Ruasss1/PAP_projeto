@@ -25,7 +25,7 @@ $pdo = db_connect();
 ?>
 
 <div class="performance-container">
-    <h1>⚙️ Otimização e Performance</h1>
+    <h1><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg> Otimização e Performance</h1>
 
     <!-- Métricas do Sistema -->
     <div class="metrics-grid">
@@ -79,7 +79,7 @@ $pdo = db_connect();
 
     <!-- Índices de Banco de Dados -->
     <section class="optimization-section">
-        <h2>📊 Índices de Base de Dados</h2>
+        <h2><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg> Índices de Base de Dados</h2>
         <div class="indexes-table">
             <?php
             $tables = [
@@ -111,7 +111,7 @@ $pdo = db_connect();
 
     <!-- Recomendações de Otimização -->
     <section class="optimization-section">
-        <h2>💡 Recomendações de Otimização</h2>
+        <h2><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="17" x2="12" y2="22"/><path d="M5 12H3"/><path d="M21 12h-2"/><path d="M12 2v2"/><path d="M4.22 4.22l1.42 1.42"/><path d="M18.36 5.64l-1.42 1.42"/><path d="M9 17h6"/><path d="M12 2a7 7 0 0 1 7 7 7 7 0 0 1-4 6.32V17H9v-1.68A7 7 0 0 1 5 9a7 7 0 0 1 7-7z"/></svg> Recomendações de Otimização</h2>
         <div class="recommendations">
             <?php
             $recommendations = [
@@ -164,7 +164,7 @@ $pdo = db_connect();
 
     <!-- Análise de Queries Lentas -->
     <section class="optimization-section">
-        <h2>🐌 Queries Lentas (Simuladas)</h2>
+        <h2><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg> Queries Lentas (Simuladas)</h2>
         <div class="slow-queries">
             <?php
             $slow_queries = [
@@ -207,19 +207,19 @@ $pdo = db_connect();
 
     <!-- Ferramentas de Manutenção -->
     <section class="optimization-section">
-        <h2>🔧 Ferramentas de Manutenção</h2>
+        <h2><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg> Ferramentas de Manutenção</h2>
         <div class="maintenance-tools">
             <button class="tool-btn" onclick="optimizeTables()">
-                🔨 Otimizar Tabelas
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg> Otimizar Tabelas
             </button>
             <button class="tool-btn" onclick="analyzeTables()">
-                📈 Analisar Tabelas
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg> Analisar Tabelas
             </button>
             <button class="tool-btn" onclick="repairTables()">
-                🔧 Reparar Tabelas
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg> Reparar Tabelas
             </button>
             <button class="tool-btn" onclick="clearCache()">
-                🗑️ Limpar Cache
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg> Limpar Cache
             </button>
         </div>
     </section>

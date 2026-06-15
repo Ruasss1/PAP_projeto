@@ -256,7 +256,7 @@ try {
 <style>
 /* Page header */
 .ph { display:flex; align-items:flex-start; justify-content:space-between; gap:20px; margin-bottom:28px; flex-wrap:wrap; }
-.ph-title { font-family:'Playfair Display',serif; font-size:22px; font-weight:900; letter-spacing:-.03em; margin-bottom:4px; }
+.ph-title { font-family:'Plus Jakarta Sans',sans-serif;font-weight:800; font-size:22px; font-weight:900; letter-spacing:-.03em; margin-bottom:4px; }
 .ph-sub { font-size:13px; color:var(--text-muted); }
 
 /* Period selector */
@@ -299,7 +299,7 @@ try {
     border:1px solid var(--border);
 }
 .badge-red, .badge-green, .badge-blue { background:var(--bg-tertiary); color:var(--text-muted); border:1px solid var(--border); }
-.sc-val { font-family:'Playfair Display',serif; font-size:26px; font-weight:900; letter-spacing:-.04em; line-height:1; margin-bottom:4px; }
+.sc-val { font-family:'Plus Jakarta Sans',sans-serif;font-weight:800; font-size:26px; font-weight:900; letter-spacing:-.04em; line-height:1; margin-bottom:4px; }
 .sc-lbl { font-size:12px; color:var(--text-muted); }
 
 /* Card */
@@ -361,54 +361,52 @@ try {
 
 /* Table */
 .tw { overflow-x:auto; }
-table { width:100%; border-collapse:collapse; font-size:13.5px; }
+table { width:100%; border-collapse:collapse; font-size:13px; }
 th {
-    padding:11px 18px;
+    padding:10px 20px;
     text-align:left;
     font-weight:600;
-    font-size:10px;
+    font-size:9.5px;
     text-transform:uppercase;
-    letter-spacing:.14em;
+    letter-spacing:.18em;
     color:var(--text-muted);
     border-bottom:1px solid var(--border);
     background:var(--bg-tertiary);
+    white-space:nowrap;
 }
 td {
-    padding:12px 18px;
+    padding:13px 20px;
     border-bottom:1px solid var(--border);
     color:var(--text-primary);
     vertical-align:middle;
 }
 tr:last-child td { border-bottom:none; }
-tr td { transition: background-color 0.16s ease; }
-tr:hover td { background:var(--bg-tertiary); }
+tr td { transition: background-color 0.12s ease; }
+tbody tr:hover td { background:var(--bg-tertiary); }
 .empty {
     text-align:center;
-    padding:44px 20px;
+    padding:48px 20px;
     color:var(--text-muted);
     font-size:13px;
-    background:var(--bg-primary);
+    background:var(--bg-secondary);
 }
 
 /* Feed row badge */
 .tipo-badge {
     display:inline-flex;
     align-items:center;
-    font-size:11px;
-    font-weight:600;
+    font-size:10px;
+    font-weight:700;
     line-height:1;
-    padding:4px 9px;
-    border-radius:999px;
-    border:1px solid var(--border);
-    background:var(--bg-tertiary);
-    color:var(--text-secondary);
-    letter-spacing:.01em;
+    padding:4px 10px;
+    border-radius:6px;
+    letter-spacing:.06em;
+    text-transform:uppercase;
 }
-.tipo-encomenda, .tipo-salario, .tipo-devolucao, .tipo-caixa {
-    border-color:var(--border);
-    background:var(--bg-tertiary);
-    color:var(--text-secondary);
-}
+.tipo-encomenda { background:rgba(99,102,241,.1); color:#818cf8; border:1px solid rgba(99,102,241,.2); }
+.tipo-salario   { background:rgba(16,185,129,.1); color:var(--success); border:1px solid rgba(16,185,129,.2); }
+.tipo-devolucao { background:rgba(245,158,11,.1); color:var(--warning); border:1px solid rgba(245,158,11,.2); }
+.tipo-caixa     { background:rgba(248,113,113,.1); color:var(--danger); border:1px solid rgba(248,113,113,.2); }
 
 /* Valor saída */
 .val-out { font-weight:700; color:var(--danger); letter-spacing:-.01em; }

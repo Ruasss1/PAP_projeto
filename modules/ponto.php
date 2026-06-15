@@ -93,11 +93,11 @@ require_once __DIR__ . '/../includes/header.php';
 .clock-form   { background:var(--bg-secondary); border:1px solid var(--border); border-radius:12px; padding:20px; margin-bottom:24px; }
 </style>
 
-<?php if ($error): ?><div class="alert alert-danger" style="margin-bottom:16px">⚠️ <?= htmlspecialchars($error) ?></div><?php endif; ?>
-<?php if ($success): ?><div class="alert alert-success" style="margin-bottom:16px">✓ <?= htmlspecialchars($success) ?></div><?php endif; ?>
+<?php if ($error): ?><div class="alert alert-danger" style="margin-bottom:16px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg> <?= htmlspecialchars($error) ?></div><?php endif; ?>
+<?php if ($success): ?><div class="alert alert-success" style="margin-bottom:16px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> <?= htmlspecialchars($success) ?></div><?php endif; ?>
 
 <!-- Presentes agora -->
-<h3 style="font-size:14px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:12px">🟢 Presentes agora (<?= count($present) ?>)</h3>
+<h3 style="font-size:14px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:12px"><svg width="8" height="8" viewBox="0 0 8 8" fill="currentColor"><circle cx="4" cy="4" r="4"/></svg> Presentes agora (<?= count($present) ?>)</h3>
 <?php if (empty($present)): ?>
 <div style="color:var(--text-muted);margin-bottom:24px">Nenhum funcionário com entrada em aberto.</div>
 <?php else: ?>
@@ -142,7 +142,7 @@ require_once __DIR__ . '/../includes/header.php';
             <label class="form-label">Notas (opcional)</label>
             <input type="text" name="notes" class="form-input" placeholder="Ex: Entrada via portão traseiro">
         </div>
-        <button type="submit" class="btn btn-primary">🕐 Registar Entrada</button>
+        <button type="submit" class="btn btn-primary"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> Registar Entrada</button>
     </form>
 </div>
 
@@ -182,7 +182,7 @@ require_once __DIR__ . '/../includes/header.php';
         </select>
     </div>
     <button type="submit" class="btn btn-secondary">Filtrar</button>
-    <a href="?<?= http_build_query(array_merge($_GET, ['export'=>'1'])) ?>" class="btn btn-secondary">⬇ CSV</a>
+    <a href="?<?= http_build_query(array_merge($_GET, ['export'=>'1'])) ?>" class="btn btn-secondary"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/></svg> CSV</a>
 </form>
 
 <!-- Tabela histórico -->
@@ -208,7 +208,7 @@ require_once __DIR__ . '/../includes/header.php';
                     <form method="post" onsubmit="return confirm('Eliminar registo?')">
                         <input type="hidden" name="action" value="delete">
                         <input type="hidden" name="attendance_id" value="<?= $r['id'] ?>">
-                        <button type="submit" class="btn btn-secondary" style="padding:4px 8px;font-size:11px">🗑</button>
+                        <button type="submit" class="btn btn-secondary" style="padding:4px 8px;font-size:11px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg></button>
                     </form>
                 </td>
             </tr>

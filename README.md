@@ -1,6 +1,30 @@
-# PAP Supermercado
+# PAP Market
 
-Estrutura inicial para a PAP: sistema de gestão de stock, vendas, fornecedores, quebras e RH.
+Sistema de gestão de supermercado — stock, vendas, RH, caixa e relatórios.
+
+---
+
+## Credenciais de teste
+
+> Página visual: `http://localhost:8000/credenciais.php`
+
+| Role | Email | Password |
+|------|-------|----------|
+| Admin | admin@papmarket.pt | admin123 |
+| Gerente | gerente@papmarket.pt | gerente123 |
+| Caixa | caixa@papmarket.pt | caixa123 |
+| Funcionário | func@papmarket.pt | func123 |
+
+---
+
+## Base de dados
+
+- **Nome:** `supermercado`
+- **Host:** `127.0.0.1` · **Porto:** `3306`
+- **Utilizador:** `root` · **Password:** *(em branco)*
+- **phpMyAdmin:** `http://localhost:8080` *(correr `php -S localhost:8080 -t /opt/homebrew/share/phpmyadmin`)*
+
+---
 
 Começar (Passo a passo):
 

@@ -1,7 +1,7 @@
 <?php
 /**
- * RECIBOS - PREMIUM
- * Visualização moderna de histórico de vendas
+ * RECIBOS
+ * Histórico de vendas com visualização de recibo
  */
 
 header('Cache-Control: no-cache, no-store, must-revalidate');
@@ -13,7 +13,6 @@ $pdo = db_connect();
 $current_store_id = get_current_store_id();
 
 // Filtros
-$has_filters = !empty($_GET);
 $date_from = $_GET['date_from'] ?? '';
 $date_to   = $_GET['date_to']   ?? '';
 $payment   = $_GET['payment']   ?? '';
@@ -27,9 +26,9 @@ if ($date_to)   { $where[] = 'DATE(s.sale_date) <= ?'; $params[] = $date_to; }
 if ($payment)   { $where[] = 's.payment_method = ?';   $params[] = $payment; }
 if ($search)    { $where[] = 's.id = ?';               $params[] = intval($search); }
 
-$sql = "SELECT s.*, COUNT(si.id) as items_count 
-        FROM sales s 
-        LEFT JOIN sale_items si ON s.id = si.sale_id 
+$sql = "SELECT s.*, COUNT(si.id) as items_count
+        FROM sales s
+        LEFT JOIN sale_items si ON s.id = si.sale_id
         WHERE " . implode(' AND ', $where) . "
         GROUP BY s.id ORDER BY s.sale_date DESC LIMIT 200";
 
@@ -37,25 +36,23 @@ $stmt = $pdo->prepare($sql);
 $stmt->execute($params);
 $sales = $stmt->fetchAll();
 
-// Estatísticas (mesmo filtro)
+// Estatísticas (mesmo filtro, sem nº venda)
 $swhere  = ['store_id = ?'];
 $sparams = [$current_store_id];
 if ($date_from) { $swhere[] = 'DATE(sale_date) >= ?'; $sparams[] = $date_from; }
 if ($date_to)   { $swhere[] = 'DATE(sale_date) <= ?'; $sparams[] = $date_to; }
 if ($payment)   { $swhere[] = 'payment_method = ?';   $sparams[] = $payment; }
 
-$stats_sql = "SELECT 
+$sstmt = $pdo->prepare("SELECT
     COUNT(*) as total_sales,
     COALESCE(SUM(total), 0) as total_revenue,
     COALESCE(AVG(total), 0) as avg_sale,
     COUNT(DISTINCT DATE(sale_date)) as days_with_sales
-    FROM sales 
-    WHERE " . implode(' AND ', $swhere);
-$stats = $pdo->prepare($stats_sql);
-$stats->execute($sparams);
-$stats = $stats->fetch();
+    FROM sales WHERE " . implode(' AND ', $swhere));
+$sstmt->execute($sparams);
+$stats = $sstmt->fetch();
 
-// Ver detalhes de uma venda
+// Detalhe de uma venda
 $viewing_sale = null;
 $sale_items = [];
 if (isset($_GET['view'])) {
@@ -63,7 +60,6 @@ if (isset($_GET['view'])) {
     $stmt = $pdo->prepare("SELECT * FROM sales WHERE id = ? AND store_id = ?");
     $stmt->execute([$sale_id, $current_store_id]);
     $viewing_sale = $stmt->fetch();
-    
     if ($viewing_sale) {
         $stmt = $pdo->prepare("SELECT si.*, p.name, p.barcode as sku FROM sale_items si JOIN products p ON si.product_id = p.id WHERE si.sale_id = ?");
         $stmt->execute([$sale_id]);
@@ -79,119 +75,152 @@ require_once __DIR__ . '/../includes/header.php';
 <div class="stats-grid" style="grid-template-columns: repeat(4, 1fr);">
     <div class="stat-card">
         <div class="stat-header">
-            <div class="stat-icon blue"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg></div>
+            <div class="stat-icon">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+            </div>
         </div>
-        <div class="stat-value"><?= $stats['total_sales'] ?></div>
-        <div class="stat-label">Total Vendas</div>
+        <div class="stat-value"><?= number_format($stats['total_sales']) ?></div>
+        <div class="stat-label">Total de Vendas</div>
     </div>
     <div class="stat-card">
         <div class="stat-header">
-            <div class="stat-icon green"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/></svg></div>
+            <div class="stat-icon">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            </div>
         </div>
-        <div class="stat-value">€<?= number_format($stats['total_revenue'], 2, ',', '.') ?></div>
+        <div class="stat-value" style="color:var(--success);">€<?= number_format($stats['total_revenue'], 2, ',', '.') ?></div>
         <div class="stat-label">Receita Total</div>
     </div>
     <div class="stat-card">
         <div class="stat-header">
-            <div class="stat-icon purple"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg></div>
+            <div class="stat-icon">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+            </div>
         </div>
-        <div class="stat-value">€<?= number_format($stats['avg_sale'], 2) ?></div>
+        <div class="stat-value">€<?= number_format($stats['avg_sale'], 2, ',', '.') ?></div>
         <div class="stat-label">Média por Venda</div>
     </div>
     <div class="stat-card">
         <div class="stat-header">
-            <div class="stat-icon orange"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg></div>
+            <div class="stat-icon">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+            </div>
         </div>
-        <div class="stat-value"><?= $stats['days_with_sales'] ?></div>
+        <div class="stat-value"><?= number_format($stats['days_with_sales']) ?></div>
         <div class="stat-label">Dias com Vendas</div>
     </div>
 </div>
 
 <!-- Filtros -->
-<div class="card" style="margin-bottom: 24px;">
-    <div class="card-body" style="padding: 16px 24px;">
-        <form method="get" style="display: flex; gap: 16px; align-items: flex-end; flex-wrap: wrap;">
+<div class="card" style="margin-bottom: 20px;">
+    <div class="card-body" style="padding: 14px 18px;">
+        <form method="get" style="display: flex; gap: 12px; align-items: flex-end; flex-wrap: wrap;">
             <div class="form-group" style="margin: 0;">
-                <label class="form-label">Data Início</label>
-                <input type="date" name="date_from" class="form-input" value="<?= htmlspecialchars($date_from) ?>">
+                <label class="form-label">Data início</label>
+                <input type="date" name="date_from" class="form-input" value="<?= htmlspecialchars($date_from) ?>" style="width: 150px;">
             </div>
             <div class="form-group" style="margin: 0;">
-                <label class="form-label">Data Fim</label>
-                <input type="date" name="date_to" class="form-input" value="<?= htmlspecialchars($date_to) ?>">
+                <label class="form-label">Data fim</label>
+                <input type="date" name="date_to" class="form-input" value="<?= htmlspecialchars($date_to) ?>" style="width: 150px;">
             </div>
             <div class="form-group" style="margin: 0;">
                 <label class="form-label">Pagamento</label>
-                <select name="payment" class="form-select">
+                <select name="payment" class="form-select" style="width: 140px;">
                     <option value="">Todos</option>
-                    <option value="Dinheiro" <?= $payment === 'Dinheiro' ? 'selected' : '' ?>>💵 Dinheiro</option>
-                    <option value="Cartão" <?= $payment === 'Cartão' ? 'selected' : '' ?>>💳 Cartão</option>
-                    <option value="MBWay" <?= $payment === 'MBWay' ? 'selected' : '' ?>>📱 MBWay</option>
+                    <option value="Dinheiro" <?= $payment === 'Dinheiro' ? 'selected' : '' ?>>Dinheiro</option>
+                    <option value="Cartão"   <?= $payment === 'Cartão'   ? 'selected' : '' ?>>Cartão</option>
+                    <option value="MBWay"    <?= $payment === 'MBWay'    ? 'selected' : '' ?>>MBWay</option>
                 </select>
             </div>
             <div class="form-group" style="margin: 0;">
                 <label class="form-label">Nº Venda</label>
-                <input type="text" name="search" class="form-input" placeholder="#" value="<?= htmlspecialchars($search) ?>" style="width: 100px;">
+                <input type="text" name="search" class="form-input" placeholder="#" value="<?= htmlspecialchars($search) ?>" style="width: 90px;">
             </div>
-            <button type="submit" class="btn btn-primary">🔍 Filtrar</button>
-            <a href="/modules/recibos.php" class="btn btn-secondary">Limpar</a>
+            <button type="submit" class="btn btn-primary">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                Filtrar
+            </button>
+            <?php if ($date_from || $date_to || $payment || $search): ?>
+            <a href="/modules/recibos.php" class="btn btn-ghost">Limpar</a>
+            <?php endif; ?>
         </form>
     </div>
 </div>
 
 <?php if ($viewing_sale): ?>
-<!-- Modal de Detalhes -->
-<div class="card" style="margin-bottom: 24px; border-color: var(--accent);">
-    <div class="card-header" style="background: var(--accent-light);">
-        <h3 class="card-title" style="color: var(--accent);">📋 Detalhes da Venda #<?= $viewing_sale['id'] ?></h3>
-        <a href="/modules/recibos.php" class="btn btn-secondary btn-sm">✕ Fechar</a>
+<!-- Detalhe da Venda -->
+<div class="card" style="margin-bottom: 20px;">
+    <div class="card-header">
+        <div style="display:flex; align-items:center; gap:10px;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--text-secondary);"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+            <h3 class="card-title">Venda #<?= $viewing_sale['id'] ?></h3>
+        </div>
+        <a href="/modules/recibos.php?<?= http_build_query(['date_from'=>$date_from,'date_to'=>$date_to,'payment'=>$payment,'search'=>$search]) ?>" class="btn btn-ghost btn-sm">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            Fechar
+        </a>
     </div>
-    <div class="card-body">
-        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; margin-bottom: 24px;">
-            <div>
-                <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 4px;">Data/Hora</div>
-                <div style="font-weight: 600;"><?= date('d/m/Y H:i', strtotime($viewing_sale['sale_date'])) ?></div>
-            </div>
-            <div>
-                <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 4px;">Pagamento</div>
-                <div style="font-weight: 600;"><?= $viewing_sale['payment_method'] ?? 'N/A' ?></div>
-            </div>
-            <div>
-                <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 4px;">Itens</div>
-                <div style="font-weight: 600;"><?= count($sale_items) ?> produtos</div>
-            </div>
-            <div>
-                <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 4px;">Total</div>
-                <div style="font-weight: 700; font-size: 24px; color: var(--accent);">€<?= number_format($viewing_sale['total'], 2) ?></div>
-            </div>
+
+    <!-- Metadados da venda -->
+    <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:1px; background:var(--border); border-bottom:1px solid var(--border);">
+        <?php
+        $meta = [
+            ['Data', date('d/m/Y', strtotime($viewing_sale['sale_date']))],
+            ['Hora', date('H:i', strtotime($viewing_sale['sale_date']))],
+            ['Método', $viewing_sale['payment_method'] ?? 'N/A'],
+            ['Artigos', count($sale_items) . ' produto' . (count($sale_items) !== 1 ? 's' : '')],
+        ];
+        foreach ($meta as $m): ?>
+        <div style="background:var(--bg-secondary); padding:14px 18px;">
+            <div style="font-size:10.5px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--text-muted);margin-bottom:4px;"><?= $m[0] ?></div>
+            <div style="font-size:14px;font-weight:600;color:var(--text-primary);"><?= $m[1] ?></div>
         </div>
-        
-        <table class="table" style="border: 1px solid var(--border); border-radius: var(--radius-lg);">
-            <thead>
-                <tr>
-                    <th>Produto</th>
-                    <th>Código</th>
-                    <th>Qtd</th>
-                    <th>Preço Un.</th>
-                    <th>Total</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php foreach ($sale_items as $item): ?>
-                <tr>
-                    <td><strong><?= htmlspecialchars($item['name']) ?></strong></td>
-                    <td><?= htmlspecialchars($item['sku'] ?? '-') ?></td>
-                    <td><?= $item['quantity'] ?></td>
-                    <td>€<?= number_format($item['price'], 2) ?></td>
-                    <td><strong>€<?= number_format($item['price'] * $item['quantity'], 2) ?></strong></td>
-                </tr>
-                <?php endforeach; ?>
-            </tbody>
-        </table>
-        
-        <div style="display: flex; gap: 12px; margin-top: 16px;">
-            <button onclick="openReceipt(<?= $viewing_sale['id'] ?>)" class="btn btn-primary">🧾 Ver Recibo</button>
-            <button onclick="window.print()" class="btn btn-secondary">🖨️ Imprimir</button>
-        </div>
+        <?php endforeach; ?>
+    </div>
+
+    <!-- Itens -->
+    <table class="table" style="border-radius:0;">
+        <thead>
+            <tr>
+                <th>Produto</th>
+                <th>Código</th>
+                <th style="text-align:right;">Qtd</th>
+                <th style="text-align:right;">Preço Un.</th>
+                <th style="text-align:right;">Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php foreach ($sale_items as $item):
+                $line = $item['price'] * $item['quantity'];
+            ?>
+            <tr>
+                <td><span style="font-weight:600;"><?= htmlspecialchars($item['name']) ?></span></td>
+                <td style="color:var(--text-muted);font-size:12px;font-family:monospace;"><?= htmlspecialchars($item['sku'] ?? '—') ?></td>
+                <td style="text-align:right;">× <?= $item['quantity'] ?></td>
+                <td style="text-align:right;color:var(--text-secondary);">€<?= number_format($item['price'], 2, ',', '.') ?></td>
+                <td style="text-align:right;font-weight:700;">€<?= number_format($line, 2, ',', '.') ?></td>
+            </tr>
+            <?php endforeach; ?>
+        </tbody>
+        <tfoot>
+            <tr style="background:var(--bg-tertiary);">
+                <td colspan="4" style="text-align:right;font-weight:600;color:var(--text-secondary);">Total</td>
+                <td style="text-align:right;font-family:'Plus Jakarta Sans',sans-serif;font-size:20px;font-weight:800;letter-spacing:-0.04em;color:var(--success);">
+                    €<?= number_format($viewing_sale['total'], 2, ',', '.') ?>
+                </td>
+            </tr>
+        </tfoot>
+    </table>
+
+    <div class="card-footer" style="display:flex;gap:8px;">
+        <button onclick="openReceipt(<?= $viewing_sale['id'] ?>)" class="btn btn-primary">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+            Ver Recibo
+        </button>
+        <button onclick="printDirectReceipt(<?= $viewing_sale['id'] ?>)" class="btn btn-secondary">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+            Imprimir
+        </button>
     </div>
 </div>
 <?php endif; ?>
@@ -199,26 +228,30 @@ require_once __DIR__ . '/../includes/header.php';
 <!-- Lista de Vendas -->
 <div class="card">
     <div class="card-header">
-        <h3 class="card-title">Histórico de Vendas (<?= count($sales) ?>)</h3>
+        <h3 class="card-title">Histórico de Vendas</h3>
+        <span class="badge badge-neutral"><?= count($sales) ?></span>
     </div>
-    <div class="table-container" style="border: none;">
+    <div class="table-container" style="border:none;">
         <table class="table">
             <thead>
                 <tr>
                     <th>Nº</th>
-                    <th>Data/Hora</th>
-                    <th>Itens</th>
+                    <th>Data</th>
+                    <th>Hora</th>
+                    <th>Artigos</th>
                     <th>Pagamento</th>
-                    <th>Total</th>
-                    <th style="width: 100px;">Ações</th>
+                    <th style="text-align:right;">Total</th>
+                    <th style="width:110px;"></th>
                 </tr>
             </thead>
             <tbody>
                 <?php if (empty($sales)): ?>
                 <tr>
-                    <td colspan="6" class="table-empty">
+                    <td colspan="7">
                         <div class="empty-state">
-                            <div class="empty-icon">🧾</div>
+                            <div class="empty-icon">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                            </div>
                             <div class="empty-title">Sem vendas</div>
                             <div class="empty-text">Nenhuma venda encontrada no período selecionado.</div>
                         </div>
@@ -226,28 +259,39 @@ require_once __DIR__ . '/../includes/header.php';
                 </tr>
                 <?php else: ?>
                 <?php foreach ($sales as $sale): ?>
-                <tr>
-                    <td><strong>#<?= $sale['id'] ?></strong></td>
+                <?php
+                $pm = $sale['payment_method'] ?? '';
+                $pmIcon = match($pm) {
+                    'Dinheiro' => '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2"/><circle cx="12" cy="12" r="3"/></svg>',
+                    'Cartão'   => '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>',
+                    'MBWay'    => '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>',
+                    default    => '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>',
+                };
+                $isViewing = $viewing_sale && $viewing_sale['id'] == $sale['id'];
+                ?>
+                <tr style="<?= $isViewing ? 'background:var(--bg-tertiary);' : '' ?>">
                     <td>
-                        <div><?= date('d/m/Y', strtotime($sale['sale_date'])) ?></div>
-                        <div style="font-size: 12px; color: var(--text-muted);"><?= date('H:i', strtotime($sale['sale_date'])) ?></div>
+                        <span style="font-family:monospace;font-size:12px;color:var(--text-muted);">#<?= str_pad($sale['id'], 6, '0', STR_PAD_LEFT) ?></span>
                     </td>
-                    <td><?= $sale['items_count'] ?> itens</td>
+                    <td style="font-weight:500;"><?= date('d/m/Y', strtotime($sale['sale_date'])) ?></td>
+                    <td style="color:var(--text-muted);font-size:12.5px;"><?= date('H:i', strtotime($sale['sale_date'])) ?></td>
+                    <td style="color:var(--text-secondary);"><?= $sale['items_count'] ?> item<?= $sale['items_count'] != 1 ? 's' : '' ?></td>
                     <td>
-                        <?php 
-                        $icon = match($sale['payment_method'] ?? '') {
-                            'Dinheiro' => '💵',
-                            'Cartão' => '💳',
-                            'MBWay' => '📱',
-                            default => '💰'
-                        };
-                        ?>
-                        <span class="badge badge-muted"><?= $icon ?> <?= $sale['payment_method'] ?? 'N/A' ?></span>
+                        <span class="badge badge-neutral"><?= $pmIcon ?> <?= htmlspecialchars($pm ?: 'N/A') ?></span>
                     </td>
-                    <td><strong style="font-size: 16px;">€<?= number_format($sale['total'], 2) ?></strong></td>
-                    <td style="display: flex; gap: 6px;">
-                        <a href="?view=<?= $sale['id'] ?>&date_from=<?= $date_from ?>&date_to=<?= $date_to ?>" class="btn btn-secondary btn-sm">👁️ Ver</a>
-                        <button onclick="openReceipt(<?= $sale['id'] ?>)" class="btn btn-primary btn-sm">🧾 Recibo</button>
+                    <td style="text-align:right;">
+                        <span style="font-family:'Plus Jakarta Sans',sans-serif;font-size:15px;font-weight:700;letter-spacing:-0.02em;color:var(--success);">€<?= number_format($sale['total'], 2, ',', '.') ?></span>
+                    </td>
+                    <td>
+                        <div style="display:flex;gap:5px;justify-content:flex-end;">
+                            <a href="?view=<?= $sale['id'] ?>&date_from=<?= urlencode($date_from) ?>&date_to=<?= urlencode($date_to) ?>&payment=<?= urlencode($payment) ?>&search=<?= urlencode($search) ?>" class="btn btn-ghost btn-sm" title="Ver detalhe">
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                                Ver
+                            </a>
+                            <button onclick="openReceipt(<?= $sale['id'] ?>)" class="btn btn-secondary btn-sm" title="Recibo">
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                            </button>
+                        </div>
                     </td>
                 </tr>
                 <?php endforeach; ?>
@@ -258,14 +302,30 @@ require_once __DIR__ . '/../includes/header.php';
 </div>
 
 <!-- Modal do Recibo -->
-<div id="receiptModal" style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; z-index:9999;">
-    <div onclick="closeReceipt()" style="position:absolute; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.85); backdrop-filter:blur(6px);"></div>
-    <div style="position:relative; z-index:1; display:flex; flex-direction:column; align-items:center; height:100%; overflow-y:auto; padding:30px 20px;">
-        <div style="display:flex; gap:10px; margin-bottom:20px; flex-shrink:0;">
-            <button onclick="closeReceipt()" style="padding:10px 22px; background:#27272a; border:1px solid #3f3f46; color:#a1a1aa; border-radius:10px; cursor:pointer; font-size:14px; font-weight:600;">✕ Fechar</button>
-            <button onclick="printReceipt()" style="padding:10px 22px; background:#22c55e; border:none; color:white; border-radius:10px; cursor:pointer; font-size:14px; font-weight:600;">🖨️ Imprimir</button>
-            <button id="btnDownload" onclick="downloadReceipt()" style="padding:10px 22px; background:#fafafa; border:1px solid #3f3f46; color:#09090b; border-radius:10px; cursor:pointer; font-size:14px; font-weight:600;">📥 Descarregar</button>
+<div id="receiptModal" style="display:none; position:fixed; inset:0; z-index:9999;">
+    <!-- Overlay -->
+    <div onclick="closeReceipt()" style="position:absolute;inset:0;background:rgba(0,0,0,.8);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);"></div>
+
+    <!-- Content -->
+    <div style="position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;height:100%;overflow-y:auto;padding:32px 20px;">
+
+        <!-- Toolbar -->
+        <div style="display:flex;gap:8px;margin-bottom:24px;flex-shrink:0;">
+            <button onclick="closeReceipt()" class="btn btn-secondary" style="background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.12);color:rgba(255,255,255,.7);">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                Fechar
+            </button>
+            <button onclick="printCurrentReceipt()" class="btn btn-secondary" style="background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.12);color:rgba(255,255,255,.7);">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+                Imprimir
+            </button>
+            <button id="btnDownload" onclick="downloadReceipt()" style="padding:0 16px;height:34px;border-radius:var(--radius);font-family:'Plus Jakarta Sans',sans-serif;font-weight:600;font-size:13px;cursor:pointer;border:none;display:inline-flex;align-items:center;gap:7px;background:#eeeeee;color:#060606;transition:opacity .15s;">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                Descarregar
+            </button>
         </div>
+
+        <!-- Receipt frame -->
         <div id="receiptContent" style="flex-shrink:0;"></div>
     </div>
 </div>
@@ -276,20 +336,16 @@ let currentReceiptId = null;
 
 function openReceipt(saleId) {
     currentReceiptId = saleId;
-    const modal = document.getElementById('receiptModal');
+    const modal   = document.getElementById('receiptModal');
     const content = document.getElementById('receiptContent');
-    content.innerHTML = '<div style="color:white;font-size:16px;padding:40px;">⏳ A carregar recibo...</div>';
+    content.innerHTML = '<div style="color:rgba(255,255,255,.5);font-size:14px;padding:60px;font-family:Inter,sans-serif;">A carregar...</div>';
     modal.style.display = 'block';
     document.body.style.overflow = 'hidden';
 
     fetch('/modules/recibo_print.php?id=' + saleId + '&embed=1')
         .then(r => r.text())
-        .then(html => {
-            content.innerHTML = html;
-        })
-        .catch(() => {
-            content.innerHTML = '<div style="color:#ef4444;padding:40px;">Erro ao carregar recibo.</div>';
-        });
+        .then(html => { content.innerHTML = html; })
+        .catch(() => { content.innerHTML = '<div style="color:#f87171;padding:40px;font-family:Inter,sans-serif;">Erro ao carregar recibo.</div>'; });
 }
 
 function closeReceipt() {
@@ -297,35 +353,37 @@ function closeReceipt() {
     document.body.style.overflow = '';
 }
 
-function printReceipt() {
-    const content = document.getElementById('receiptContent').innerHTML;
-    const win = window.open('', '_blank', 'width=400,height=700');
-    win.document.write('<html><head><title>Recibo</title>');
-    win.document.write('<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">');
-    win.document.write('<link href="https://fonts.googleapis.com/css2?family=Libre+Barcode+128&display=swap" rel="stylesheet">');
-    win.document.write('</head><body style="display:flex;justify-content:center;padding:10px;">');
-    win.document.write(content);
-    win.document.write('</body></html>');
-    win.document.close();
-    setTimeout(() => { win.print(); }, 500);
+function printCurrentReceipt() {
+    if (!currentReceiptId) return;
+    const win = window.open('/modules/recibo_print.php?id=' + currentReceiptId, '_blank', 'width=450,height=750');
+    if (win) setTimeout(() => win.print(), 800);
+}
+
+function printDirectReceipt(id) {
+    const win = window.open('/modules/recibo_print.php?id=' + id, '_blank', 'width=450,height=750');
+    if (win) setTimeout(() => win.print(), 800);
 }
 
 function downloadReceipt() {
-    const el = document.getElementById('receiptContent');
+    const el  = document.getElementById('receiptContent');
     const btn = document.getElementById('btnDownload');
-    btn.textContent = '⏳ A gerar...';
+    btn.innerHTML = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> A gerar...';
     btn.disabled = true;
-    html2canvas(el, { backgroundColor: null, scale: 3, useCORS: true, logging: false }).then(canvas => {
-        const link = document.createElement('a');
-        link.download = 'recibo_' + currentReceiptId + '.png';
-        link.href = canvas.toDataURL('image/png');
-        link.click();
-        btn.textContent = '📥 Descarregar';
-        btn.disabled = false;
-    }).catch(() => {
-        btn.textContent = '📥 Descarregar';
-        btn.disabled = false;
-    });
+    btn.style.opacity = '.6';
+
+    html2canvas(el, { backgroundColor: null, scale: 3, useCORS: true, logging: false })
+        .then(canvas => {
+            const a = document.createElement('a');
+            a.download = 'recibo_' + currentReceiptId + '.png';
+            a.href = canvas.toDataURL('image/png');
+            a.click();
+        })
+        .catch(() => {})
+        .finally(() => {
+            btn.innerHTML = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Descarregar';
+            btn.disabled = false;
+            btn.style.opacity = '1';
+        });
 }
 
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closeReceipt(); });

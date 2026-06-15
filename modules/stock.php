@@ -136,7 +136,7 @@ require_once __DIR__ . '/../includes/header.php';
 
 <?php if ($message): ?>
 <div class="alert alert-success fade-in">
-    <span class="alert-icon">✓</span>
+    <span class="alert-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
     <div class="alert-content">
         <div class="alert-message"><?= htmlspecialchars($message) ?></div>
     </div>
@@ -201,7 +201,7 @@ require_once __DIR__ . '/../includes/header.php';
                 <tr>
                     <td colspan="8" class="table-empty">
                         <div class="empty-state">
-                            <div class="empty-icon">📦</div>
+                            <div class="empty-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg></div>
                             <div class="empty-title">Sem produtos</div>
                             <div class="empty-text">Nenhum produto encontrado com os filtros selecionados.</div>
                         </div>
@@ -227,7 +227,7 @@ require_once __DIR__ . '/../includes/header.php';
                     </td>
                     <td><span class="badge badge-purple"><?= htmlspecialchars($p['category'] ?? '-') ?></span></td>
                     <td>
-                        <span style="font-size: 18px; font-weight: 700; font-family: 'Playfair Display', serif; <?= $is_out ? 'color: var(--danger);' : ($is_low ? 'color: var(--warning);' : 'color: var(--success);') ?>">
+                        <span style="font-size: 18px; font-weight: 700; font-family:'Plus Jakarta Sans',sans-serif;font-weight:800; <?= $is_out ? 'color: var(--danger);' : ($is_low ? 'color: var(--warning);' : 'color: var(--success);') ?>">
                             <?= $is_weighted ? number_format($p['stock'], 1) : (int)$p['stock'] ?><small style="font-size:11px;font-weight:500;opacity:0.7;"><?= $stock_unit ?></small>
                         </span>
                     </td>

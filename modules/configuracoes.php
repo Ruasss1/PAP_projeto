@@ -40,14 +40,14 @@ require_once __DIR__ . '/../includes/header.php';
 @media(max-width:768px){ .settings-grid{grid-template-columns:1fr} }
 </style>
 
-<?php if ($success): ?><div class="alert alert-success" style="margin-bottom:20px">✓ <?= $success ?></div><?php endif; ?>
+<?php if ($success): ?><div class="alert alert-success" style="margin-bottom:20px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> <?= $success ?></div><?php endif; ?>
 
 <form method="post">
 <div class="settings-grid">
 
     <!-- Empresa -->
     <div class="settings-section">
-        <h3>🏪 Empresa</h3>
+        <h3><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg> Empresa</h3>
         <div class="form-group"><label class="form-label">Nome da Empresa</label><input type="text" name="company_name" class="form-input" value="<?= cfg('company_name','PAP Market') ?>"></div>
         <div class="form-group"><label class="form-label">NIF</label><input type="text" name="company_nif" class="form-input" value="<?= cfg('company_nif') ?>" placeholder="Ex: PT123456789"></div>
         <div class="form-group"><label class="form-label">Morada</label><input type="text" name="company_address" class="form-input" value="<?= cfg('company_address') ?>" placeholder="Rua, cidade, CP"></div>
@@ -57,7 +57,7 @@ require_once __DIR__ . '/../includes/header.php';
 
     <!-- Financeiro -->
     <div class="settings-section">
-        <h3>💶 Financeiro</h3>
+        <h3><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10h12"/><path d="M4 14h12"/><path d="M19.5 6.3A9 9 0 1 0 19.5 17.7"/></svg> Financeiro</h3>
         <div class="form-group"><label class="form-label">Taxa IVA Padrão (%)</label><input type="number" name="vat_rate" class="form-input" value="<?= cfg('vat_rate','23') ?>" step="0.01" min="0" max="100"></div>
         <div class="form-group"><label class="form-label">Moeda</label><select name="currency" class="form-select"><option value="EUR" <?= cfg('currency','EUR')==='EUR'?'selected':'' ?>>EUR (€)</option><option value="USD" <?= cfg('currency')==='USD'?'selected':'' ?>>USD ($)</option><option value="GBP" <?= cfg('currency')==='GBP'?'selected':'' ?>>GBP (£)</option></select></div>
         <div class="form-group"><label class="form-label">Rodapé do Recibo</label><textarea name="receipt_footer" class="form-input" rows="2" style="resize:vertical"><?= cfg('receipt_footer','Obrigado pela sua visita!') ?></textarea></div>
@@ -67,14 +67,14 @@ require_once __DIR__ . '/../includes/header.php';
 
     <!-- Recursos Humanos -->
     <div class="settings-section">
-        <h3>👥 Recursos Humanos</h3>
+        <h3><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg> Recursos Humanos</h3>
         <div class="form-group"><label class="form-label">Horas de Trabalho por Dia</label><input type="number" name="work_hours_per_day" class="form-input" value="<?= cfg('work_hours_per_day','8') ?>" step="0.5" min="1" max="24"></div>
         <div class="form-group"><label class="form-label">Multiplicador Horas Extra</label><input type="number" name="overtime_rate" class="form-input" value="<?= cfg('overtime_rate','1.5') ?>" step="0.05" min="1" max="5"></div>
     </div>
 
     <!-- Sistema -->
     <div class="settings-section">
-        <h3>⚙️ Sistema</h3>
+        <h3><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg> Sistema</h3>
         <div class="form-group"><label class="form-label">Limite Stock Mínimo (aviso)</label><input type="number" name="low_stock_threshold" class="form-input" value="<?= cfg('low_stock_threshold','10') ?>" min="0"></div>
         <div class="form-group"><label class="form-label">Retenção de Backups (dias)</label><input type="number" name="backup_retention_days" class="form-input" value="<?= cfg('backup_retention_days','30') ?>" min="1"></div>
         <div class="form-group">
@@ -88,7 +88,7 @@ require_once __DIR__ . '/../includes/header.php';
 
 </div>
 <div style="margin-top:24px;text-align:right">
-    <button type="submit" class="btn btn-primary" style="padding:12px 32px;font-size:15px">💾 Guardar Configurações</button>
+    <button type="submit" class="btn btn-primary" style="padding:12px 32px;font-size:15px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg> Guardar Configurações</button>
 </div>
 </form>
 <?php require_once __DIR__ . '/../includes/footer.php'; ?>

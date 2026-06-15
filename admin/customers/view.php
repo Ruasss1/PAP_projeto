@@ -231,16 +231,16 @@ $purchases = $stmt->fetchAll(PDO::FETCH_ASSOC);
     
     <div class="view-container">
         <div class="header">
-            <h1>👤 <?= htmlspecialchars($customer['name']) ?></h1>
+            <h1><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> <?= htmlspecialchars($customer['name']) ?></h1>
             <div class="header-actions">
-                <a href="edit.php?id=<?= $customer_id ?>" class="btn btn-edit">✏️ Editar</a>
+                <a href="edit.php?id=<?= $customer_id ?>" class="btn btn-edit"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg> Editar</a>
                 <a href="index.php" class="btn btn-back">← Voltar</a>
             </div>
         </div>
         
         <!-- Cartão de Fidelidade -->
         <div class="loyalty-card">
-            <div class="number">🎫 <?= htmlspecialchars($customer['loyalty_card_number']) ?></div>
+            <div class="number"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v2z"/></svg> <?= htmlspecialchars($customer['loyalty_card_number']) ?></div>
             <div class="name"><?= htmlspecialchars($customer['name']) ?></div>
         </div>
         
@@ -271,7 +271,7 @@ $purchases = $stmt->fetchAll(PDO::FETCH_ASSOC);
         <!-- Informações -->
         <div class="info-grid">
             <div class="info-card">
-                <h3>📋 Dados Pessoais</h3>
+                <h3><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg> Dados Pessoais</h3>
                 <div class="info-row">
                     <span class="info-label">Email</span>
                     <span class="info-value"><?= htmlspecialchars($customer['email'] ?? '-') ?></span>
@@ -291,7 +291,7 @@ $purchases = $stmt->fetchAll(PDO::FETCH_ASSOC);
             </div>
             
             <div class="info-card">
-                <h3>📍 Outras Informações</h3>
+                <h3><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> Outras Informações</h3>
                 <div class="info-row">
                     <span class="info-label">Morada</span>
                     <span class="info-value"><?= htmlspecialchars($customer['address'] ?? '-') ?></span>
@@ -309,7 +309,7 @@ $purchases = $stmt->fetchAll(PDO::FETCH_ASSOC);
         
         <!-- Histórico de Compras -->
         <div class="info-card" style="margin-bottom: 30px;">
-            <h3>🛒 Últimas Compras</h3>
+            <h3><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg> Últimas Compras</h3>
             <?php if (!empty($purchases)): ?>
                 <table class="purchases-table">
                     <thead>

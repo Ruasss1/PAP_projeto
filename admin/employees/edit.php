@@ -73,11 +73,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="/assets/css/design-system.css?v=<?= time() ?>">
     <title>Editar Colaborador - <?= htmlspecialchars($employee['name']) ?></title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/assets/css/master-ui.css?v=<?= time() ?>">
     <script>(function(){var t=localStorage.getItem('pap-theme')||'dark';document.documentElement.setAttribute('data-theme',t)})();</script>
     <style>
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -96,7 +93,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             --success: #16a34a; --danger: #dc2626;
         }
         body {
-            font-family: 'Inter', system-ui, sans-serif;
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
             min-height: 100vh;
             background: var(--bg);
             color: var(--txt);
@@ -110,7 +107,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
         .back-link a:hover { color: var(--txt); }
         h1 {
-            font-family: 'Playfair Display', serif;
+            font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;
             font-size: clamp(24px, 3vw, 36px);
             font-weight: 900; letter-spacing: -.02em;
             margin-bottom: 16px;
@@ -134,7 +131,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         .msg.err { color: var(--danger); background: rgba(248,113,113,.08); border-color: var(--danger); }
 
         .card {
-            background: var(--bg2); border: 1px solid var(--border);
+            background: var(--bg-tertiary); border: 1px solid var(--border-light); color: var(--text-primary);
             border-radius: 12px; padding: 20px; margin-bottom: 16px;
         }
         .card h3 {
@@ -176,7 +173,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         .th-btn {
             position: fixed; bottom: 20px; right: 20px;
             width: 36px; height: 36px;
-            background: var(--bg2); border: 1px solid var(--border);
+            background: var(--bg-tertiary); border: 1px solid var(--border-light); color: var(--text-primary);
             border-radius: 50%; display: grid; place-items: center;
             cursor: pointer;
         }
@@ -194,7 +191,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <body>
 <div class="wrap">
     <div class="back-link">
-        <a href="/admin/employees/list.php">← Voltar à Lista</a>
+        <a href="/admin/rh/equipa.php" style="display:inline-flex;align-items:center;gap:8px;font-size:11px;font-weight:600;letter-spacing:.15em;text-transform:uppercase;color:var(--txt3);text-decoration:none;border:1px solid var(--border);border-radius:8px;padding:9px 16px;background:var(--bg2);transition:border-color .2s,color .2s,transform .2s;" onmouseover="this.style.borderColor='var(--border2)';this.style.color='var(--txt2)';this.style.transform='translateX(-3px)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--txt3)';this.style.transform='translateX(0)'">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+            Voltar à Equipa
+        </a>
     </div>
 
     <h1>Editar Colaborador</h1>
@@ -295,8 +295,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </div>
 
 <button class="th-btn" onclick="toggleTheme()" title="Tema">
-    <span class="t-moon">🌙</span>
-    <span class="t-sun">☀️</span>
+    <span class="t-moon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></span>
+    <span class="t-sun"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></span>
 </button>
 <script src="/assets/js/master-ui.js?v=<?= time() ?>"></script>
 <script>

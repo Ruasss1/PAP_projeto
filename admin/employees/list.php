@@ -47,11 +47,8 @@ $licenca   = count(array_filter($employees, fn($e) => ($e['status'] ?? '') === '
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="/assets/css/design-system.css?v=<?= time() ?>">
   <title>Colaboradores &mdash; PAP Market</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/assets/css/master-ui.css?v=<?= time() ?>">
   <script>(function(){var t=localStorage.getItem('pap-theme')||'dark';document.documentElement.setAttribute('data-theme',t)})();</script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -87,7 +84,7 @@ $licenca   = count(array_filter($employees, fn($e) => ($e['status'] ?? '') === '
 
     html { -webkit-font-smoothing: antialiased; height: 100%; }
     body {
-      font-family: 'Inter', system-ui, sans-serif;
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
       min-height: 100vh;
       background: var(--bg);
       color: var(--txt);
@@ -96,7 +93,7 @@ $licenca   = count(array_filter($employees, fn($e) => ($e['status'] ?? '') === '
 
     .bg-deco {
       position: fixed; bottom: -120px; right: -40px;
-      font-family: 'Playfair Display', serif;
+      font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;
       font-size: clamp(240px, 28vw, 360px);
       font-weight: 900; line-height: 1; color: transparent;
       -webkit-text-stroke: 1px rgba(255,255,255,.025);
@@ -130,7 +127,7 @@ $licenca   = count(array_filter($employees, fn($e) => ($e['status'] ?? '') === '
       text-transform: uppercase; color: var(--txt3);
     }
     .page-title {
-      font-family: 'Playfair Display', serif;
+      font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;
       font-size: clamp(26px, 3vw, 40px);
       font-weight: 900; letter-spacing: -.025em;
       color: var(--txt); line-height: 1.1;
@@ -173,7 +170,7 @@ $licenca   = count(array_filter($employees, fn($e) => ($e['status'] ?? '') === '
       animation: up .4s cubic-bezier(.16,1,.3,1) both;
     }
     .stat-num {
-      font-family: 'Playfair Display', serif;
+      font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;
       font-size: 36px; font-weight: 900;
       letter-spacing: -.04em; line-height: 1;
       margin-bottom: 6px;
@@ -234,7 +231,7 @@ $licenca   = count(array_filter($employees, fn($e) => ($e['status'] ?? '') === '
       padding: 20px 28px; border-bottom: 1px solid var(--border);
     }
     .table-head-title {
-      font-family: 'Playfair Display', serif;
+      font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;
       font-size: 18px; font-weight: 700; letter-spacing: -.02em;
     }
     .table-head-count {
@@ -267,7 +264,7 @@ $licenca   = count(array_filter($employees, fn($e) => ($e['status'] ?? '') === '
       width: 38px; height: 38px; border-radius: 50%;
       background: var(--bg3); border: 1px solid var(--border);
       display: flex; align-items: center; justify-content: center;
-      font-family: 'Playfair Display', serif;
+      font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;
       font-size: 14px; font-weight: 700; color: var(--txt2);
       flex-shrink: 0;
     }
@@ -310,12 +307,11 @@ $licenca   = count(array_filter($employees, fn($e) => ($e['status'] ?? '') === '
       text-align: center; padding: 64px 32px;
     }
     .empty-icon {
-      font-family: 'Playfair Display', serif;
+      font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;
       font-size: 64px; opacity: .15; margin-bottom: 16px; line-height: 1;
     }
     .empty-title {
-      font-family: 'Playfair Display', serif;
-      font-style: italic; font-size: 20px; color: var(--txt2);
+      font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-style:italic; font-size: 20px; color: var(--txt2);
       margin-bottom: 8px;
     }
     .empty-sub { font-size: 12.5px; color: var(--txt3); }
@@ -398,7 +394,7 @@ $licenca   = count(array_filter($employees, fn($e) => ($e['status'] ?? '') === '
 
   <?php if ($message): ?>
   <div class="alert alert-<?= $msg_type === 'success' ? 'success' : 'error' ?>">
-    <?= $msg_type === 'success' ? '✓' : '⚠' ?> <?= htmlspecialchars($message) ?>
+    <?= $msg_type === 'success' ? '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>' : '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>' ?> <?= htmlspecialchars($message) ?>
   </div>
   <?php endif; ?>
 
@@ -521,175 +517,3 @@ function toggleTheme() {
 </script>
 </body>
 </html>
-
-// Obter filtros
-$filters = [
-    'status' => $_GET['status'] ?? '',
-    'department' => $_GET['department'] ?? '',
-    'search' => $_GET['search'] ?? ''
-];
-
-// Obter colaboradores
-$employees = list_employees($filters);
-
-// Processar ações
-$message = '';
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (isset($_POST['action']) && isset($_POST['employee_id'])) {
-        if ($_POST['action'] === 'delete') {
-            if (delete_employee($_POST['employee_id'])) {
-                $message = 'Colaborador desativado com sucesso.';
-                // Recarregar lista
-                $employees = list_employees($filters);
-            } else {
-                $message = 'Erro ao desativar colaborador.';
-            }
-        }
-    }
-}
-?>
-<!DOCTYPE html>
-<html lang="pt">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestão de Colaboradores</title>
-    <link rel="stylesheet" href="/assets/css/style.css">
-    <style>
-        body { background: #0a0a0a; color: #ffffff; }
-        .container { max-width: 1400px; margin: 0 auto; padding: 32px; }
-        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; }
-        .header h1 { color: #ffffff; font-size: 32px; font-weight: 700; letter-spacing: -0.5px; }
-        .btn { padding: 12px 24px; border: none; border-radius: 8px; cursor: pointer; font-size: 14px; text-decoration: none; display: inline-block; font-weight: 600; transition: all 0.2s ease; }
-        .btn-primary { background: #a1a1aa; color: white; }
-        .btn-primary:hover { background: #1d4ed8; transform: translateY(-1px); box-shadow: 0 4px 6px rgba(161, 161, 170, 0.4); }
-        .btn-danger { background: #ef4444; color: white; }
-        .btn-danger:hover { background: #dc2626; }
-        .filters { background: #141414; padding: 24px; border-radius: 12px; margin-bottom: 24px; border: 1px solid #222222; box-shadow: 0 1px 3px rgba(0,0,0,0.5); }
-        .filter-row { display: flex; gap: 16px; margin-bottom: 12px; flex-wrap: wrap; }
-        .filter-row input, .filter-row select { padding: 12px 16px; border: 1px solid #222222; border-radius: 8px; background: #1a1a1a; color: #ffffff; font-size: 14px; transition: all 0.2s ease; }
-        .filter-row input:focus, .filter-row select:focus { outline: none; border-color: #a1a1aa; background: #111111; box-shadow: 0 0 0 3px rgba(161, 161, 170, 0.1); }
-        .filter-row button { padding: 12px 20px; }
-        .table { width: 100%; border-collapse: collapse; background: #141414; border: 1px solid #222222; border-radius: 12px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.5); }
-        .table th { background: #111111; color: #a0a0a0; padding: 16px 20px; text-align: left; border-bottom: 1px solid #222222; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; font-weight: 600; }
-        .table td { padding: 16px 20px; border-bottom: 1px solid #222222; color: #ffffff; }
-        .table tr:hover { background: #1a1a1a; }
-        .status { padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
-        .status-ativo { background: rgba(16, 185, 129, 0.2); color: #10b981; border: 1px solid #10b981; }
-        .status-inativo { background: rgba(239, 68, 68, 0.2); color: #ef4444; border: 1px solid #ef4444; }
-        .status-licença { background: rgba(245, 158, 11, 0.2); color: #f59e0b; border: 1px solid #f59e0b; }
-        .actions { display: flex; gap: 8px; }
-        .actions a, .actions button { padding: 6px 12px; font-size: 13px; border-radius: 6px; }
-        .message { padding: 16px 20px; margin-bottom: 24px; border-radius: 8px; font-weight: 500; }
-        .message.success { background: rgba(16, 185, 129, 0.2); color: #10b981; border: 1px solid #10b981; }
-        .message.error { background: rgba(239, 68, 68, 0.2); color: #ef4444; border: 1px solid #ef4444; }
-        .back-link { margin-bottom: 24px; }
-        .back-link a { color: #a1a1aa; text-decoration: none; font-weight: 600; font-size: 14px; display: inline-flex; align-items: center; gap: 8px; transition: all 0.2s ease; }
-        .back-link a:hover { color: #1d4ed8; transform: translateX(-4px); }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <div class="back-link">
-            <a href="/admin/rh/equipa.php">← Voltar ao Dashboard RH</a>
-        </div>
-
-        <div class="header">
-            <h1>Gestão de Colaboradores</h1>
-            <a href="/admin/employees/create.php" class="btn btn-primary">+ Novo Colaborador</a>
-        </div>
-
-        <?php if ($message): ?>
-            <div class="message <?php echo strpos($message, 'Erro') === false ? 'success' : 'error'; ?>">
-                <?php echo htmlspecialchars($message); ?>
-            </div>
-        <?php endif; ?>
-
-        <!-- Filtros -->
-        <div class="filters">
-            <form method="get" action="">
-                <div class="filter-row">
-                    <input type="text" name="search" placeholder="Buscar por nome, email ou NIF" 
-                           value="<?php echo htmlspecialchars($filters['search']); ?>">
-                    
-                    <select name="status">
-                        <option value="">Todos os Status</option>
-                        <option value="Ativo" <?php echo $filters['status'] === 'Ativo' ? 'selected' : ''; ?>>Ativo</option>
-                        <option value="Inativo" <?php echo $filters['status'] === 'Inativo' ? 'selected' : ''; ?>>Inativo</option>
-                        <option value="Licença" <?php echo $filters['status'] === 'Licença' ? 'selected' : ''; ?>>Licença</option>
-                    </select>
-                    
-                    <select name="department">
-                        <option value="">Todos os Departamentos</option>
-                        <option value="Caixa" <?php echo $filters['department'] === 'Caixa' ? 'selected' : ''; ?>>Caixa</option>
-                        <option value="Reposição" <?php echo $filters['department'] === 'Reposição' ? 'selected' : ''; ?>>Reposição</option>
-                        <option value="Limpeza" <?php echo $filters['department'] === 'Limpeza' ? 'selected' : ''; ?>>Limpeza</option>
-                        <option value="Administração" <?php echo $filters['department'] === 'Administração' ? 'selected' : ''; ?>>Administração</option>
-                    </select>
-                    
-                    <button type="submit" class="btn btn-primary">Filtrar</button>
-                    <a href="/admin/employees/list.php" class="btn" style="background: #6c757d; color: white;">Limpar</a>
-                </div>
-            </form>
-        </div>
-
-        <!-- Tabela de Colaboradores -->
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Nome</th>
-                    <th>Email</th>
-                    <th>NIF</th>
-                    <th>Departamento</th>
-                    <th>Cargo</th>
-                    <th>Status</th>
-                    <th>Data Contratação</th>
-                    <th>Ações</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php if (empty($employees)): ?>
-                    <tr>
-                        <td colspan="8" style="text-align: center; padding: 30px;">Nenhum colaborador encontrado.</td>
-                    </tr>
-                <?php else: ?>
-                    <?php foreach ($employees as $emp): ?>
-                        <tr>
-                            <td><strong><?php echo htmlspecialchars($emp['name'] ?? 'N/A'); ?></strong></td>
-                            <td><?php echo htmlspecialchars($emp['email'] ?? 'N/A'); ?></td>
-                            <td><?php echo htmlspecialchars($emp['nif'] ?? 'N/A'); ?></td>
-                            <td><?php echo htmlspecialchars($emp['department'] ?? 'N/A'); ?></td>
-                            <td><?php echo htmlspecialchars($emp['position'] ?? 'N/A'); ?></td>
-                            <td>
-                                <span class="status status-<?php echo strtolower($emp['status'] ?? 'inativo'); ?>">
-                                    <?php echo htmlspecialchars($emp['status'] ?? 'N/A'); ?>
-                                </span>
-                            </td>
-                            <td><?php echo isset($emp['hire_date']) && $emp['hire_date'] ? date('d/m/Y', strtotime($emp['hire_date'])) : 'N/A'; ?></td>
-                            <td>
-                                <div class="actions">
-                                    <a href="/admin/employees/view.php?id=<?php echo $emp['id']; ?>" 
-                                       class="btn" style="background: #17a2b8; color: white; text-decoration: none;">Ver</a>
-                                    <a href="/admin/employees/edit.php?id=<?php echo $emp['id']; ?>" 
-                                       class="btn" style="background: #ffc107; color: black; text-decoration: none;">Editar</a>
-                                    <form method="post" style="display: inline;" onsubmit="return confirm('Tem certeza?');">
-                                        <input type="hidden" name="action" value="delete">
-                                        <input type="hidden" name="employee_id" value="<?php echo $emp['id']; ?>">
-                                        <button type="submit" class="btn btn-danger">Deletar</button>
-                                    </form>
-                                </div>
-                            </td>
-                        </tr>
-                    <?php endforeach; ?>
-                <?php endif; ?>
-            </tbody>
-        </table>
-
-        <div style="margin-top: 20px; text-align: center; color: #666;">
-            Total: <strong><?php echo count($employees); ?></strong> colaborador(es)
-        </div>
-    </div>
-
-    <script src="/assets/js/master-ui.js?v=<?= time() ?>"></script>
-  </body>
-  </html>

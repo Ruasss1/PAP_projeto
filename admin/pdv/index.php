@@ -879,7 +879,7 @@ $suspended_sales = pdv_list_suspended_sales($user_id);
                 
                 <div class="action-buttons">
                     <button class="btn btn-suspend" onclick="suspendSale()">
-                        ⏸ Suspender
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg> Suspender
                     </button>
                     <button class="btn btn-discount" onclick="applyDiscount()">
                          Desconto
@@ -977,7 +977,7 @@ $suspended_sales = pdv_list_suspended_sales($user_id);
             <button class="numpad-btn" onclick="addWeightDigit('7')">7</button>
             <button class="numpad-btn" onclick="addWeightDigit('8')">8</button>
             <button class="numpad-btn" onclick="addWeightDigit('9')">9</button>
-            <button class="numpad-btn" onclick="clearWeight()">⌫</button>
+            <button class="numpad-btn" onclick="clearWeight()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 4H8l-7 8 7 8h13a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z"/><line x1="18" y1="9" x2="12" y2="15"/><line x1="12" y1="9" x2="18" y2="15"/></svg></button>
             <button class="numpad-btn" onclick="addWeightDigit('0')">0</button>
             <button class="numpad-btn" onclick="addWeightDigit('.')">.</button>
         </div>

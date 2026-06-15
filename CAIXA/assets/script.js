@@ -444,21 +444,21 @@ function showPaymentModal() {
     const itemsDiv = document.getElementById('paymentItems');
     itemsDiv.innerHTML = cart.map(i => `
         <div class="payment-item">
-            <span>${escapeHtml(i.product_name)} x${i.is_weighted ? i.quantity.toFixed(3) + 'kg' : i.quantity}</span>
-            <span>€${i.subtotal.toFixed(2)}</span>
+            <span class="payment-item-name">${escapeHtml(i.product_name)}</span>
+            <span class="payment-item-qty">x${i.is_weighted ? i.quantity.toFixed(3) + 'kg' : i.quantity}</span>
+            <span class="payment-item-price">€${i.subtotal.toFixed(2).replace('.', ',')}</span>
         </div>
     `).join('');
-    
+
     const total = cart.reduce((s, i) => s + i.subtotal, 0) - currentDiscount;
-    document.getElementById('paymentTotal').textContent = '€' + total.toFixed(2);
-    
+    document.getElementById('paymentTotal').textContent = '€' + total.toFixed(2).replace('.', ',');
+
     // Quick amounts
     generateQuickAmounts(total);
-    
+
     // Reset
     document.getElementById('amountPaid').value = '';
-    document.getElementById('changeValue').textContent = '€0.00';
-    document.getElementById('changeBox').style.background = 'linear-gradient(135deg, var(--success), #16a34a)';
+    document.getElementById('changeValue').textContent = '€0,00';
     document.getElementById('paymentError').style.display = 'none';
     document.getElementById('btnConfirmPayment').disabled = true;
     
@@ -469,12 +469,12 @@ function showPaymentModal() {
 function generateQuickAmounts(total) {
     const container = document.getElementById('quickAmounts');
     const amounts = [5, 10, 20, 50, 100].filter(a => a >= total);
-    
-    let html = amounts.slice(0, 4).map(a => 
-        `<button onclick="setQuickAmount(${a})">€${a}</button>`
+
+    let html = amounts.slice(0, 3).map(a =>
+        `<button class="quick-btn" onclick="setQuickAmount(${a})">€${a}</button>`
     ).join('');
-    
-    html += `<button onclick="setExactAmount()">Exacto</button>`;
+
+    html += `<button class="quick-btn exact" onclick="setExactAmount()">Exacto</button>`;
     container.innerHTML = html;
 }
 
@@ -500,24 +500,25 @@ function calculateChange() {
     const btnConfirm = document.getElementById('btnConfirmPayment');
     
     if (paid === 0) {
-        changeValue.textContent = '€0.00';
-        changeBox.style.background = 'linear-gradient(135deg, var(--success), #16a34a)';
+        changeValue.textContent = '€0,00';
+        changeBox.style.removeProperty('background');
+        changeBox.style.removeProperty('border-color');
         errorBox.style.display = 'none';
         btnConfirm.disabled = true;
     } else if (change < 0) {
-        // Valor insuficiente
-        changeValue.textContent = '-€' + Math.abs(change).toFixed(2);
-        changeBox.style.background = 'linear-gradient(135deg, var(--danger), #dc2626)';
-        const missingAmountEl = document.getElementById('missingAmount');
-        if (missingAmountEl) {
-            missingAmountEl.textContent = '€' + Math.abs(change).toFixed(2);
-        }
+        changeValue.textContent = '-€' + Math.abs(change).toFixed(2).replace('.', ',');
+        changeBox.style.background = 'var(--danger-subtle)';
+        changeBox.style.borderColor = 'var(--danger)';
+        changeBox.querySelector('.label').style.color = 'var(--danger)';
+        changeBox.querySelector('.value').style.color = 'var(--danger)';
         errorBox.style.display = 'block';
         btnConfirm.disabled = true;
     } else {
-        // OK - mostrar troco
-        changeValue.textContent = '€' + change.toFixed(2);
-        changeBox.style.background = 'linear-gradient(135deg, var(--success), #16a34a)';
+        changeValue.textContent = '€' + change.toFixed(2).replace('.', ',');
+        changeBox.style.background = 'var(--success-subtle)';
+        changeBox.style.borderColor = 'var(--success)';
+        changeBox.querySelector('.label').style.color = 'var(--success)';
+        changeBox.querySelector('.value').style.color = 'var(--success)';
         errorBox.style.display = 'none';
         btnConfirm.disabled = false;
     }

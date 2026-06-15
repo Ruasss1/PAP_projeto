@@ -264,6 +264,74 @@ $total_despesas_salarios   = (float)$pdo->query('SELECT COALESCE(SUM(net_salary)
 $total_despesas   = $total_despesas_encomendas + $total_despesas_salarios;
 $saldo_cashflow   = $total_receitas - $total_despesas;
 
+// === DADOS EXTRAS PARA DASHBOARD REFINADO ===
+
+// Distribuição de stock (disponível / baixo / esgotado)
+$stock_dist = ['total' => (int)$total_products, 'disponivel' => max(0, (int)$total_products - (int)$low_stock), 'baixo' => (int)$low_stock, 'esgotado' => 0];
+try {
+    $stmt = $pdo->prepare('SELECT SUM(CASE WHEN stock <= 0 THEN 1 ELSE 0 END) as esgotado FROM products WHERE store_id = ? AND active = 1');
+    $stmt->execute([$current_store_id]);
+    $stock_dist['esgotado'] = (int)$stmt->fetchColumn();
+    $stock_dist['baixo'] = max(0, (int)$low_stock - $stock_dist['esgotado']);
+    $stock_dist['disponivel'] = max(0, (int)$total_products - (int)$low_stock);
+} catch (\Throwable $e) {}
+
+// Novos clientes por dia (últimos 7 dias) para sparkline
+$customer_sparkline_raw = [];
+try {
+    $stmt = $pdo->prepare('
+        SELECT DATE(created_at) as dia, COUNT(*) as total
+        FROM customers
+        WHERE created_at >= DATE_SUB(CURDATE(), INTERVAL 7 DAY)
+        GROUP BY DATE(created_at) ORDER BY dia ASC
+    ');
+    $stmt->execute();
+    $customer_sparkline_raw = $stmt->fetchAll();
+} catch (\Throwable $e) {}
+
+// Preencher os 7 dias mesmo que sem dados
+$customer_sparkline = [];
+$sparkline_map = array_column($customer_sparkline_raw, 'total', 'dia');
+for ($i = 6; $i >= 0; $i--) {
+    $day = date('Y-m-d', strtotime("-{$i} days"));
+    $customer_sparkline[] = ['dia' => $day, 'total' => (int)($sparkline_map[$day] ?? 0)];
+}
+$new_customers_week = array_sum(array_column($customer_sparkline, 'total'));
+
+// Clientes fidelizados
+$fidel_customers = 0;
+try {
+    $stmt = $pdo->prepare('SELECT COUNT(*) FROM customers WHERE loyalty_points > 0');
+    $stmt->execute();
+    $fidel_customers = (int)$stmt->fetchColumn();
+} catch (\Throwable $e) {}
+$fidel_pct = $total_customers > 0 ? round($fidel_customers / $total_customers * 100) : 0;
+
+// Total métodos de pagamento para donut
+$pm_total_amount = array_sum(array_column($payment_methods, 'total'));
+
+// Última venda
+$last_sale = !empty($recent_sales) ? $recent_sales[0] : null;
+
+// Texto de insight gerado a partir dos dados
+if ($low_stock > 0 && $total_products > 0) {
+    $pct_baixo = round($low_stock / $total_products * 100, 1);
+    $insight_bold = "{$low_stock} produtos";
+    $insight_rest = " em stock baixo ({$pct_baixo}% do catálogo). Verifica o inventário e coloca encomendas a tempo para evitar ruturas.";
+} elseif ($sales_change > 5) {
+    $insight_bold = '+' . round($sales_change, 1) . '% nas vendas';
+    $insight_rest = " face ao período anterior. O desempenho está positivo — considera expandir as promoções dos produtos mais vendidos.";
+} elseif ($sales_change < -5) {
+    $insight_bold = round($sales_change, 1) . '% nas vendas';
+    $insight_rest = " face ao período anterior. Revê as promoções ativas e verifica se há problemas de stock que possam estar a afetar as vendas.";
+} elseif ($expiring_soon > 0) {
+    $insight_bold = "{$expiring_soon} produtos";
+    $insight_rest = " com validade a expirar nos próximos 7 dias. Aplica descontos ou remove do expositor para evitar desperdício.";
+} else {
+    $insight_bold = 'Tudo em ordem';
+    $insight_rest = ' — stock normalizado, sem alertas críticos e vendas estáveis neste período. Continua o bom trabalho!';
+}
+
 $page_title = 'Dashboard';
 require_once __DIR__ . '/includes/header.php';
 ?>
@@ -373,17 +441,17 @@ require_once __DIR__ . '/includes/header.php';
                                 $hour = date('H');
                                 $greeting = $hour < 12 ? 'Bom dia' : ($hour < 19 ? 'Boa tarde' : 'Boa noite');
                             ?>
-                            <?= $greeting ?>, <?= $current_user ? explode(' ', $current_user['name'])[0] : 'Admin' ?>! 👋
+                            <?= $greeting ?>, <?= $current_user ? explode(' ', $current_user['name'])[0] : 'Admin' ?>! 
                         </h2>
                         <p class="content-subtitle">
                             <span id="live-clock" style="font-variant-numeric: tabular-nums;"></span> · <?= date('d \d\e F \d\e Y') ?>
                             <?php if ($low_stock > 0): ?>
-                            <span style="margin-left: 12px; color: var(--warning); font-weight: 600;">⚠ <?= $low_stock ?> produtos em stock baixo</span>
+                            <span style="margin-left: 12px; color: var(--warning); font-weight: 600;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg> <?= $low_stock ?> produtos em stock baixo</span>
                             <?php endif; ?>
                         </p>
                     </div>
                     <div style="display: flex; gap: 8px;">
-                        <a href="/CAIXA/" class="btn btn-secondary" style="padding: 8px 16px; font-size: 13px;">🖥️ Abrir Caixa</a>
+                        <a href="/CAIXA/" class="btn btn-secondary" style="padding: 8px 16px; font-size: 13px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg> Abrir Caixa</a>
                     </div>
                 </div>
 
@@ -620,37 +688,37 @@ require_once __DIR__ . '/includes/header.php';
                         <div class="card-body">
                             <div class="quick-grid" style="grid-template-columns: repeat(2, 1fr);">
                                 <a href="/modules/produtos.php" class="quick-action">
-                                    <div class="quick-icon">📦</div>
+                                    <div class="quick-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg></div>
                                     <div class="quick-title">Produtos</div>
                                     <div class="quick-desc">Gerir catálogo</div>
                                 </a>
                                 <a href="/modules/stock.php" class="quick-action">
-                                    <div class="quick-icon">📊</div>
+                                    <div class="quick-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></div>
                                     <div class="quick-title">Stock</div>
                                     <div class="quick-desc">Ver inventário</div>
                                 </a>
                                 <a href="/modules/relatorios.php" class="quick-action">
-                                    <div class="quick-icon">📈</div>
+                                    <div class="quick-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg></div>
                                     <div class="quick-title">Relatórios</div>
                                     <div class="quick-desc">Análises</div>
                                 </a>
                                 <a href="/modules/devolucoes.php" class="quick-action">
-                                    <div class="quick-icon">↩️</div>
+                                    <div class="quick-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 10 4 15 9 20"/><path d="M20 4v7a4 4 0 0 1-4 4H4"/></svg></div>
                                     <div class="quick-title">Devoluções</div>
                                     <div class="quick-desc">Processar reembolso</div>
                                 </a>
                                 <a href="/modules/ponto.php" class="quick-action">
-                                    <div class="quick-icon">🕐</div>
+                                    <div class="quick-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
                                     <div class="quick-title">Ponto</div>
                                     <div class="quick-desc">Registar entrada/saída</div>
                                 </a>
                                 <a href="/modules/validades.php" class="quick-action">
-                                    <div class="quick-icon">📅</div>
+                                    <div class="quick-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
                                     <div class="quick-title">Validades</div>
                                     <div class="quick-desc">Produtos a expirar</div>
                                 </a>
                                 <a href="/modules/configuracoes.php" class="quick-action">
-                                    <div class="quick-icon">⚙️</div>
+                                    <div class="quick-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></div>
                                     <div class="quick-title">Configurações</div>
                                     <div class="quick-desc">Definições sistema</div>
                                 </a>
@@ -658,9 +726,287 @@ require_once __DIR__ . '/includes/header.php';
                         </div>
                     </div>
                 </div>
+
+                <!-- ================================================ -->
+                <!-- BLOCO REFINADO — 2 Colunas                        -->
+                <!-- ================================================ -->
+                <div class="dash-refined-grid">
+
+                    <!-- COLUNA ESQUERDA -->
+                    <div>
+                        <!-- Mini Indicadores (3x % vs período anterior) -->
+                        <div class="mini-indicators">
+                            <?php
+                            $mini_items = [
+                                ['label' => 'Receita · ' . $period_label, 'value' => '€' . number_format($period_sales, 0, ',', '.'), 'change' => $sales_change],
+                                ['label' => 'Transações · ' . $period_label, 'value' => $period_transactions, 'change' => $transactions_change],
+                                ['label' => 'Ticket Médio · ' . $period_label, 'value' => '€' . number_format($ticket_medio, 2, ',', '.'), 'change' => $ticket_change],
+                            ];
+                            foreach ($mini_items as $mi):
+                                $dir = $mi['change'] > 0 ? 'up' : ($mi['change'] < 0 ? 'down' : 'flat');
+                                $arrow = $mi['change'] > 0 ? '↑' : ($mi['change'] < 0 ? '↓' : '→');
+                            ?>
+                            <div class="mini-indicator">
+                                <div class="mini-indicator-header">
+                                    <span class="mini-indicator-arrow <?= $dir ?>"><?= $arrow ?></span>
+                                    <?php if ($mi['change'] != 0): ?>
+                                    <span class="mini-indicator-pct <?= $dir ?>"><?= abs(round($mi['change'], 1)) ?>%</span>
+                                    <?php else: ?>
+                                    <span class="mini-indicator-pct flat">—</span>
+                                    <?php endif; ?>
+                                    <span style="font-size:11px;color:var(--text-muted);margin-left:4px;">vs anterior</span>
+                                </div>
+                                <div class="mini-indicator-value"><?= $mi['value'] ?></div>
+                                <div class="mini-indicator-label"><?= $mi['label'] ?></div>
+                            </div>
+                            <?php endforeach; ?>
+                        </div>
+
+                        <!-- Card Grande: Faturação Mensal + Gráfico de Área -->
+                        <div class="card" style="margin-bottom:16px;">
+                            <div class="card-header">
+                                <div>
+                                    <div class="dash-hero-value money-positive">€<?= number_format($period_sales, 0, ',', '.') ?></div>
+                                    <div style="margin-top:4px;font-size:13px;color:var(--text-muted);">Faturação · <?= $period_label ?></div>
+                                </div>
+                                <?php if ($sales_change != 0): ?>
+                                <div class="dash-hero-badge <?= $sales_change >= 0 ? 'up' : 'down' ?>">
+                                    <?= $sales_change >= 0 ? '↑' : '↓' ?> <?= abs(round($sales_change, 1)) ?>% nos últimos <?= $period_label ?>
+                                </div>
+                                <?php endif; ?>
+                            </div>
+                            <div class="card-body">
+                                <div class="chart-container" style="height:200px;">
+                                    <canvas id="refinedAreaChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 2 Cards lado a lado: Insights + Distribuição de Stock -->
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+                            <!-- Insights -->
+                            <div class="card">
+                                <div class="card-header">
+                                    <h3 class="card-title">
+                                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:6px;vertical-align:-2px;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                                        Insights
+                                    </h3>
+                                </div>
+                                <div class="card-body">
+                                    <p class="insights-text">
+                                        <span class="insights-bold"><?= htmlspecialchars($insight_bold) ?></span><?= htmlspecialchars($insight_rest) ?>
+                                    </p>
+                                    <?php if ($low_stock > 0): ?>
+                                    <a href="/modules/stock.php" class="btn btn-secondary" style="margin-top:14px;font-size:12px;padding:6px 12px;">Ver Stock →</a>
+                                    <?php elseif ($expiring_soon > 0): ?>
+                                    <a href="/modules/validades.php" class="btn btn-secondary" style="margin-top:14px;font-size:12px;padding:6px 12px;">Ver Validades →</a>
+                                    <?php endif; ?>
+                                </div>
+                            </div>
+
+                            <!-- Distribuição de Stock -->
+                            <div class="card">
+                                <div class="card-header">
+                                    <h3 class="card-title">Distribuição de Stock</h3>
+                                    <span style="font-size:13px;font-weight:700;color:var(--text-primary);"><?= $stock_dist['total'] ?> produtos</span>
+                                </div>
+                                <div class="card-body">
+                                    <?php
+                                    $t = $stock_dist['total'] > 0 ? $stock_dist['total'] : 1;
+                                    $pct_disp  = round($stock_dist['disponivel'] / $t * 100);
+                                    $pct_baixo_d = round($stock_dist['baixo'] / $t * 100);
+                                    $pct_esgo  = round($stock_dist['esgotado'] / $t * 100);
+                                    ?>
+                                    <div class="dist-row">
+                                        <div class="dist-header">
+                                            <span>Disponível (<?= $pct_disp ?>%)</span>
+                                            <span><?= $stock_dist['disponivel'] ?></span>
+                                        </div>
+                                        <div class="dist-bar-track">
+                                            <div class="dist-bar-seg" style="width:<?= $pct_disp ?>%;background:var(--text-secondary);"></div>
+                                        </div>
+                                    </div>
+                                    <div class="dist-row">
+                                        <div class="dist-header">
+                                            <span>Stock Baixo (<?= $pct_baixo_d ?>%)</span>
+                                            <span><?= $stock_dist['baixo'] ?></span>
+                                        </div>
+                                        <div class="dist-bar-track">
+                                            <div class="dist-bar-seg" style="width:<?= $pct_baixo_d ?>%;background:var(--warning);"></div>
+                                        </div>
+                                    </div>
+                                    <div class="dist-row" style="margin-bottom:0;">
+                                        <div class="dist-header">
+                                            <span>Esgotado (<?= $pct_esgo ?>%)</span>
+                                            <span><?= $stock_dist['esgotado'] ?></span>
+                                        </div>
+                                        <div class="dist-bar-track">
+                                            <div class="dist-bar-seg" style="width:<?= $pct_esgo ?>%;background:var(--danger);"></div>
+                                        </div>
+                                    </div>
+                                    <div class="dist-legend">
+                                        <div class="dist-legend-item"><div class="dist-legend-dot" style="background:var(--text-secondary);"></div> Disponível</div>
+                                        <div class="dist-legend-item"><div class="dist-legend-dot" style="background:var(--warning);"></div> Stock Baixo</div>
+                                        <div class="dist-legend-item"><div class="dist-legend-dot" style="background:var(--danger);"></div> Esgotado</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div><!-- /coluna esquerda -->
+
+                    <!-- COLUNA DIREITA -->
+                    <div style="display:flex;flex-direction:column;gap:16px;">
+
+                        <!-- Donut: Métodos de Pagamento -->
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">Pagamentos</h3>
+                                <span style="font-size:12px;color:var(--text-muted);"><?= $period_label ?></span>
+                            </div>
+                            <div class="card-body" style="display:flex;flex-direction:column;align-items:center;gap:16px;">
+                                <?php
+                                $donut_colors = ['#a1a1aa','#71717a','#52525b','#3f3f46','#d4d4d8'];
+                                $donut_total = $pm_total_amount > 0 ? $pm_total_amount : 1;
+                                $circumference = 2 * M_PI * 44; // r=44
+                                $offset = 0;
+                                $donut_segments = [];
+                                foreach ($payment_methods as $i => $pm) {
+                                    $frac = $pm['total'] / $donut_total;
+                                    $dash = $frac * $circumference;
+                                    $donut_segments[] = [
+                                        'dash' => $dash,
+                                        'offset' => -$offset,
+                                        'color' => $donut_colors[$i % count($donut_colors)],
+                                        'method' => $pm['method'],
+                                        'total' => $pm['total'],
+                                        'pct' => round($frac * 100),
+                                    ];
+                                    $offset += $dash;
+                                }
+                                ?>
+                                <div class="donut-svg-wrap" style="width:140px;height:140px;">
+                                    <svg width="140" height="140" viewBox="0 0 100 100">
+                                        <circle cx="50" cy="50" r="44" fill="none" stroke="var(--bg-tertiary)" stroke-width="10"/>
+                                        <?php if (empty($donut_segments)): ?>
+                                        <circle cx="50" cy="50" r="44" fill="none" stroke="var(--border-light)" stroke-width="10"/>
+                                        <?php else: ?>
+                                        <?php foreach ($donut_segments as $seg): ?>
+                                        <circle cx="50" cy="50" r="44" fill="none"
+                                            stroke="<?= $seg['color'] ?>"
+                                            stroke-width="10"
+                                            stroke-dasharray="<?= round($seg['dash'], 2) ?> <?= round($circumference - $seg['dash'], 2) ?>"
+                                            stroke-dashoffset="<?= round($seg['offset'], 2) ?>"
+                                            transform="rotate(-90 50 50)"/>
+                                        <?php endforeach; ?>
+                                        <?php endif; ?>
+                                    </svg>
+                                    <div class="donut-icon-center">
+                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                                        <div class="donut-center-value">€<?= number_format($pm_total_amount, 0, ',', '.') ?></div>
+                                        <div class="donut-center-label">total</div>
+                                    </div>
+                                </div>
+                                <!-- Legenda -->
+                                <div class="donut-legend" style="width:100%;">
+                                    <?php foreach ($donut_segments as $seg): ?>
+                                    <div class="donut-legend-item">
+                                        <div class="donut-legend-dot" style="background:<?= $seg['color'] ?>;"></div>
+                                        <span class="donut-legend-label"><?= htmlspecialchars($seg['method']) ?></span>
+                                        <span class="donut-legend-val">€<?= number_format($seg['total'], 0, ',', '.') ?> <span style="color:var(--text-muted);font-weight:400;">(<?= $seg['pct'] ?>%)</span></span>
+                                    </div>
+                                    <?php endforeach; ?>
+                                    <?php if (empty($donut_segments)): ?>
+                                    <div style="text-align:center;color:var(--text-muted);font-size:12px;padding:8px 0;">Sem dados neste período</div>
+                                    <?php endif; ?>
+                                </div>
+                                <a href="/modules/recibos.php" class="btn btn-secondary" style="width:100%;text-align:center;font-size:12px;">Ver Detalhe →</a>
+                            </div>
+                        </div>
+
+                        <!-- Clientes + Sparkline -->
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">Clientes</h3>
+                                <?php $fidel_pct_show = $fidel_pct > 0 ? $fidel_pct . '% fidelizados' : ''; ?>
+                                <?php if ($fidel_pct_show): ?>
+                                <span class="badge badge-info"><?= $fidel_pct_show ?></span>
+                                <?php endif; ?>
+                            </div>
+                            <div class="card-body">
+                                <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin-bottom:12px;">
+                                    <div>
+                                        <div style="font-size:32px;font-weight:800;letter-spacing:-0.03em;line-height:1;"><?= $total_customers ?></div>
+                                        <div style="font-size:12px;color:var(--text-muted);margin-top:2px;">clientes totais</div>
+                                    </div>
+                                    <?php if ($new_customers_week > 0): ?>
+                                    <div class="dash-hero-badge up">+<?= $new_customers_week ?> esta semana</div>
+                                    <?php endif; ?>
+                                </div>
+                                <!-- Sparkline de barras -->
+                                <?php
+                                $spark_max = max(1, max(array_column($customer_sparkline, 'total')));
+                                ?>
+                                <div class="sparkline-wrap">
+                                    <?php foreach ($customer_sparkline as $idx => $sp): ?>
+                                    <?php $h = max(4, round($sp['total'] / $spark_max * 100)); ?>
+                                    <div class="sparkline-bar <?= $idx === count($customer_sparkline)-1 ? 'active' : '' ?>"
+                                         style="height:<?= $h ?>%;"
+                                         title="<?= date('d/m', strtotime($sp['dia'])) ?>: <?= $sp['total'] ?> clientes"></div>
+                                    <?php endforeach; ?>
+                                </div>
+                                <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text-muted);margin-top:4px;">
+                                    <span><?= date('d/m', strtotime('-6 days')) ?></span>
+                                    <span>Hoje</span>
+                                </div>
+                                <a href="/modules/customers.php" style="display:block;margin-top:12px;font-size:12px;color:var(--text-muted);text-align:right;">Ver Clientes →</a>
+                            </div>
+                        </div>
+
+                        <!-- Última Venda -->
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">Última Venda</h3>
+                                <?php if ($last_sale): ?>
+                                <span class="badge badge-success">Concluída</span>
+                                <?php endif; ?>
+                            </div>
+                            <div class="card-body">
+                                <?php if ($last_sale): ?>
+                                <div class="detail-list">
+                                    <div class="detail-row">
+                                        <span class="detail-key">Referência</span>
+                                        <span class="detail-val">#<?= $last_sale['id'] ?></span>
+                                    </div>
+                                    <div class="detail-row">
+                                        <span class="detail-key">Data</span>
+                                        <span class="detail-val"><?= date('d/m/Y H:i', strtotime($last_sale['sale_date'])) ?></span>
+                                    </div>
+                                    <div class="detail-row">
+                                        <span class="detail-key">Pagamento</span>
+                                        <span class="detail-val"><?= htmlspecialchars($last_sale['payment_method'] ?? 'N/A') ?></span>
+                                    </div>
+                                    <div class="detail-row">
+                                        <span class="detail-key">Itens</span>
+                                        <span class="detail-val"><?= $last_sale['items'] ?> itens</span>
+                                    </div>
+                                    <div class="detail-row" style="border-bottom:none;">
+                                        <span class="detail-key">Total</span>
+                                        <span class="detail-val money-positive" style="font-size:16px;">€<?= number_format($last_sale['total'], 2, ',', '.') ?></span>
+                                    </div>
+                                </div>
+                                <a href="/modules/recibos.php" class="btn btn-secondary" style="width:100%;text-align:center;font-size:12px;margin-top:14px;">Ver Detalhes →</a>
+                                <?php else: ?>
+                                <div style="text-align:center;color:var(--text-muted);padding:24px 0;font-size:13px;">Nenhuma venda neste período</div>
+                                <?php endif; ?>
+                            </div>
+                        </div>
+
+                    </div><!-- /coluna direita -->
+                </div><!-- /dash-refined-grid -->
+
                 </div>
             </div>
-        
+
 
 <script>
         // Live Clock
@@ -859,6 +1205,50 @@ require_once __DIR__ . '/includes/header.php';
                 }
             }
         });
+
+        // Refined Area Chart (reutiliza chartData do período atual)
+        (function() {
+            const ctx = document.getElementById('refinedAreaChart');
+            if (!ctx) return;
+            const c = ctx.getContext('2d');
+            const grad = c.createLinearGradient(0, 0, 0, 200);
+            grad.addColorStop(0, 'rgba(161,161,170,0.25)');
+            grad.addColorStop(1, 'rgba(161,161,170,0)');
+            new Chart(c, {
+                type: 'line',
+                data: {
+                    labels: chartData.map(item => formatLabel(item.label, currentPeriod)),
+                    datasets: [{
+                        data: chartData.map(item => parseFloat(item.total) || 0),
+                        borderColor: '#a1a1aa',
+                        backgroundColor: grad,
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.45,
+                        pointRadius: 0,
+                        pointHoverRadius: 5,
+                        pointBackgroundColor: '#a1a1aa',
+                    }]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            backgroundColor: colors.bg, titleColor: colors.text,
+                            bodyColor: colors.textMuted, borderColor: colors.border,
+                            borderWidth: 1, padding: 10, displayColors: false,
+                            callbacks: { label: ctx => '€' + ctx.raw.toLocaleString('pt-PT', {minimumFractionDigits: 2}) }
+                        }
+                    },
+                    scales: {
+                        y: { beginAtZero: true, grid: { color: colors.border, drawBorder: false },
+                             ticks: { color: colors.textMuted, callback: v => '€' + (v >= 1000 ? (v/1000).toFixed(1)+'k' : v) }},
+                        x: { grid: { display: false }, ticks: { color: colors.textMuted, maxRotation: 0, maxTicksLimit: 6 }}
+                    }
+                }
+            });
+        })();
 
         // Store Change
         function changeStore(storeId) {

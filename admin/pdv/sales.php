@@ -62,7 +62,7 @@ if ($action == 'api_barcode' && isset($_GET['barcode'])) {
         <!-- Esquerda: Busca e Produtos -->
         <div class="pdv-products">
             <div class="search-section">
-                <input type="text" id="barcodeInput" placeholder="🔍 Scan barcode ou digite o código do produto..." 
+                <input type="text" id="barcodeInput" placeholder="Scan barcode ou código do produto..."
                        class="barcode-input" autofocus>
                 <div id="searchResults" class="search-results"></div>
             </div>
@@ -94,7 +94,7 @@ if ($action == 'api_barcode' && isset($_GET['barcode'])) {
         <!-- Direita: Carrinho e Pagamento -->
         <div class="pdv-checkout">
             <div class="cart-header">
-                <h2>🛒 Carrinho</h2>
+                <h2><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg> Carrinho</h2>
                 <button class="btn-small" onclick="clearCart()">Limpar</button>
             </div>
 
@@ -123,16 +123,16 @@ if ($action == 'api_barcode' && isset($_GET['barcode'])) {
             </div>
 
             <div class="payment-methods">
-                <h3>💳 Forma de Pagamento</h3>
+                <h3><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg> Forma de Pagamento</h3>
                 <div class="payment-buttons">
                     <button class="payment-btn" onclick="processPayment('Dinheiro')">
-                        💵 Dinheiro
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2"/><circle cx="12" cy="12" r="3"/></svg> Dinheiro
                     </button>
                     <button class="payment-btn" onclick="processPayment('Cartão')">
-                        💳 Cartão
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg> Cartão
                     </button>
                     <button class="payment-btn" onclick="processPayment('Cheque')">
-                        📄 Cheque
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg> Cheque
                     </button>
                 </div>
             </div>
@@ -497,7 +497,7 @@ function updateCart() {
                     <button onclick="updateQty(${item.id}, -1)">−</button>
                     <span>${item.qty}</span>
                     <button onclick="updateQty(${item.id}, 1)">+</button>
-                    <button onclick="removeFromCart(${item.id})" style="background: var(--danger)">🗑</button>
+                    <button onclick="removeFromCart(${item.id})" style="background: var(--danger)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg></button>
                 </div>
             </div>
         `).join('');
@@ -535,7 +535,7 @@ async function processPayment(method) {
     try {
         // Aqui seria feito o POST para salvar a venda
         statusDiv.className = 'payment-status success';
-        statusDiv.textContent = `✅ Venda processada com sucesso! (${method})`;
+        statusDiv.textContent = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Venda processada com sucesso! (${method})`;
         
         setTimeout(() => {
             cart = [];
@@ -544,7 +544,7 @@ async function processPayment(method) {
         }, 2000);
     } catch (error) {
         statusDiv.className = 'payment-status error';
-        statusDiv.textContent = '❌ Erro ao processar pagamento';
+        statusDiv.textContent = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg> Erro ao processar pagamento';
     }
 }
 </script>

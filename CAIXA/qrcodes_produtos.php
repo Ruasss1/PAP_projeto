@@ -56,7 +56,7 @@ $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 <div class="controls">
   <strong style="font-size:15px">QR Codes — <?= count($products) ?> produtos</strong>
-  <button onclick="window.print()">🖨️ Imprimir</button>
+  <button onclick="window.print()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg> Imprimir</button>
   <a href="/CAIXA/" style="padding:8px 20px;border-radius:7px;border:1px solid #ddd;font-size:13px;text-decoration:none;color:#333;">← Voltar à Caixa</a>
   <span style="font-size:12px;color:#888;margin-left:auto;">Categorias pesadas excluídas (Frutas, Legumes, Carnes, Peixe, Congelados)</span>
 </div>

@@ -271,7 +271,7 @@ require_once __DIR__ . '/../includes/header.php';
                 <tr>
                     <td colspan="7" class="table-empty">
                         <div class="empty-state">
-                            <div class="empty-icon">🏢</div>
+                            <div class="empty-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"/><path d="M9 22v-4h6v4"/><path d="M8 6h.01M16 6h.01M12 6h.01M12 10h.01M12 14h.01M16 10h.01M16 14h.01M8 10h.01M8 14h.01"/></svg></div>
                             <div class="empty-title">Sem fornecedores</div>
                             <div class="empty-text">Adicione o primeiro fornecedor acima.</div>
                         </div>
@@ -358,7 +358,7 @@ require_once __DIR__ . '/../includes/header.php';
 const storeId = <?= $current_store_id ?>;
 
 async function showProducts(supplierId, supplierName) {
-    document.getElementById('modalTitle').textContent = '📦 Produtos de ' + supplierName;
+    document.getElementById('modalTitle').textContent = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg> Produtos de ' + supplierName;
     document.getElementById('modalOrderBtn').href = '/modules/encomendas.php';
     document.getElementById('modalBody').innerHTML = '<p style="color:var(--text-muted);font-size:13px">A carregar...</p>';
     document.getElementById('productsModal').style.display = 'flex';
@@ -369,7 +369,7 @@ async function showProducts(supplierId, supplierName) {
         const body = document.getElementById('modalBody');
         if (!data.success || data.products.length === 0) {
             body.innerHTML = `<div style="text-align:center;padding:20px;color:var(--text-muted);">
-                <div style="font-size:36px;margin-bottom:8px;">📦</div>
+                <div style="font-size:36px;margin-bottom:8px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg></div>
                 <div>Nenhum produto associado a este fornecedor.</div>
                 <div style="font-size:12px;margin-top:8px;">Vá a <strong>Produtos</strong> e defina o campo "Fornecedor" para associar.</div>
             </div>`;

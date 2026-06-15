@@ -64,21 +64,13 @@ function isActive($pages) {
     <link rel="icon" href="/assets/icons/favicon.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="/assets/icons/favicon.svg">
 
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    
-    <!-- Design System v3 -->
-    <link rel="stylesheet" href="/assets/css/premium.css?v=<?= time() ?>">
-    <link rel="stylesheet" href="/assets/css/master-ui.css?v=<?= time() ?>">
-    <link rel="stylesheet" href="/assets/css/mercantec.css?v=<?= time() ?>">
-    
+    <!-- Design System -->
+    <link rel="stylesheet" href="/assets/css/design-system.css?v=<?= time() ?>">
+
     <!-- Theme Script - Prevent Flash -->
     <script>
         (function() {
-            const theme = 'light';
-            localStorage.setItem('pap-theme', theme);
+            const theme = localStorage.getItem('pap-theme') || 'dark';
             document.documentElement.setAttribute('data-theme', theme);
         })();
     </script>
@@ -260,6 +252,14 @@ function isActive($pages) {
                         </svg>
                         Definicoes
                     </a>
+                    <a href="/modules/sobre.php" class="nav-item <?= isActive('sobre') ?>">
+                        <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <circle cx="12" cy="12" r="10" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <line x1="12" y1="8" x2="12" y2="12" stroke-width="2" stroke-linecap="round"/>
+                            <line x1="12" y1="16" x2="12.01" y2="16" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                        Sobre o Sistema
+                    </a>
                     <a href="/modules/backup.php" class="nav-item <?= isActive('backup') ?>">
                         <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4"></path></svg>
                         Copia de Seguranca BD
@@ -295,18 +295,32 @@ function isActive($pages) {
             </div>
         </aside>
 
+        <script>
+        // Sidebar scroll persistence
+        (function(){
+            const nav = document.querySelector('.sidebar-nav');
+            if (!nav) return;
+            const saved = localStorage.getItem('pap-sidebar-scroll');
+            if (saved) nav.scrollTop = parseInt(saved, 10);
+            nav.addEventListener('scroll', function(){ localStorage.setItem('pap-sidebar-scroll', nav.scrollTop); }, {passive:true});
+        })();
+        </script>
+
         <!-- Main Content -->
         <main class="app-main">
             <header class="app-header">
                 <div class="header-left">
-                    <h1 class="page-title"><?= $page_title ?? 'Painel' ?></h1>
+                    <div>
+                        <div style="font-size:9.5px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--text-muted);line-height:1;margin-bottom:2px;">PAP Market</div>
+                        <h1 class="page-title"><?= $page_title ?? 'Painel' ?></h1>
+                    </div>
                 </div>
                 <div class="header-right">
                     <?php if (!empty($all_stores) && count($all_stores) > 1): ?>
                     <select class="form-select" style="width: auto;" onchange="changeStore(this.value)">
                         <?php foreach ($all_stores as $store): ?>
                         <option value="<?= $store['id'] ?>" <?= ($current_store && $store['id'] == $current_store['id']) ? 'selected' : '' ?>>
-                            📍 <?= htmlspecialchars($store['name']) ?>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> <?= htmlspecialchars($store['name']) ?>
                         </option>
                         <?php endforeach; ?>
                     </select>

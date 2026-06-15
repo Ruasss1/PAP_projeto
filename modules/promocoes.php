@@ -64,6 +64,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
+// Filtro ativo/inativo (lido antes das ações para preservar no redirect)
+$filter_active = $_GET['filter'] ?? 'todas';
+
 // Eliminar
 if (isset($_GET['delete'])) {
     try {
@@ -77,7 +80,7 @@ if (isset($_GET['delete'])) {
 // Toggle ativo
 if (isset($_GET['toggle'])) {
     $pdo->prepare("UPDATE promotions SET active = NOT active, is_active = NOT is_active WHERE id = ? AND store_id = ?")->execute([intval($_GET['toggle']), $current_store_id]);
-    header('Location: /modules/promocoes.php');
+    header('Location: /modules/promocoes.php?filter=' . urlencode($filter_active));
     exit;
 }
 
@@ -102,12 +105,19 @@ if (isset($_GET['edit'])) {
 // Listar promoções
 $promotions = [];
 try {
-    $stmt = $pdo->prepare("SELECT p.*, pr.name as product_name 
-        FROM promotions p 
-        LEFT JOIN products pr ON p.product_id = pr.id 
-        WHERE p.store_id = ? 
+    $where_active = '';
+    $params_list  = [$current_store_id];
+    if ($filter_active === 'ativas') {
+        $where_active = ' AND p.active = 1';
+    } elseif ($filter_active === 'inativas') {
+        $where_active = ' AND p.active = 0';
+    }
+    $stmt = $pdo->prepare("SELECT p.*, pr.name as product_name
+        FROM promotions p
+        LEFT JOIN products pr ON p.product_id = pr.id
+        WHERE p.store_id = ?$where_active
         ORDER BY p.active DESC, p.end_date ASC");
-    $stmt->execute([$current_store_id]);
+    $stmt->execute($params_list);
     $promotions = $stmt->fetchAll();
 } catch (PDOException $e) {
     // Tabela pode não existir
@@ -169,9 +179,9 @@ require_once __DIR__ . '/../includes/header.php';
 <!-- Formulário -->
 <div class="card" style="margin-bottom: 24px;">
     <div class="card-header">
-        <h3 class="card-title"><?= $editing ? '✏️ Editar Promoção' : '➕ Nova Promoção' ?></h3>
+        <h3 class="card-title"><?= $editing ? '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg> Editar Promoção' : '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Nova Promoção' ?></h3>
         <?php if ($editing): ?>
-        <a href="/modules/promocoes.php" class="btn btn-secondary btn-sm">✕ Cancelar</a>
+        <a href="/modules/promocoes.php<?= $filter_active !== 'todas' ? '?filter=' . urlencode($filter_active) : '' ?>" class="btn btn-secondary btn-sm"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg> Cancelar</a>
         <?php endif; ?>
     </div>
     <div class="card-body">
@@ -236,15 +246,21 @@ require_once __DIR__ . '/../includes/header.php';
                     <input type="date" name="end_date" class="form-input" value="<?= $editing['end_date'] ?? '' ?>">
                 </div>
                 <div class="form-group" style="display: flex; align-items: flex-end;">
-                    <label class="form-checkbox">
-                        <input type="checkbox" name="active" <?= ($editing['active'] ?? 1) ? 'checked' : '' ?>>
-                        <span>Promoção Ativa</span>
-                    </label>
+                    <div style="width:100%">
+                        <label style="display:block;font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--text-muted);margin-bottom:8px;">Estado da Promoção</label>
+                        <label style="display:flex;align-items:center;gap:10px;cursor:pointer;padding:10px 14px;border:1px solid var(--border);border-radius:8px;background:var(--bg-tertiary);transition:border-color .15s;" onmouseover="this.style.borderColor='var(--border-light)'" onmouseout="this.style.borderColor='var(--border)'">
+                            <input type="checkbox" name="active" id="active_toggle" <?= ($editing['active'] ?? 1) ? 'checked' : '' ?> style="display:none" onchange="updateActiveLabel(this)">
+                            <span id="active_dot" style="width:32px;height:18px;border-radius:9px;background:<?= ($editing['active'] ?? 1) ? 'var(--success)' : 'var(--border-light)' ?>;position:relative;transition:background .2s;flex-shrink:0;">
+                                <span style="position:absolute;top:2px;left:<?= ($editing['active'] ?? 1) ? '15px' : '2px' ?>;width:14px;height:14px;border-radius:50%;background:#fff;transition:left .2s;" id="active_knob"></span>
+                            </span>
+                            <span id="active_text" style="font-size:13px;font-weight:600;color:<?= ($editing['active'] ?? 1) ? 'var(--success)' : 'var(--text-muted)' ?>"><?= ($editing['active'] ?? 1) ? 'Ativa' : 'Inativa' ?></span>
+                        </label>
+                    </div>
                 </div>
             </div>
             
             <button type="submit" class="btn btn-primary" style="margin-top: 16px;">
-                <?= $editing ? '💾 Guardar Alterações' : '🏷️ Criar Promoção' ?>
+                <?= $editing ? '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg> Guardar Alterações' : '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg> Criar Promoção' ?>
             </button>
         </form>
     </div>
@@ -252,8 +268,13 @@ require_once __DIR__ . '/../includes/header.php';
 
 <!-- Lista -->
 <div class="card">
-    <div class="card-header">
+    <div class="card-header" style="flex-wrap:wrap;gap:12px;">
         <h3 class="card-title">Promoções (<?= count($promotions) ?>)</h3>
+        <div style="display:flex;gap:6px;align-items:center;">
+            <?php foreach(['todas'=>'Todas','ativas'=>'Ativas','inativas'=>'Inativas'] as $fk=>$fl): ?>
+            <a href="?filter=<?= $fk ?>" style="display:inline-flex;align-items:center;padding:5px 14px;border-radius:7px;font-size:12px;font-weight:600;letter-spacing:.04em;text-decoration:none;border:1px solid var(--border);background:<?= $filter_active===$fk?'var(--text-primary)':'var(--bg-secondary)' ?>;color:<?= $filter_active===$fk?'var(--bg-primary)':'var(--text-secondary)' ?>;transition:background .15s,color .15s;"><?= $fl ?></a>
+            <?php endforeach; ?>
+        </div>
     </div>
     <div class="table-container" style="border: none;">
         <table class="table">
@@ -273,7 +294,7 @@ require_once __DIR__ . '/../includes/header.php';
                 <tr>
                     <td colspan="7" class="table-empty">
                         <div class="empty-state">
-                            <div class="empty-icon">🏷️</div>
+                            <div class="empty-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg></div>
                             <div class="empty-title">Sem promoções</div>
                             <div class="empty-text">Crie a primeira promoção acima.</div>
                         </div>
@@ -300,11 +321,11 @@ require_once __DIR__ . '/../includes/header.php';
                     </td>
                     <td>
                         <?php if ($promo['product_name']): ?>
-                        <span class="badge badge-muted">📦 <?= htmlspecialchars($promo['product_name']) ?></span>
+                        <span class="badge badge-muted"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg> <?= htmlspecialchars($promo['product_name']) ?></span>
                         <?php elseif ($promo['category']): ?>
-                        <span class="badge badge-muted">📂 <?= htmlspecialchars($promo['category']) ?></span>
+                        <span class="badge badge-muted"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg> <?= htmlspecialchars($promo['category']) ?></span>
                         <?php else: ?>
-                        <span class="badge badge-success">🛒 Todos os produtos</span>
+                        <span class="badge badge-success"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg> Todos os produtos</span>
                         <?php endif; ?>
                     </td>
                     <td>
@@ -320,13 +341,13 @@ require_once __DIR__ . '/../includes/header.php';
                     </td>
                     <td>
                         <?php if ($is_expired): ?>
-                        <span class="badge badge-danger">❌ Expirada</span>
+                        <span class="badge badge-danger"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg> Expirada</span>
                         <?php elseif ($is_future): ?>
-                        <span class="badge badge-warning">📅 Futura</span>
+                        <span class="badge badge-warning"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> Futura</span>
                         <?php elseif ($promo['active']): ?>
-                        <span class="badge badge-success">✅ Ativa</span>
+                        <span class="badge badge-success"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Ativa</span>
                         <?php else: ?>
-                        <span class="badge badge-muted">⏸️ Inativa</span>
+                        <span class="badge badge-muted"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg> Inativa</span>
                         <?php endif; ?>
                     </td>
                     <td style="text-align: center;">
@@ -336,19 +357,20 @@ require_once __DIR__ . '/../includes/header.php';
                              onclick="showQrFullscreen('<?= $promo['id'] ?>','<?= htmlspecialchars(addslashes($promo['name'])) ?>','<?= $promo['type'] ?>','<?= $promo['value'] ?>','<?= $promo['qr_code'] ?>')"
                              title="Clique para ampliar">
                         <?php else: ?>
-                        <span class="badge badge-muted" style="cursor:pointer;" onclick="location.href='?regenerate_qr=<?= $promo['id'] ?>'">🔄 Gerar</span>
+                        <span class="badge badge-muted" style="cursor:pointer;" onclick="location.href='?regenerate_qr=<?= $promo['id'] ?>'"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg> Gerar</span>
                         <?php endif; ?>
                     </td>
                     <td>
                         <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+                            <?php $fq = $filter_active !== 'todas' ? '&filter=' . urlencode($filter_active) : ''; ?>
                             <?php if ($promo['qr_code']): ?>
-                            <a href="?regenerate_qr=<?= $promo['id'] ?>" class="btn btn-secondary btn-sm" title="Regenerar QR Code">🔄</a>
+                            <a href="?regenerate_qr=<?= $promo['id'] ?><?= $fq ?>" class="btn btn-secondary btn-sm" title="Regenerar QR Code"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg></a>
                             <?php endif; ?>
-                            <a href="?toggle=<?= $promo['id'] ?>" class="btn btn-secondary btn-sm" title="<?= $promo['active'] ? 'Desativar' : 'Ativar' ?>">
-                                <?= $promo['active'] ? '⏸️' : '▶️' ?>
+                            <a href="?toggle=<?= $promo['id'] ?><?= $fq ?>" class="btn btn-secondary btn-sm" title="<?= $promo['active'] ? 'Desativar' : 'Ativar' ?>">
+                                <?= $promo['active'] ? '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>' : '▶' ?>
                             </a>
-                            <a href="?edit=<?= $promo['id'] ?>" class="btn btn-secondary btn-sm">✏️</a>
-                            <a href="?delete=<?= $promo['id'] ?>" class="btn btn-danger btn-sm" onclick="return confirm('Eliminar esta promoção?')">🗑️</a>
+                            <a href="?edit=<?= $promo['id'] ?><?= $fq ?>" class="btn btn-secondary btn-sm"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></a>
+                            <a href="?delete=<?= $promo['id'] ?><?= $fq ?>" class="btn btn-danger btn-sm" onclick="return confirm('Eliminar esta promoção?')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg></a>
                         </div>
                     </td>
                 </tr>
@@ -518,7 +540,7 @@ require_once __DIR__ . '/../includes/header.php';
     <!-- Topo -->
     <div class="modal-qr-topbar">
         <h2>
-            ✅ Promoção Criada!
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Promoção Criada!
         </h2>
         <span class="badge-discount">
             <?php if ($qr_code_modal['type'] === 'percentage'): ?>
@@ -541,15 +563,15 @@ require_once __DIR__ . '/../includes/header.php';
         </div>
         <div class="modal-qr-label">
             <p class="promo-name"><?= htmlspecialchars($qr_code_modal['name']) ?></p>
-            <p class="promo-hint">📱 Escaneie para aplicar a promoção</p>
+            <p class="promo-hint"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg> Escaneie para aplicar a promoção</p>
         </div>
     </div>
 
     <!-- Ações no fundo -->
     <div class="modal-qr-actions">
-        <button class="btn-qr-close"    onclick="closeQrModal()">✕ Fechar</button>
-        <button class="btn-qr-download" onclick="downloadQr()">⬇ Descarregar</button>
-        <button class="btn-qr-print"    onclick="printQr()">🖨 Imprimir</button>
+        <button class="btn-qr-close"    onclick="closeQrModal()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg> Fechar</button>
+        <button class="btn-qr-download" onclick="downloadQr()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/></svg> Descarregar</button>
+        <button class="btn-qr-print"    onclick="printQr()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg> Imprimir</button>
     </div>
 </div>
 
@@ -601,13 +623,37 @@ document.getElementById('discountType').addEventListener('change', function() {
     document.getElementById('discountSymbol').textContent = this.value === 'percentage' ? '%' : '€';
 });
 
+function updateActiveLabel(cb) {
+    var dot   = document.getElementById('active_dot');
+    var knob  = document.getElementById('active_knob');
+    var text  = document.getElementById('active_text');
+    if (cb.checked) {
+        dot.style.background = 'var(--success)';
+        knob.style.left = '15px';
+        text.style.color = 'var(--success)';
+        text.textContent = 'Ativa';
+    } else {
+        dot.style.background = 'var(--border-light, #3a3a3a)';
+        knob.style.left = '2px';
+        text.style.color = 'var(--text-muted)';
+        text.textContent = 'Inativa';
+    }
+}
+
+document.querySelector('label[for="active_toggle"], label:has(#active_toggle)') &&
+    document.querySelector('label:has(#active_toggle)').addEventListener('click', function() {
+        var cb = document.getElementById('active_toggle');
+        cb.checked = !cb.checked;
+        updateActiveLabel(cb);
+    });
+
 // ─── Modal fullscreen reutilizável para QR codes da lista ───────────────
 function showQrFullscreen(id, name, type, value, src) {
     const modal = document.getElementById('qrModalList');
     document.getElementById('qrListImg').src      = src;
     document.getElementById('qrListImg').dataset.id = id;
     document.getElementById('qrListName').textContent = name;
-    document.getElementById('qrListHint').textContent  = '📱 Escaneie para aplicar a promoção';
+    document.getElementById('qrListHint').textContent  = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg> Escaneie para aplicar a promoção';
     
     const disc = type === 'percentage' ? `-${value}%` : `-€${parseFloat(value).toFixed(2)}`;
     document.getElementById('qrListBadge').textContent = disc;
@@ -648,7 +694,7 @@ function printQrList() {
 <!-- Modal fullscreen reutilizável para a lista de promoções -->
 <div class="modal-qr-overlay" id="qrModalList">
     <div class="modal-qr-topbar">
-        <h2>📱 QR Code da Promoção</h2>
+        <h2><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg> QR Code da Promoção</h2>
         <span class="badge-discount" id="qrListBadge"></span>
     </div>
     <div class="modal-qr-body">
@@ -659,13 +705,13 @@ function printQrList() {
         </div>
         <div class="modal-qr-label">
             <p class="promo-name" id="qrListName"></p>
-            <p class="promo-hint" id="qrListHint">📱 Escaneie para aplicar a promoção</p>
+            <p class="promo-hint" id="qrListHint"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg> Escaneie para aplicar a promoção</p>
         </div>
     </div>
     <div class="modal-qr-actions">
-        <button class="btn-qr-close"    onclick="closeQrListModal()">✕ Fechar</button>
-        <button class="btn-qr-download" onclick="downloadQrList()">⬇ Descarregar</button>
-        <button class="btn-qr-print"    onclick="printQrList()">🖨 Imprimir</button>
+        <button class="btn-qr-close"    onclick="closeQrListModal()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg> Fechar</button>
+        <button class="btn-qr-download" onclick="downloadQrList()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/></svg> Descarregar</button>
+        <button class="btn-qr-print"    onclick="printQrList()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg> Imprimir</button>
     </div>
 </div>
 

@@ -56,7 +56,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['create_order'])) {
                 }
                 
                 $pdo->commit();
-                $message = "✅ Encomenda #$order_id criada com " . count($items) . " produto(s). Total: €" . number_format($total_cost, 2);
+                $message = "<svg width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'><polyline points='20 6 9 17 4 12'/></svg> Encomenda #$order_id criada com " . count($items) . " produto(s). Total: €" . number_format($total_cost, 2);
             } catch (\Throwable $e) {
                 $pdo->rollBack();
                 $error = 'Erro ao criar encomenda: ' . $e->getMessage();
@@ -96,7 +96,7 @@ if (isset($_GET['process_all']) && $_GET['process_all'] === '1') {
         $stmt->execute();
         $changed = $stmt->rowCount();
         $message = $changed > 0
-            ? "✅ $changed encomenda(s) pendente(s) foram processadas."
+            ? "<svg width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'><polyline points='20 6 9 17 4 12'/></svg> $changed encomenda(s) pendente(s) foram processadas."
             : 'Sem encomendas pendentes para processar.';
     } catch (\Throwable $e) {
         $error = 'Erro ao processar encomendas pendentes: ' . $e->getMessage();
@@ -120,7 +120,7 @@ if (isset($_GET['deliver_all']) && $_GET['deliver_all'] === '1') {
         }
         $pdo->commit();
         $message = $total_updated > 0
-            ? "✅ $total_updated encomenda(s) marcadas como entregues e stock atualizado."
+            ? "<svg width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'><polyline points='20 6 9 17 4 12'/></svg> $total_updated encomenda(s) marcadas como entregues e stock atualizado."
             : 'Sem encomendas para marcar como entregues.';
     } catch (\Throwable $e) {
         $pdo->rollBack();

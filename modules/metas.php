@@ -38,7 +38,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             ON DUPLICATE KEY UPDATE goal_amount = ?, goal_sales = ?
         ");
         $stmt->execute([$employee_id, $month, $goal_amount, $goal_sales, $goal_amount, $goal_sales]);
-        $message = '✅ Meta definida com sucesso!';
+        $message = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Meta definida com sucesso!';
     }
 }
 
@@ -341,7 +341,7 @@ tr:hover {
 
 <div class="metas-container">
     <div class="header">
-        <h1>🎯 Metas de Vendas</h1>
+        <h1><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg> Metas de Vendas</h1>
         <form class="mes-selector" method="GET">
             <input type="month" name="mes" value="<?= htmlspecialchars($mes_atual) ?>">
             <button type="submit">Filtrar</button>
@@ -386,7 +386,7 @@ tr:hover {
         
         <div class="stat-card">
             <div class="value" style="color: <?= $percentagem >= 100 ? '#22c55e' : '#f59e0b' ?>;">
-                <?= $percentagem >= 100 ? '✅ ATINGIDA!' : '🎯 Em Progresso' ?>
+                <?= $percentagem >= 100 ? '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> ATINGIDA!' : '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg> Em Progresso' ?>
             </div>
             <div class="label">Estado da Meta</div>
         </div>
@@ -395,7 +395,7 @@ tr:hover {
     <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 20px;">
         <!-- Metas por Funcionário -->
         <div class="section">
-            <h3>👥 Metas Individuais - <?= date('F Y', strtotime($mes_atual . '-01')) ?></h3>
+            <h3><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg> Metas Individuais - <?= date('F Y', strtotime($mes_atual . '-01')) ?></h3>
             <table>
                 <thead>
                     <tr>
@@ -436,11 +436,11 @@ tr:hover {
 
         <!-- Ranking -->
         <div class="section">
-            <h3>🏆 Ranking do Mês</h3>
+            <h3><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="8 21 12 21 16 21"/><line x1="12" y1="17" x2="12" y2="21"/><path d="M7 4h10v7a5 5 0 0 1-10 0V4z"/><path d="M5 4a2 2 0 0 0 0 4h-.5"/><path d="M19 4a2 2 0 0 1 0 4h.5"/></svg> Ranking do Mês</h3>
             <?php foreach ($ranking as $i => $r): ?>
             <div class="ranking-card">
                 <div class="position <?= $i === 0 ? 'gold' : ($i === 1 ? 'silver' : ($i === 2 ? 'bronze' : '')) ?>">
-                    <?php if ($i === 0): ?>🥇<?php elseif ($i === 1): ?>🥈<?php elseif ($i === 2): ?>🥉<?php else: ?>#<?= $i + 1 ?><?php endif; ?>
+                    <?php if ($i === 0): ?>1.<?php elseif ($i === 1): ?>2.<?php elseif ($i === 2): ?>3.<?php else: ?>#<?= $i + 1 ?><?php endif; ?>
                 </div>
                 <div class="info">
                     <div class="name"><?= htmlspecialchars($r['name']) ?></div>
@@ -456,7 +456,7 @@ tr:hover {
 <!-- Modal Definir Meta -->
 <div class="modal" id="modalMeta">
     <div class="modal-content">
-        <h3>🎯 Definir Meta</h3>
+        <h3><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg> Definir Meta</h3>
         <form method="POST">
             <input type="hidden" name="action" value="set_goal">
             <input type="hidden" name="employee_id" id="modal_employee_id">

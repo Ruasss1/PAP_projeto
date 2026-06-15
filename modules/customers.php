@@ -103,7 +103,7 @@ require_once __DIR__ . '/../includes/header.php';
 <div class="stats-grid" style="grid-template-columns: repeat(4, 1fr);">
     <div class="stat-card">
         <div class="stat-header">
-            <div class="stat-icon blue">👥</div>
+            <div class="stat-icon blue"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
         </div>
         <div class="stat-value"><?= $stats['total'] ?? 0 ?></div>
         <div class="stat-label">Total Clientes</div>
@@ -117,14 +117,14 @@ require_once __DIR__ . '/../includes/header.php';
     </div>
     <div class="stat-card">
         <div class="stat-header">
-            <div class="stat-icon purple">🛒</div>
+            <div class="stat-icon purple"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg></div>
         </div>
         <div class="stat-value"><?= $stats['with_purchases'] ?? 0 ?></div>
         <div class="stat-label">Com Compras</div>
     </div>
     <div class="stat-card">
         <div class="stat-header">
-            <div class="stat-icon orange">💰</div>
+            <div class="stat-icon orange"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div>
         </div>
         <div class="stat-value money-positive">€<?= number_format($total_revenue, 2, ',', '.') ?></div>
         <div class="stat-label">Receita Total</div>
@@ -134,9 +134,9 @@ require_once __DIR__ . '/../includes/header.php';
 <!-- Formulário -->
 <div class="card" style="margin-bottom: 24px;">
     <div class="card-header">
-        <h3 class="card-title"><?= $editing ? '✏️ Editar Cliente' : '➕ Novo Cliente' ?></h3>
+        <h3 class="card-title"><?= $editing ? '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg> Editar Cliente' : '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Novo Cliente' ?></h3>
         <?php if ($editing): ?>
-        <a href="/modules/customers.php" class="btn btn-secondary btn-sm">✕ Cancelar</a>
+        <a href="/modules/customers.php" class="btn btn-secondary btn-sm"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg> Cancelar</a>
         <?php endif; ?>
     </div>
     <div class="card-body">
@@ -174,7 +174,7 @@ require_once __DIR__ . '/../includes/header.php';
             </div>
             
             <button type="submit" class="btn btn-primary">
-                <?= $editing ? '💾 Guardar Alterações' : '➕ Criar Cliente' ?>
+                <?= $editing ? '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg> Guardar Alterações' : '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Criar Cliente' ?>
             </button>
         </form>
     </div>
@@ -188,7 +188,7 @@ require_once __DIR__ . '/../includes/header.php';
                 <label class="form-label">Pesquisar</label>
                 <input type="text" name="search" class="form-input" placeholder="Nome, email, telefone ou NIF..." value="<?= htmlspecialchars($search) ?>">
             </div>
-            <button type="submit" class="btn btn-primary">🔍 Pesquisar</button>
+            <button type="submit" class="btn btn-primary"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg> Pesquisar</button>
             <?php if ($search): ?>
             <a href="/modules/customers.php" class="btn btn-secondary">Limpar</a>
             <?php endif; ?>
@@ -218,27 +218,35 @@ require_once __DIR__ . '/../includes/header.php';
                 <tr>
                     <td colspan="6" class="table-empty">
                         <div class="empty-state">
-                            <div class="empty-icon">👥</div>
+                            <div class="empty-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
                             <div class="empty-title">Sem clientes</div>
                             <div class="empty-text">Adicione o primeiro cliente acima.</div>
                         </div>
                     </td>
                 </tr>
                 <?php else: ?>
-                <?php foreach ($customers as $customer): ?>
+                <?php foreach ($customers as $customer):
+                    $cNameParts = explode(' ', trim($customer['name']));
+                    $cInitials = strtoupper(substr($cNameParts[0] ?? '', 0, 1) . substr(end($cNameParts) ?: '', 0, 1));
+                ?>
                 <tr>
                     <td>
-                        <div style="font-weight: 600;"><?= htmlspecialchars($customer['name']) ?></div>
-                        <?php if ($customer['address']): ?>
-                        <div style="font-size: 12px; color: var(--text-muted);">📍 <?= htmlspecialchars($customer['address']) ?></div>
-                        <?php endif; ?>
+                        <div style="display:flex;align-items:center;gap:12px;">
+                            <div style="width:36px;height:36px;border-radius:50%;background:var(--bg-tertiary);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:var(--text-secondary);flex-shrink:0;"><?= htmlspecialchars($cInitials) ?></div>
+                            <div>
+                                <div style="font-weight:600;"><?= htmlspecialchars($customer['name']) ?></div>
+                                <?php if ($customer['address']): ?>
+                                <div style="font-size:12px;color:var(--text-muted);"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> <?= htmlspecialchars($customer['address']) ?></div>
+                                <?php endif; ?>
+                            </div>
+                        </div>
                     </td>
                     <td>
                         <?php if ($customer['email']): ?>
-                        <div style="font-size: 13px;">📧 <?= htmlspecialchars($customer['email']) ?></div>
+                        <div style="font-size: 13px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg> <?= htmlspecialchars($customer['email']) ?></div>
                         <?php endif; ?>
                         <?php if ($customer['phone']): ?>
-                        <div style="font-size: 13px;">📞 <?= htmlspecialchars($customer['phone']) ?></div>
+                        <div style="font-size: 13px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.59 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6.09 6.09l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg> <?= htmlspecialchars($customer['phone']) ?></div>
                         <?php endif; ?>
                     </td>
                     <td><?= htmlspecialchars($customer['nif'] ?? '-') ?></td>
@@ -250,8 +258,8 @@ require_once __DIR__ . '/../includes/header.php';
                     </td>
                     <td>
                         <div style="display: flex; gap: 8px;">
-                            <a href="?edit=<?= $customer['id'] ?>" class="btn btn-secondary btn-sm">✏️</a>
-                            <a href="?delete=<?= $customer['id'] ?>" class="btn btn-danger btn-sm" onclick="return confirm('Eliminar este cliente?')">🗑️</a>
+                            <a href="?edit=<?= $customer['id'] ?>" class="btn btn-secondary btn-sm"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></a>
+                            <a href="?delete=<?= $customer['id'] ?>" class="btn btn-danger btn-sm" onclick="return confirm('Eliminar este cliente?')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg></a>
                         </div>
                     </td>
                 </tr>
