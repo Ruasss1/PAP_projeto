@@ -1,4 +1,4 @@
--- Importacao Mercantec para TiDB Cloud (esquema completo + dados base + complementos)
+-- Importacao Mercantec (esquema completo + dados base + complementos) - compativel MySQL/Railway e TiDB
 SET FOREIGN_KEY_CHECKS=0;
 SET NAMES utf8mb4;
 
@@ -995,7 +995,6 @@ CREATE TABLE `vacation_requests` (
 -- GTID state at the beginning of the backup 
 --
 
-SET @@GLOBAL.GTID_PURGED=/*!80000 '+'*/ 'cd8df9f6-efe5-11f0-a228-428f07732c85:1-177266';
 
 --
 -- Dumping data for table `roles`
@@ -1096,33 +1095,8 @@ UNLOCK TABLES;
 
 -- Dump completed on 2026-05-19 14:43:44
 
--- ===== COMPLEMENTOS DO ESQUEMA (equivalente ao migrate.php, seguro/idempotente no TiDB) =====
+-- ===== COMPLEMENTOS (compativel com MySQL e TiDB): so o que falta no esquema base =====
 
--- Colunas extra (IF NOT EXISTS evita erro se já existirem)
-ALTER TABLE `products`     ADD COLUMN IF NOT EXISTS `brand` VARCHAR(100) DEFAULT NULL;
-ALTER TABLE `products`     ADD COLUMN IF NOT EXISTS `barcode` VARCHAR(50) DEFAULT NULL;
-ALTER TABLE `products`     ADD COLUMN IF NOT EXISTS `vat` DECIMAL(5,2) DEFAULT 23.00;
-ALTER TABLE `products`     ADD COLUMN IF NOT EXISTS `min_stock` INT DEFAULT 5;
-ALTER TABLE `products`     ADD COLUMN IF NOT EXISTS `supplier_id` INT DEFAULT NULL;
-ALTER TABLE `products`     ADD COLUMN IF NOT EXISTS `active` TINYINT DEFAULT 1;
-ALTER TABLE `suppliers`    ADD COLUMN IF NOT EXISTS `email` VARCHAR(100) DEFAULT NULL;
-ALTER TABLE `suppliers`    ADD COLUMN IF NOT EXISTS `phone` VARCHAR(20) DEFAULT NULL;
-ALTER TABLE `suppliers`    ADD COLUMN IF NOT EXISTS `address` TEXT DEFAULT NULL;
-ALTER TABLE `suppliers`    ADD COLUMN IF NOT EXISTS `delivery_days` INT DEFAULT 2;
-ALTER TABLE `suppliers`    ADD COLUMN IF NOT EXISTS `active` TINYINT DEFAULT 1;
-ALTER TABLE `orders`       ADD COLUMN IF NOT EXISTS `status` ENUM('pending','processed','shipped','delivered') DEFAULT 'pending';
-ALTER TABLE `orders`       ADD COLUMN IF NOT EXISTS `total_cost` DECIMAL(10,2) DEFAULT NULL;
-ALTER TABLE `orders`       ADD COLUMN IF NOT EXISTS `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP;
-ALTER TABLE `orders`       ADD COLUMN IF NOT EXISTS `processed_at` DATETIME DEFAULT NULL;
-ALTER TABLE `orders`       ADD COLUMN IF NOT EXISTS `delivered_at` DATETIME DEFAULT NULL;
-ALTER TABLE `orders`       ADD COLUMN IF NOT EXISTS `received` TINYINT DEFAULT 0;
-ALTER TABLE `sales`        ADD COLUMN IF NOT EXISTS `payment_method` VARCHAR(50) DEFAULT 'Dinheiro';
-ALTER TABLE `sale_items`   ADD COLUMN IF NOT EXISTS `cost_price` DECIMAL(10,2) DEFAULT NULL;
-ALTER TABLE `employees`    ADD COLUMN IF NOT EXISTS `active` TINYINT DEFAULT 1;
-ALTER TABLE `transactions` ADD COLUMN IF NOT EXISTS `reference_type` VARCHAR(50) DEFAULT NULL;
-ALTER TABLE `transactions` ADD COLUMN IF NOT EXISTS `reference_id` INT DEFAULT NULL;
-
--- Tabelas que faltam
 CREATE TABLE IF NOT EXISTS `order_messages` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
   `order_id` INT(11) NOT NULL,
@@ -1148,7 +1122,6 @@ CREATE TABLE IF NOT EXISTS `alerts` (
   KEY `idx_alerts_type` (`alert_type`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Views (recria de forma segura)
 DROP VIEW IF EXISTS `daily_profit`;
 DROP TABLE IF EXISTS `daily_profit`;
 CREATE VIEW `daily_profit` AS
