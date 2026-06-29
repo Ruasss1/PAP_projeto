@@ -607,7 +607,7 @@ if (!$db_error && defined('DB_ERROR')) {
 
     <div class="creds">
       <strong>Administrador</strong><br>
-      <code>admin@papmarket.pt</code>&nbsp;&nbsp;<code>admin123</code>
+      <code>admin@mercantec.pt</code>&nbsp;&nbsp;<code>admin123</code>
     </div>
 
     <p class="f-foot">PAP Market &mdash; Plataforma de Gestao Comercial</p>
